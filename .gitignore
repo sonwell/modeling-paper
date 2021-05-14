@@ -1,0 +1,22 @@
+# latexmk files
+*.log
+*.aux
+*.auxlock
+*.fdb_latexmk
+*.fls
+*.out
+*.xdv
+
+# bibtex files
+*.bbl
+*.blg
+
+# tikz files
+*.md5
+*.dpth
+*.dep
+*.spl
+
+*.pdf
+
+git/
