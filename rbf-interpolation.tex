@@ -1,0 +1,102 @@
+\subsection{Surface reconstruction with radial basis functions}
+
+RBFs have been shown to be a viable approach for representing cells on par with Fourier
+methods~\cite{Shankar:2013ki}. Whereas methods such as finite element require a mesh or
+other structured grid, RBFs are meshfree, and structural information is encoded purely as
+pointwise distances. In order to compute the forces of the previous section, we must be
+able to evaluate the interpolant and its first and second derivatives. We briefly
+describe these methods below.
+
+Consider the 2-sphere, $\sphere$, with parametrization
+\begin{equation*}
+    \Xp(\qs) = \cos\q[1]\cos\q[2]\e_1 + \sin\q[1]\cos\q[2]\e_2 + \sin\q[2]\e_3,
+\end{equation*}
+$\qs\in\sites = (-\pi,\,\pi]\times[-\pi/2,\,\pi/2]$. Let $\data\sites = \{\qs_i\}$ be a
+set of $\data\cardinality$ distinct \emph{data sites}, and $\data\Xp_i = \Xp(\qs_i)$ for
+each $\qs_i \in \data\sites$. We use the Bauer spiral~\cite{Bauer:2000km} to generate a
+quasi-uniform set of $N$ points on the sphere in parallel:
+\begin{equation}
+    \begin{aligned}
+        \q[2]_i &= \sin^{-1}(-1 + (2 i - 1) / N), \\
+        \q[1]_i &= \pi - \modulo\left(\pi - \sqrt{\pi N} \q[2]_i,\,2\pi\right).
+    \end{aligned}
+    \label{eq:bauer-spiral}
+\end{equation}
+Suppose we wish to approximate $\psi(\Xp)$, a function defined on $\sphere$. With
+\emph{basic function} $\phi$, the RBFs $\phi(\|\Xp-\data\Xp_A\|)$ form our basis.
+Attractive choices for $\phi$ are the polyharmonic splines (PHS),
+\begin{equation*}
+    \text{PHS:}\quad\phi(r) = \begin{cases}
+        r^k \log r, & \text{for even exponents } k \ge 2 \\
+        r^k, & \text{for odd exponents } k \ge 1,
+    \end{cases}
+\end{equation*}
+which do not require a shape parameter, unlike Gaussian or multiquadric kernels~%
+\cite{Fasshauer:2007ui}. However, PHS are finitely differentiable and conditionally
+positive definite; they require additional polynomial terms to guarantee a unique
+interpolant. On $\sphere$, these are typically spherical harmonics. We denote these
+$\poly\cardinality$ appended polynomials by $\{p_k(\Xp)\}$. To achieve a twice
+continuously differentiable surface reconstruction, we are limited to PHS of order 5 or
+higher. An interpolant $s(\Xp)$ exactly recovers data at each of the data sites and
+therefore satisfies
+\begin{equation}
+    s(\data\Xp_j)
+    := \sum_{i=1}^{\data\cardinality} c_i \phi\left(\left\|\data\Xp_j-\data\Xp_i\right\|\right)
+    + \sum_{k=1}^{\poly\cardinality} d_k p_k(\data\Xp_j)
+    = \psi(\data\Xp_j).
+    \label{eq:interpolant}
+\end{equation}
+We further constrain $c_i$ so that the polynomials recover polynomial data,
+\begin{equation}
+    \sum_{i=1}^{\data\cardinality} c_i p_k(\data\Xp_i) = 0.
+    \label{eq:constraints}
+\end{equation}
+These equations are gathered into a symmetric block system.
+
+Suppose that $\X(\qs)$ is a parametrization of $\interface$, e.g., the membrane of an
+RBC. We identify the point $\X(\qs)$ on $\interface$ with the point $\Xp(\qs)$ on
+$\sphere$. Each component of $\X$ is therefore a function defined on $\sphere$.
+By sampling $\X$ at each point in $\data\sites$, we can approximately reconstruct the
+surface by interpolating each of the components. With a twice-differentiable interpolant
+for the reference and deformed configurations of the surface, we can evaluate the force
+densities of the previous section. For this, we require discrete differential operators.
+
+Let $\L$ be a linear operator. In particular, we are interested in the differential
+operators $\partial/\partial\q[\mu]$ and $\partial^2/\partial\q[\mu]\partial\q[\lambda]$.
+We approximate $\L\psi$ by applying $\L$ analytically to $s$. Evaluating $\L s$ at each
+data site involves dense $\data\cardinality\times(\data\cardinality+\poly\cardinality)$-%
+matrix operations.
+%Collecting values of
+%I$\L\phi(\|\Xp-\data\Xp_i\|)$ and $\L p_k(\Xp)$ at each data site into a matrix results in
+%a dense matrix multiplication to evaluate $\L s$.
+To maintain a point spacing that avoids
+leaking in the IB method, $\data\cardinality$ may be large. In the interest of saving
+memory and time for such cases, we opt instead to use fewer data sites to reconstruct the
+surface, and choose a larger set of $\sample\cardinality$ \emph{sample sites},
+$\sample\sites$. We must then also consider $\L$ the identity operator.  Evaluating
+$\L s$ at each sample site, we obtain
+\begin{equation}
+    \sum_{i=1}^{\data\cardinality} c_i \L\phi\left(\left\|\sample\Xp_j-\data\Xp_i\right\|\right) +
+    \sum_{k=1}^{\poly\cardinality} d_k \L p_k(\sample\Xp_j) := (L \data{\vec{\psi}})_j
+\end{equation}
+where $\sample\Xp_j = \Xp(\qs_j)$, for each $\qs_j\in\sample\sites$, and
+$\data{\vec{\psi}}$ is the vector of values obtained by evaluating $\psi$ at each data
+site. The matrix $L$ is the discrete analogue of $\L$ applied at each sample site. We
+perform this procedure for each first and second derivative operator, and for the
+identity operator, to compute the points from which we spread the computed forces. In
+other words, the points denoted $\X$ in equation~\eqref{eq:ib-interp} correspond to the
+data sites, are tracked over the course of a simulations, and may be distinct from those
+in equation~\eqref{eq:ib-spread}, which are derived from the sample sites. For fixed
+$\data\sites$ and $\sample\sites$, we construct these operators only once.
+
+The quantities $\metric_{\alpha\beta}$, $\metric^{\alpha\beta}$,
+$\dot{\metric}_{\alpha\beta}$, $\n$, $H$, and $K$ require only local first and second
+derivative data to compute. Ultimately, this means that after obtaining the necessary
+geometric data, calculating forces according to~\eqref{eq:expanded-op} is trivially
+parallelizable. The matrix $L$ is dense; its application can be performed in parallel
+with, e.g., a parallelized implementation of BLAS, and so forces are computed in parallel
+with few thread synchronizations.
+
+We now have a method for discretizing $\F$ and for computing an appropriate set of points
+for use in~\eqref{eq:ib-spread}. The following section is devoted to computing
+integration weights, $\weight[i]$, at each sample site, $\X$, using RBFs.

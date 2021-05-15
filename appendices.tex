@@ -1,0 +1,175 @@
+\appendix
+\section{Boundary error correction for staggered grids}\label{sec:boundary-correction}
+
+Of particular interest is the Laplacian operator, which appears in every linear
+solve. Consider the 1-dimensional diffusion problem for $u = u(x, t)$,
+\begin{alignat}{2}
+    u_t      &= \mu u_{xx} + f           &&\quad \text{for} \ x\in(0,\,1), \label{eq:1d-diff} \\
+    \gamma_0 &= \alpha_0 u + \beta_0 u_x &&\quad \text{at} \ x=0, \label{eq:1d-0bcs} \\
+    \gamma_1 &= \alpha_1 u - \beta_1 u_x &&\quad \text{at} \ x=1, \label{eq:1d-1bcs}
+\end{alignat}
+where $\alpha_m^2 + \beta_m^2 \neq 0$ for $m = 0,\,1$. Here, primes denote
+differentiation with respect to $x$. We discretize the domain into cells of length
+$h=1/N$ and approximate $u(x_A)$ with $u_A$ for $x_A = h(g + A-1)$, where $A$ ranges over
+$\range{N}$ and $g\in(0,\,1]$ is the grid staggering. Consider the boundary at $x=0$. Let
+$x_\text{g} = h(g-1)$ be a ghost point to the left of the boundary. Near the boundary, we
+use the linear approximations
+\begin{equation}
+    u(0, t) \approx au_1 + bu_g \quad \text{and} \quad u_x(0, t) \approx a'u_1 + b'u_g.
+    \label{eq:1d-approx}
+\end{equation}
+We require that these approximations be at least first order: $a+b=1$, $a'+b'=0$, and
+$a'hg + b'h(g-1) = 1$. Dropping subscripts for $\alpha_0$, $\beta_0$, and $\gamma_0$,
+and substituting into the boundary condition yields
+\begin{equation}
+    \gamma = \alpha(au_1 + bu_g) + \beta(a'u_1 + b'u_g) + \mathcal{O}(h).
+    \label{eq:1d-bc}
+\end{equation}
+Given a value $u_1$ and boundary data $\gamma$, we can compute
+\begin{equation}
+    u_g \approx (\alpha b + \beta b')^{-1}(\gamma-(\alpha a + \beta a')u_1),
+\end{equation}
+when $\alpha b + \beta b' \neq 0$. In the extraordinary case that
+$\alpha b + \beta b' = 0$, the boundary condition is of Robin type, with neither
+$\alpha$ nor $\beta$ zero, the value at the ghost point is arbitrary, and solving
+$\alpha u_1 = \gamma$ determines the value $u_1$. Assuming $\alpha b + \beta b' \neq 0$,
+the standard 3-point discrete Laplacian at $x_1$ gives the approximation
+\begin{equation}
+    u_g - 2u_1 + u_2
+    = h^2\left[(\alpha b + \beta b')^{-1}\gamma - \left(2 + (\alpha b + \beta b')^{-1}(\alpha a + \beta a')\right)u_1 + u_1\right].
+    \label{eq:1d-3ptl}
+\end{equation}
+Replacing approximations with exact values and Taylor expanding about $x_1$ yields
+\begin{equation}
+    \begin{aligned}
+        u_g - 2u_1 + u_2
+        &= (\alpha b + \beta b')^{-1}\left(\alpha\left(u-hgu_{xx} + \sfrac12(hg)^2 u_{xx}\right) + \beta(u_x - hgu_{xx})\right) \\
+        &\quad -\left(2+(\alpha b+\beta b')^{-1}(\alpha a + \beta a')\right)u + \left(u + hu_x + \sfrac12 h^2u_{xx}\right) + \mathcal{O}(h^3) \\
+        &= (\alpha b + \beta b')^{-1}(\alpha(1-a-b) - \beta(a'+b'))u \\
+        &\quad +(\alpha b + \beta b')^{-1}(\beta - \alpha hg + (\alpha b + \beta b')h)u_x \\
+        &\quad +(\alpha b + \beta b')^{-1}\left(\sfrac12\alpha(gh)^2-\beta hg +\sfrac12(\alpha b + \beta b')h^2\right)u_{xx} + \mathcal{O}(h^3).
+    \end{aligned}
+\end{equation}
+The coefficient of $u$ vanishes under the assumption that the approximations
+\eqref{eq:1d-approx} be at least first order. We further require that the coefficient of
+$u'$ be zero. That is,
+\begin{equation*}
+    \alpha b + \beta b' = -h^{-1}(\beta-\alpha hg).
+\end{equation*}
+Choosing $a=1-g$, $b=g$, $a'=h^{-1}$, and $b'=-h^{-1}$ satisfies these conditions. As a
+result,
+\begin{equation*}
+    \alpha a + \beta a' = h^{-1}(\beta + \alpha h(1-g)).
+\end{equation*}
+Finally, the first possibly nonzero coefficient is that of $u_{xx}$:
+\begin{equation}
+    \begin{aligned}
+        h^{-2}\left[u_g - 2u_1 + u_2\right]
+        &= \left[\sfrac12 + g(\beta-\alpha hg)^{-1}(\beta-\sfrac12 hg)\right]u_{xx} + \mathcal{O}(h^2) \\
+        &= \left[1-\sfrac12(\beta-\alpha hg)^{-1}(\beta(1-2g)-\alpha hg(1-g))\right]u_{xx} + \mathcal{O}(h^2) \\
+        &:= (1-\epsilon)u_{xx} + \mathcal{O}(h^2).
+    \end{aligned}
+    \label{eq:lap-error}
+\end{equation}
+Near the boundary, when $\epsilon \neq 0$, i.e., $\beta(1-2g)-\alpha hg(1-g)\neq0$,
+these approximations yield a $0^\text{th}$-order approximation to the Laplacian. Cases
+where $\epsilon \neq 0$ arise naturally from using staggered grids in a domain with at
+least one non-periodic dimension. In fact, for fixed $\alpha$ and $\beta$, only
+$g=g^\ast(\sfrac{2\beta}{\alpha h})$ results in $\epsilon = 0$, where
+\begin{equation*}
+    g^\ast(r) = \begin{cases}
+        \sfrac12\left(1+r+\sqrt{1+r^2}\right), & r \le 0 \\
+        \sfrac12\left(1+r-\sqrt{1+r^2}\right), & r > 0.
+    \end{cases}
+\end{equation*}
+For Neumann boundaries, $\epsilon = 0$ when $g = 0.5$; for Dirichlet boundaries, when
+$g = 1$. The case for the opposing boundary is very similar: simply substitute the
+correct boundary condition coefficients and data, $-h$ for $h$, and when $g\neq1$, $1-g$
+for $g$.  We will use $\epsilon_0$ and $\epsilon_1$, when necessary, to distinguish the
+error factor when approximating the Laplacian at the $x=0$ and $x=1$ boundaries,
+respectively.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+    \begin{axis}[view={0}{90}, colorbar horizontal, xmin=0, xmax=0.5, ymin=0.01, ymax=0.99, ylabel=$x$, xlabel=$t$, scale only axis, width=1.95in, clip=false]
+        \addplot3[surf, mesh/cols=100, shader=interp] file {dirichlet.dat};
+        \node at (0.45, 0.9) {(a)};
+    \end{axis}
+\end{tikzpicture}
+\begin{tikzpicture}
+    \begin{axis}[view={0}{90}, colorbar horizontal, xmin=0, xmax=0.5, ymin=0.01, ymax=0.99, xlabel=$t$, ytick=\empty, scale only axis, width=1.95in, clip=false]
+        \addplot3[surf, mesh/cols=99, shader=interp] file {neumann.dat};
+        \node at (0.45, 0.9) {(b)};
+    \end{axis}
+\end{tikzpicture}
+\caption{%
+    Propagation of errors near the boundary in approximating the solution of
+    $u_t = u_{xx} + 1$ on $[0,\,1]$ without correction at the boundary. Initially, $u$ is
+    analytically steady: $u(x,\,0) = x(1-x)/2$. We expect no change in $u$ over time.
+    (a) $u$ satisfies homogeneous Dirichlet boundary conditions. The domain is
+    discretized using $h=0.01$, with points $x_i=h(i-0.5)$ for $i=1,\,\ldots,\,100$.
+    (b) $u$ satisfies the Neumann boundary conditions $u_x(0,\,t)=-u_x(1,\,t)=\sfrac12$.
+    The domain is discretized using $h=0.01$, with points $x_i = hi$ for
+    $i=1,\,\ldots,\,99$.
+}
+\label{fig:error}
+\end{figure}
+
+Suppose that in approximating the solution to \eqref{eq:1d-diff}--\eqref{eq:1d-1bcs}, we
+employ the Crank-Ni\-col\-son/midpoint IMEX time-stepping scheme. The discrete equations
+are
+\begin{equation}
+    \frac{u_i^{n+1}-u_i^n}{k} = \frac{\mu}2\left(\frac{u_{i-1}^{n+1}-2u_i^{n+1}+u_{i+1}^{n+1}}{h^2} + \frac{u_{i-1}^n-2u_i^n+u_{i+1}^n}{h^2}\right) + f_i^{n+1/2},
+    \label{eq:disc-1d-diff}
+\end{equation}
+where superscripts denote the time step and subscripts the space step. With
+$\lambda=\mu k$, we rewrite this in matrix form as
+\begin{equation}
+    (I-\sfrac12\lambda L_h)\vec{u}^{n+1} = (I+\sfrac12\lambda L_h)\vec{u}^n + \lambda B_h\vec{\gamma}^{n+1/2} + k\vec{f}^{n+1/2},
+    \label{eq:disc-1d-diff-mat}
+\end{equation}
+where $B_h$ is an appropriate operator that modifies the equations near the boundary with
+boundary data. As we have shown, this yields an $\mathcal{O}(1)$ error near the boundary.
+This error will propagate into the center of the domain at a rate dependent upon $\mu$.
+Figure \ref{fig:error} illustrates this phenomenon. Consider, instead, approximating the
+solution to $(1-\epsilon) u_t = \mu (1-\epsilon) u_{xx} + (1-\epsilon) f$. The solution
+should be identical to that of the original equation as long as $\epsilon\neq 1$. The
+Laplacian constructed above need not be modified to approximate $(1-\epsilon) u_{xx}$
+near the boundary, so we simply multiply the rest of the terms by $1-\epsilon$. Define
+the modified identity matrix
+\begin{equation}
+    \tilde{I} = \left[\begin{array}{ccccc}
+            1-\epsilon_0 &   &        &   &         \\
+                         & 1 &        &   &         \\
+                         &   & \ddots &   &         \\
+                         &   &        & 1 &         \\
+                         &   &        &   & 1-\epsilon_1
+            \end{array}\right].
+    \label{eq:mod-ident}
+\end{equation}
+Now, equation \eqref{eq:disc-1d-diff-mat} becomes
+\begin{equation}
+    (\tilde{I}-\sfrac12\lambda L_h)\vec{u}^{n+1} = (\tilde{I}+\sfrac12\lambda L_h)\vec{u}^n + \lambda B\vec{\gamma}^{n+1/2} + k\tilde{I}\vec{f}^{n+1/2}.
+    \label{eq:1d-diff-mat}
+\end{equation}
+This improves the error near the boundary to at least first order at the cost of one more
+diagonal matrix-vector multiplication.
+
+Alternatively, one could approximate the Laplacian near the boundary using a quadratic
+interpolant. It would always give a second-order approximation, but would break symmetry
+of the discrete Laplacian. On the other hand, the linear interpolants maintain symmetry,
+and the coefficients obtained near the boundary are exactly those of the quadratic
+interpolant, scaled by $1-\epsilon$. Thus, the modifications described above yield a
+second-order approximation everywhere.
+
+To construct higher-dimension Laplacians, we use the modified identity~%
+\eqref{eq:mod-ident} in place of the normal identity in the tensor sum
+\begin{equation*}
+    A\oplus B = A\odot \tilde{I}_B + \tilde{I}_A\odot B,
+\end{equation*}
+where $A$ and $B$ are square matrices, $\tilde{I}_A$ and $\tilde{I}_B$ are modified
+identites of the same size as $A$ and $B$, respectively, and $\odot$ denotes the
+Kronecker tensor product. The Kronecker product of $\tilde{I}_A$ and $\tilde{I}_B$ yields
+a suitable modified identity for the higher-dimensional Laplacian for constructing the
+necessary Helmholtz operators and modifying right-hand sides.

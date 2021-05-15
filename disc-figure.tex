@@ -1,0 +1,162 @@
+\begin{figure}[htb]
+    \centering
+    \begin{subfigure}{0.33\textwidth}
+        \centering
+    \begin{tikzpicture}[scale=1.5]
+        \draw[help lines] (-0.3, -0.3) grid (2.3, 2.3);
+
+        \foreach \x in {0,...,2}
+            \foreach \y in {0,...,1}
+            {
+                \node[circle, inner sep=0pt, color=black!50, fill=white] at (\x, \y+0.5) {$u$};
+            }
+        \foreach \y in {0,...,2}
+        {
+            \foreach \x in {0,...,2}
+                \node[circle, inner sep=0pt, fill=white] (av\x\y) at (\x, \y) {$\bar{v}$};
+            \foreach \x in {0,...,1}
+                \node[circle, inner sep=0pt, fill=white] (v\x\y) at (\x+0.5, \y) {$v$};
+        }
+        \path[-stealth] (v00.south west) edge[bend left] node[midway, below, yshift=+1pt] {} (av00.south east);
+        \path[-stealth] (v10.south west) edge[bend left] node[midway, below, yshift=+1pt] {} (av10.south east);
+        %\path[-stealth] (v20.south west) edge[bend left] node[midway, below, yshift=+1pt] {} (av20.south east);
+        \path[-stealth] (v01.south west) edge[bend left] node[midway, below, yshift=+1pt] {} (av01.south east);
+        \path[-stealth] (v11.south west) edge[bend left] node[midway, below, yshift=+1pt] {} (av11.south east);
+        %\path[-stealth] (v21.south west) edge[bend left] node[midway, below, yshift=+1pt] {} (av21.south east);
+        \path[-stealth] (v02.south west) edge[bend left] node[midway, below, yshift=+1pt] {} (av02.south east);
+        \path[-stealth] (v12.south west) edge[bend left] node[midway, below, yshift=+1pt] {} (av12.south east);
+        %\path[-stealth] (v22.south west) edge[bend left] node[midway, below, yshift=+1pt] {} (av22.south east);
+        %\path[-stealth] (v03.south west) edge[bend left] node[midway, below, yshift=+1pt] {} (av03.south east);
+        %\path[-stealth] (v13.south west) edge[bend left] node[midway, below, yshift=+1pt] {} (av13.south east);
+        %\path[-stealth] (v23.south west) edge[bend left] node[midway, below, yshift=+1pt] {} (av23.south east);
+
+        \path[-stealth] (v00.north east) edge[bend left] node[midway, below, yshift=+1pt] {} (av10.north west);
+        \path[-stealth] (v10.north east) edge[bend left] node[midway, below, yshift=+1pt] {} (av20.north west);
+        %\path[-stealth] (v20.north east) edge[bend left] node[midway, below, yshift=+1pt] {} (av30.north west);
+        \path[-stealth] (v01.north east) edge[bend left] node[midway, below, yshift=+1pt] {} (av11.north west);
+        \path[-stealth] (v11.north east) edge[bend left] node[midway, below, yshift=+1pt] {} (av21.north west);
+        %\path[-stealth] (v21.north east) edge[bend left] node[midway, below, yshift=+1pt] {} (av31.north west);
+        \path[-stealth] (v02.north east) edge[bend left] node[midway, below, yshift=+1pt] {} (av12.north west);
+        \path[-stealth] (v12.north east) edge[bend left] node[midway, below, yshift=+1pt] {} (av22.north west);
+        %\path[-stealth] (v22.north east) edge[bend left] node[midway, below, yshift=+1pt] {} (av32.north west);
+        %\path[-stealth] (v03.north east) edge[bend left] node[midway, below, yshift=+1pt] {} (av13.north west);
+        %\path[-stealth] (v13.north east) edge[bend left] node[midway, below, yshift=+1pt] {} (av23.north west);
+        %\path[-stealth] (v23.north east) edge[bend left] node[midway, below, yshift=+1pt] {} (av33.north west);
+
+        \node[black] at (-0.25, 2.25) {(a)};
+    \end{tikzpicture}
+    \label{fig:adv-x-ave}
+    \end{subfigure}%
+    \begin{subfigure}{0.33\textwidth}
+        \centering
+    \begin{tikzpicture}[scale=1.5]
+        \draw[help lines] (-0.3, -0.3) grid (2.3, 2.3);
+
+        \foreach \x in {0,...,2}
+        {
+            \foreach \y in {0,...,1}
+            {
+                \node[circle, inner sep=0pt, fill=white] (u\x\y) at (\x, \y+0.5) {$u$};
+            }
+            \foreach \y in {0,...,2}
+            {
+                \node[circle, inner sep=0pt, fill=white] (au\x\y) at (\x, \y) {$\bar{u}$};
+            }
+        }
+        \foreach \x in {0,...,1}
+            \foreach \y in {0,...,2}
+            {
+                \node[circle, inner sep=0pt, color=black!50, fill=white] at (\x+0.5, \y) {$v$};
+            }
+
+        \path[-stealth] (u00.south east) edge[bend left] node[midway, below, yshift=+1pt] {} (au00.north east);
+        \path[-stealth] (u10.south east) edge[bend left] node[midway, below, yshift=+1pt] {} (au10.north east);
+        \path[-stealth] (u20.south east) edge[bend left] node[midway, below, yshift=+1pt] {} (au20.north east);
+        %\path[-stealth] (u30.south east) edge[bend left] node[midway, below, yshift=+1pt] {} (au30.north east);
+        \path[-stealth] (u01.south east) edge[bend left] node[midway, below, yshift=+1pt] {} (au01.north east);
+        \path[-stealth] (u11.south east) edge[bend left] node[midway, below, yshift=+1pt] {} (au11.north east);
+        \path[-stealth] (u21.south east) edge[bend left] node[midway, below, yshift=+1pt] {} (au21.north east);
+        %\path[-stealth] (u31.south east) edge[bend left] node[midway, below, yshift=+1pt] {} (au31.north east);
+        %\path[-stealth] (u02.south east) edge[bend left] node[midway, below, yshift=+1pt] {} (au02.north east);
+        %\path[-stealth] (u12.south east) edge[bend left] node[midway, below, yshift=+1pt] {} (au12.north east);
+        %\path[-stealth] (u22.south east) edge[bend left] node[midway, below, yshift=+1pt] {} (au22.north east);
+        %\path[-stealth] (u32.south east) edge[bend left] node[midway, below, yshift=+1pt] {} (au32.north east);
+
+        \path[-stealth] (u00.north west) edge[bend left] node[midway, below, yshift=+1pt] {} (au01.south west);
+        \path[-stealth] (u10.north west) edge[bend left] node[midway, below, yshift=+1pt] {} (au11.south west);
+        \path[-stealth] (u20.north west) edge[bend left] node[midway, below, yshift=+1pt] {} (au21.south west);
+        %\path[-stealth] (u30.north west) edge[bend left] node[midway, below, yshift=+1pt] {} (au31.south west);
+        \path[-stealth] (u01.north west) edge[bend left] node[midway, below, yshift=+1pt] {} (au02.south west);
+        \path[-stealth] (u11.north west) edge[bend left] node[midway, below, yshift=+1pt] {} (au12.south west);
+        \path[-stealth] (u21.north west) edge[bend left] node[midway, below, yshift=+1pt] {} (au22.south west);
+        %\path[-stealth] (u31.north west) edge[bend left] node[midway, below, yshift=+1pt] {} (au32.south west);
+        %\path[-stealth] (u02.north west) edge[bend left] node[midway, below, yshift=+1pt] {} (au03.south west);
+        %\path[-stealth] (u12.north west) edge[bend left] node[midway, below, yshift=+1pt] {} (au13.south west);
+        %\path[-stealth] (u22.north west) edge[bend left] node[midway, below, yshift=+1pt] {} (au23.south west);
+        %\path[-stealth] (u32.north west) edge[bend left] node[midway, below, yshift=+1pt] {} (au33.south west);
+        \node[black] at (-0.25, 2.25) {(b)};
+    \end{tikzpicture}
+    \label{fig:adv-y-ave}
+    \end{subfigure}%
+    \begin{subfigure}{0.33\textwidth}
+        \centering
+    \begin{tikzpicture}[scale=1.5]
+        \draw[help lines] (-0.3, -0.3) grid (2.3, 2.3);
+
+        \foreach \x in {0,...,2}
+            \foreach \y in {0,...,2}
+                \node[circle, inner sep=0pt, fill=white] (uv\x\y) at (\x, \y) {$\bar{u}\bar{v}$};
+        \foreach \x in {0,...,2}
+            \foreach \y in {0,...,1}
+                \node[circle, inner sep=0pt] (duv\x\y) at (\x, \y+0.5) {$\star$};
+
+        \path[stealth-] (duv00.south east) edge[bend left] (uv00.north east);
+        \path[stealth-] (duv10.south east) edge[bend left] (uv10.north east);
+        \path[stealth-] (duv20.south east) edge[bend left] (uv20.north east);
+        %\path[stealth-] (duv30.south east) edge[bend left] (uv30.north east);
+        \path[stealth-] (duv01.south east) edge[bend left] (uv01.north east);
+        \path[stealth-] (duv11.south east) edge[bend left] (uv11.north east);
+        \path[stealth-] (duv21.south east) edge[bend left] (uv21.north east);
+        %\path[stealth-] (duv31.south east) edge[bend left] (uv31.north east);
+        %\path[stealth-] (duv02.south east) edge[bend left] (uv02.north east);
+        %\path[stealth-] (duv12.south east) edge[bend left] (uv12.north east);
+        %\path[stealth-] (duv22.south east) edge[bend left] (uv22.north east);
+        %\path[stealth-] (duv32.south east) edge[bend left] (uv32.north east);
+                                                                           
+        \path[stealth-] (duv00.north west) edge[bend left] (uv01.south west);
+        \path[stealth-] (duv10.north west) edge[bend left] (uv11.south west);
+        \path[stealth-] (duv20.north west) edge[bend left] (uv21.south west);
+        %\path[stealth-] (duv30.north west) edge[bend left] (uv31.south west);
+        \path[stealth-] (duv01.north west) edge[bend left] (uv02.south west);
+        \path[stealth-] (duv11.north west) edge[bend left] (uv12.south west);
+        \path[stealth-] (duv21.north west) edge[bend left] (uv22.south west);
+        %\path[stealth-] (duv31.north west) edge[bend left] (uv32.south west);
+        %\path[stealth-] (duv02.north west) edge[bend left] (uv03.south west);
+        %\path[stealth-] (duv12.north west) edge[bend left] (uv13.south west);
+        %\path[stealth-] (duv22.north west) edge[bend left] (uv23.south west);
+        %\path[stealth-] (duv32.north west) edge[bend left] (uv33.south west);
+        \node[black] at (-0.25, 2.25) {(c)};
+    \end{tikzpicture}
+    \label{fig:adv-y-diff}
+    \end{subfigure}%
+    \caption{%
+        A cross-section illustrating the steps in computing the $D_2[(A_2 u) (A_1 v)]$
+        term of the first component of the advection. The horizontal and vertical
+        velocity component discretization locations are marked by $u$ and $v$,
+        respectively. Arrows emanate from a point contributing to a stencil and point to
+        the center of the stencil.
+        (a) $A_1$ averages $v$ in the $x$ direction, yielding an approximation $\bar{v}$
+        at grid vertices (in 3D, centers of cell edges for which $x$ and $y$ are
+        constant).
+        (b) $A_2$ averages $u$ in the $y$ direction, yielding an approximation $\bar{u}$
+        at the same points as (a). The quantities $A_1 v$ and $A_2 u$ are collocated and
+        can be directly multiplied to obtain an approximation of $uv$ at locations marked
+        $\bar{u}\bar{v}$.
+        (c) $D_2$ approximately differentiates $uv$ in the $y$ direction, yielding the
+        desired quantity at each point marked $\star$.
+        The approximation of $uv$ is also used to compute $D_1[(A_1 v)(A_2 u)]$ in the
+        second component of the advection, wherein application of $D_1$ instead yields
+        approximations collocated with locations marked $v$ in (a).
+    }
+    \label{fig:discretization}
+\end{figure}

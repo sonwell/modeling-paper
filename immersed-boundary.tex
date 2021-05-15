@@ -1,0 +1,77 @@
+%\begin{table*}[tbh]
+%    \centering
+%    \setlength{\tabcolsep}{9pt}
+%    \renewcommand{\arraystretch}{1.5}
+%    \begin{tabular}{l|c|l}
+%                                                                                                               \toprule
+%        \textbf{Description}                  & \textbf{Example} & \textbf{Meaning}                         \\ \midrule
+%        Italic boldface                       & $\x$             & Cartesian vector                         \\
+%        Super- and subscripts:                &                  &                                          \\
+%        \hspace{0.4cm} Italic lowercase Latin & $u^a$            & Eulerian coordinate index                \\
+%        \hspace{0.4cm} Italic lowercase Greek & $\theta^\alpha$  & Lagrangian coordinate index              \\
+%        \hspace{0.4cm} Italic uppercase Latin & $\X_A$           & Set enumeration index                    \\
+%        \hspace{0.4cm} Upright Latin          & $\sample\sites$  & Differentiates between sets or functions \\
+%        Subscript comma                       & $\phi_{,\alpha}$ & Derivative in a coordinate direction     \\
+%        Superposed dot                        & $\dot{\X}$       & Time derivative                          \\
+%        Superposed hat                        & $\hat{H}$        & Reference value                          \\ \bottomrule
+%    \end{tabular}
+%    \caption{%
+%        A summary of the notation used throughout this paper.
+%    }
+%    \label{tab:notation}
+%\end{table*}
+
+\section{The immersed boundary method}\label{sec:ib}
+
+Consider a rectangular domain, $\domain\subset\mathbb{R}^3$, which contains one or more
+deformable structures and is otherwise filled with an incompressible, viscous fluid with
+constant density, $\density$, and viscosity, $\viscosity$. The IB method treats these
+structures as an extension of the fluid. The motion of any particle in $\domain$ is
+therefore governed by the incompressible Navier-Stokes equations,
+\begin{gather}
+    \density(\u + \div(\u\otimes\u)) = \viscosity\laplacian \u - \grad p + \f, \label{eq:ins-momentum} \\
+    \div \u = 0, \label{eq:ins-incomp}
+\end{gather}
+where, for $\x = (x,\,y,\,z) \in \domain$, $\u = \u(\x,\,t) = (u, v, w)$ is the fluid
+velocity, $p = p(\x,\,t)$ is the pressure, and $\f = \f(\x,\,t)$ is an external force
+density. Treating the entire domain as a fluid allows us to discretize $\domain$
+independently of these structures--- the immersed boundaries---with a fixed regular grid
+of spacing $h$. This is
+the Eulerian grid.
+
+
+Let $\X = \X(\qs,\,t)$, for surface coordinates $\qs$ in $\sites\subset\mathbb{R}^2$, be
+a parametrization for the immersed boundary $\interface$. The boundary is impermeable to
+the fluid and moves at the local fluid velocity. A discrete representation of the
+boundary, consisting of a set of surface points, replaces its continuous counterpart.
+Surface points are typically chosen to be within approximately $h$ of their neighbors.
+This is the Lagrangian grid. Analytically convolving the fluid velocity against the Dirac
+delta function, $\Dirac(\x)$, yields the velocity of a surface point, but discretely,
+Eulerian and Lagrangian grid points are unlikely to coincide. The IB method replaces the
+singular Dirac delta function with a smoothed, $h$-dependent analogue, $\Dirac_h(\x)$.
+The Lagrangian point $\X$ evolves according to
+\begin{equation}\label{eq:ib-interp}
+    \vec{\dot{X}}
+        = \int\limits_{\domain} \u(\x) \Dirac(\x-\X) \d\x
+        \approx h^3 \sum_{i} \u(\x_i) \Dirac_h(\x_i-\X),
+\end{equation}
+where $i$ enumerates the Eulerian grid points, and a superposed dot denotes partial
+differentiation with respect to $t$. As a boundary deforms, it generates a force density
+$\F = \F(\qs,\,t)$, which it imparts onto the fluid as $\f$ in~ \eqref{eq:ins-momentum}.
+By similar reasoning as the velocity, the $\F$ is transferred to the fluid at $\x$ via
+\begin{equation}\label{eq:ib-spread}
+        \f(\x)
+        = \int\limits_{\interface} \F(\X)\Dirac(\x-\X) \d\X
+        \approx \sum_{j} \weight[j]\F(\X_j) \Dirac_h(\x-\X_j),
+\end{equation}
+where $j$ enumerates the Lagrangian grid points, and $\weight[j]$ is the integration
+weight corresponding to Lagrangian grid point $\X_j$.
+
+In addition to a velocity vector field, equation~\eqref{eq:ib-spread} illustrates the
+need for three pieces of information for each immersed structure: the position of points
+on the structure, $\X_j$; a force density at each of those points, $\F(\X_j)$; and
+surface integration weights, $\weight[j]$, for those points. Equation~\eqref{eq:ib-interp}
+tells us how to update $\X_j$. The next three sections describe our methods for solving~%
+\eqref{eq:ins-momentum}--\eqref{eq:ins-incomp}, give analytic expressions for $\F$, and
+detail the discretization of the structure(s) to obtain $\F(\X_j)$ and $\weight[j]$,
+respectively.

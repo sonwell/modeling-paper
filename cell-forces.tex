@@ -1,0 +1,143 @@
+\section{Force models}\label{sec:force}
+
+In this section, we describe the various forms of force density used in our simulations
+and give analytic expressions for each. We consider four kinds of energy densities:
+(damped) spring forces, tensions, dissipative forces, and Canham-Helfrich bending forces.
+We combine these for the different types of cells used in our simulations.
+
+For simplicity in describing these forces, we adopt the Einstein summation notation in
+this section. A Greek letter featuring as a subscript and superscript within a term
+indicates summation over ${1,\,2}$ for that letter. For example, we write the vector of
+surface coordinates in terms of its components as $\qs = \q[\alpha]\e_\alpha$. We also
+adopt the comma notation for partial differentiation, where subscripts following a comma
+indicate partial differentiation with respect to the corresponding coordinates, e.g.,
+$\phi_{,\alpha\beta} = \partial^2\phi/\partial\q[\alpha]\partial\q[\beta]$.
+
+We begin with Hookean and damped spring forces, which are the simplest of the forces we
+consider. The spring force density takes the form
+\begin{equation}
+    \F_\text{spring} = -k (\X - \X') - \eta(\vec{\dot{X}}-\vec{\dot{X}}').
+\end{equation}
+where $\X'$ is the tether location, $\vec{\dot{X}}$ is the surface velocity,
+$\vec{\dot{X}}'$ is the prescribed velocity, $k$ is the spring constant, and $\eta$ is
+the damping constant.  It is common practice to treat each spring as an individual, so
+that the quadrature weight $\weight[A]$ is absorbed into the coefficients, and $k$ has
+units of force per length and $\eta$ units of force-time per length. Implementation of
+these forces requires no geometric information outside of positions and velocities.
+
+Detailed energy models are unavailable for the endothelium, but endothelial cells are
+strongly bound to the subendothelium. We take a simple approach by treating the
+endothelium as a layer of stiff springs with $k = 2.5\dynpercm$,
+$\eta = \scinot{1}{-7}\dynsecpercm$, and zero prescribed velocity. In Section~%
+\ref{sec:whole-blood}, we compare different choices for $\X'$.
+
+Next, we consider tension, which generates forces based on stretching or compressing
+and relative direction of the surface tangent vectors. We construct the \emph{metric
+tensor}, $\metric_{\alpha\beta} = \X_{,\alpha}\cdot\X_{,\beta}$, which encodes local
+information about distance and area. Its inverse, denoted by $\metric^{\alpha\beta}$, is
+called the dual metric.  Likewise, we construct a metric tensor for the reference
+configuration, $\reference\metric_{\alpha\beta}$, and its dual. The invariants of the
+Green-Lagrange strain tensor,
+\begin{equation}
+    \epsilon_\alpha^\beta = \frac12\left(\metric_{\alpha\mu}\reference\metric^{\mu\beta}-\Kronecker_\alpha^\beta\right),
+\end{equation}
+encode information about relative changes in lengths and areas. Tension energy density
+function are often expressed in terms of the invariants $I_1 = 2\epsilon_\mu^\mu$ and
+$I_2 = 4\epsilon + I_1$, where $\epsilon_\mu^\mu$ and $\epsilon$ are the trace and
+determinant of $\epsilon_\alpha^{\smash\beta}$, respectively. $I_1$ and $I_2$ relate to
+changes in lengths and areas, respectively, so that any rigid body motion of the
+reference configuration results in $I_1 = I_2 = 0$. The tension energy density function,
+$W(I_1,\,I_2)$, is therefore a function only of the tangents, $\X_{,\alpha}$. Of
+particular interest are the Skalak Law~\cite{Skalak:1973tp}, which was developed
+specifically for RBCs, and neo-Hookean tension,
+\begin{align}
+    W_\text{Sk} &= \frac{E}{4}\left(I_1^2 + 2I_1 - 2I_2\right) + \frac{G}4 I_2^2, \quad\text{and} \\
+    W_\text{nH} &= \frac{E}{2}\left(\frac{I_1+2}{\sqrt{I_2+1}}-2\right) + \frac{G}2 \left(\sqrt{I_2+1}-1\right)^2,
+\end{align}
+respectively. Here, $E$ is the shear modulus, and $G$ is the bulk modulus. The resulting
+tension force density is computed~\cite{Maxian:2018ek} via
+\begin{equation}\label{eq:tension-force}
+    \F_\text{tension} = \frac{1}{\sqrt{\reference\metric}}\left(\sqrt{\reference\metric}s^{\alpha\beta}\X_{,\beta}\right)_{,\alpha},
+\end{equation}
+where the second Piola-Kirchhoff stress tensor, $s^{\alpha\beta}$, is given by
+\begin{equation}
+    s^{\alpha\beta} = 2\frac{\partial W}{\partial I_1} \hat{g}^{\alpha\beta} + 2I_2\frac{\partial W}{\partial I_2} g^{\alpha\beta}.
+\end{equation}
+Because the tension force density is expressed in relation to the reference
+configuration, the force is computed by multiplying by quadrature weights for the
+reference configuration, which do not change over the course of a simulation.
+
+For RBCs, deformations generate a force density according to the Skalak Law with moduli
+$E_\text{rbc} = \scinot{2.5}{-3}\dynpercm$ and $G_\text{rbc} = \scinot{2.5}{-1}\dynpercm$
+and reference configuration given by Omori, \latin{et al.}~\cite{Omori:2012hw},
+\begin{equation*}
+    \vec{\hat{X}}_\text{rbc}(\qs) = 3.91\um\left(\cos\q[1]\cos\q[2]\e_1 + \sin\q[1]\cos\q[2]\e_2 + z\left(\cos^2\q[2]\right)\sin\q[2]\e_3\right),
+\end{equation*}
+where $z(r) = 0.105 + r - 0.56r^2$. Platelets do not have a purpose-built constitutive
+law, but are stiffer than RBCs. We use the neo-Hookean model with
+$E_\text{plt} = \scinot{1}{-1}\dynpercm$, $G_\text{plt} = 1\dynpercm$, and an ellipsoid
+reference configuration~\cite{Frojmovic:1982wk},
+\begin{equation*}
+    \vec{\hat{X}}_\text{plt}(\qs) = 1.5\um\cos\q[1]\cos\q[2]\e_1 + 1.5\um\sin\q[1]\cos\q[2]\e_2 + 0.55\um\sin\q[2]\e_3.
+\end{equation*}
+
+These cells also respond to changes in the curvature of the membrane. To compute bending
+force density, we first construct the unit normal vector by taking the cross product of
+the tangent vectors and normalizing:
+\begin{equation}\label{eq:unit-normal}
+    \n = \frac{1}{\sqrt{\metric}} (\X_{,1}\times\X_{,2}).
+\end{equation}
+The tensor $b_{\alpha\beta} = \n\cdot\X_{,\alpha\beta}$ encodes information about the
+curvature of the surface. The principle curvatures are the eigenvalues of the
+\emph{shape tensor}, $K_\alpha^\beta = b_{\alpha\mu}\metric^{\mu\beta}$, with
+$2H = K_\mu^\mu$ the total curvature, and $K$ the Gaussian curvature. The Canham-Helfrich
+force density takes the form~\cite{Zhongcan:1989ue}
+\begin{equation}\label{eq:bending-force}
+    \F_\text{CH} = -4\kappa\left(\laplacian(H-H')+2(H-H')(H^2-K+HH')\right)\n,
+\end{equation}
+where $\laplacian$ is the Laplace-Beltrami operator. The constants $\kappa$ is the
+bending modulus in units of energy, and $H'$ is the spontaneous or preferred curvature.
+%$H' = 0$ is a common choice, so that the surface attempts to become more spherical, but
+%we also use $H' = \hat{H}$, the reference curvature, so that the surface prefers to be in
+%its reference configuration.
+We can compute $H$ and $K$ using the formulas above, but
+$\laplacian H$ requires up to fourth derivatives of $\X$. In lieu of computing
+higher-order derivatives, we compute $H$ and apply the discrete Laplace-Beltrami
+operator.
+
+RBCs generate a relatively weak response to changes in curvature. We use a bending
+modulus of $\kappa_\text{rbc} = \scinot{2}{-12}\si{erg}$ and a preferred curvature
+$H' = 0$ for RBCs. RBCs therefore tend to locally flatten their membranes. For platelets,
+we use a larger bending modulus of $\kappa_\text{plt} = \scinot{2}{-11}\si{erq}$ and
+a preference for its reference configuration, $H' = \hat{H}$. Together with the
+neo-Hookean tension above, this maintains a fairly rigid platelet.
+
+Finally, we consider dissipative forces, which cause the membrane to exhibit a
+viscoelastic response to strain. With surface velocity $\vec{\dot{X}}$, the metric tensor
+changes in time according to 
+\begin{equation}
+    \dot{\metric}_{\alpha\beta} = \vec{\dot{X}}_{,\alpha}\cdot\X_{,\beta} + \X_{,\alpha}\cdot\vec{\dot{X}}_{,\beta}.
+\end{equation}
+The dissipative force density takes the form~\cite{Rangamani:2012hi}
+\begin{equation}\label{eq:dissip-force}
+    \F_\text{dissip} = \frac{\nu}{\sqrt{\metric}}\left(\sqrt{\metric}\metric^{\alpha\mu}\dot{\metric}_{\mu\lambda}\metric^{\lambda\beta}\X_{,\beta}\right)_{,\alpha},
+\end{equation}
+where $\nu$ is the membrane viscosity. We imbue only the RBC with viscoelasticity. While
+Evans and Hochmuth suggest a viscosity of approximately $\scinot{1}{-3}\dynsecpercm$~%
+\cite{Evans:1976tx}, we find this to be prohibitively expensive and instead use
+$\nu_\text{rbc} = \scinot{2.5}{-7}\dynsecpercm$.
+
+Rewriting~\eqref{eq:tension-force},~\eqref{eq:dissip-force}, and the Laplace-Beltrami
+operator in~\eqref{eq:bending-force} in terms of first and second derivatives with
+respect to parametric variables,
+\begin{equation}\label{eq:expanded-op}
+    \frac1{\sqrt{\metric}}\left(\sqrt{\metric}D^\alpha_\mu \metric^{\mu\beta}\phi_{,\beta}\right)_{,\alpha}
+    = \left[\left(D^\alpha_\mu \metric^{\mu\beta}\right)_{,\alpha} + \frac{\metric_{,\alpha}}{2\metric}D^\alpha_\mu \metric^{\mu\beta}\right]\phi_{,\beta}+D^\alpha_\mu \metric^{\mu\beta}\phi_{,\alpha\beta},
+\end{equation}
+with $D^\alpha_\mu = s^{\alpha\beta}\metric_{\beta\mu}$,
+$D^\alpha_\mu = \nu \metric^{\alpha\beta}\dot{g}_{\beta\mu}$, and
+$D^\alpha_\mu = \delta^\alpha_\mu$,
+respectively, we find that we require only discrete first and second derivative operators
+to compute a wide variety of forces. The following section describes our methods for
+reconstructing cell surfaces from a set of points and discretizing the necessary
+differential operators.

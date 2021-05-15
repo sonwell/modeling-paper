@@ -1,0 +1,38 @@
+\section{Results}\label{sec:results}
+
+We have taken a number of departures from traditional application of the IB method and
+RBC models. In the following sections, we establish convergence for our implementation
+of RBF-IB, demonstrate impermeability of the RBCs, and observe typical RBC behaviors
+before presenting the results of our whole blood simulations.
+
+\input{convergence}
+\input{collisions}
+\input{rbc-behaviors}
+\input{whole-blood}
+
+%PoC that the idea may work:
+%\begin{itemize}
+%    \item Flat vs elongated at $1000\si{\per\second}$
+%    \begin{itemize}
+%        \item PLTs + flat wall, no RBCs
+%        \item PLTs + flat wall + rbcs --- $\times 4$, different starts
+%        \item PLTs + perturbed wall(s) --- $\times 4$, different starts
+%    \end{itemize}
+%    \item Cobblestone wall
+%\end{itemize}
+
+Random start algo:
+\begin{enumerate}
+    \item Pick $t^n = t^{n-1} + T\ms$, $t^0 = 16\ms$ and $T$ sampled from $\text{Poisson}(3)$. RBCs only start overtaking one another around 16--$19\ms$
+    \item At time $t^n$, $n \ge 1$,
+        \begin{enumerate}
+            \item Pick random endo + PLT points twice, endo points separated by $3.9\um = \text{PLT radius} + 4h$
+            \item compute $\n_\text{endo}$ and $\n_\text{plt}$ at those points
+            \item pick random distance $r$ between $0.3\um$ and $1\um$ twice
+            \item rotate PLTs so $\n_\text{endo} = -\n_\text{plt}$ and the end and plt points are $r$ apart. 
+            \item check that PLT does not get too close to other endo points or RBCs.
+                Favors PLTs oriented at an intermediate angle: more likely to choose points near edge, but they generate a sharp angle, which typically leads to intersection with RBCs.
+            \item otherwise, repeat up 100 times, then give up for this time step
+        \end{enumerate}
+    \item Start simulations at first 4 successful times with added PLTs
+\end{enumerate}

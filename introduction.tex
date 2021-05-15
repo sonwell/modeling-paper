@@ -1,0 +1,79 @@
+\section{Introduction}
+
+Whole blood consists of red blood cells (RBCs), platelets, and leukocytes in blood
+plasma. In a healthy individual, RBCs account for 36--45\% of blood volume. They take on
+a biconcave disc shape with diameter of about $8\um$ at rest, but are highly deformable
+in order to pass through capillaries, which have diameters as small as $3$--$4\um$.
+Because of their importance to life and the wide variety of behaviors RBCs display, they
+make an interesting model system. The current RBC force model was developed and refined
+in the 1970s. Canham~\cite{Canham:1970wx} proposed that the biconcave shape arises from
+minimizing a bending energy. Skalak \latin{et al}.~\cite{Skalak:1973tp} developed a
+tensile constitutive law for RBCs. Evans and Hochmuth~\cite{Evans:1976tx} estimated the
+RBC membrane viscosity, which gives the membrane a viscoelastic response to strain.
+
+\noindent Who did RBC stuff; things they did
+\begin{itemize}[noitemsep, topsep=0pt]
+    \item 3D BIM (quadratic elements) RBC with viscosity ratio 1~\cite{Pozrikidis:1998tx}
+    \item 3D BIM RBC with non-unity viscosity ratio~\cite{Pozrikidis:2003ft}
+    \item 3D IBFE (quadratic elements) RBC with Skalak Law and non-unity viscosity ratio~\cite{Le:2010im}
+    \item 3D SDPD network-of-springs RBC with dissipative force~\cite{Fedosov:2010bc}
+    \item 3D BIM RBC with Skalak Law~\cite{Omori:2012hw}
+    \item 3D IB-LBM RBC~\cite{Xu:2013kk}
+    \item Thomas's stuff~\cite{Fai:2013do}
+    \item 3D DPD 2-component RBC model~\cite{Li:2014hva}
+\end{itemize}
+
+RBCs
+outnumber platelets by a factor of approximately 20 and outnumber leukocytes by a factor
+of approximately 600. Blood circulates around the body through a network of blood
+vessels. A layer of endothelial cells line the blood vessels. {\XXX} There are many
+simulations of blood flow at the cellular level {\XXX}. These simulations idealize the
+geometry of the vessels as a flat tube. However, the endothelial cell's nucleus creates a
+protrusion into the lumen of the vessel. The protrusions have prominence of approximately
+$1\um$---roughly the minor axis length of the platelet.
+
+IB, Peskin~\cite{Peskin:1972wa,Peskin:1977wza,Peskin:2002go}, blood flow through heart, yadda, yadda.
+
+Radial basis functions (RBFs) are quickly becoming a popular tool for approximation in
+a variety of settings {\XXX}. Our interest in RBFs lies in their ability to reconstruct
+surfaces using scattered nodes. We represent RBCs, platelets, and the endothelium with a
+set of scattered nodes, and use RBFs to reconstruct their surfaces. Within the IB
+framework, this is known as the RBF-IB method~\cite{Shankar:2015km}. A smooth surface
+approximant allows for the use of techniques from differential geometry to compute
+surface forces~\cite{Maxian:2018ek}.
+
+
+\noindent RBF stuff: quadrature~\cite{Fuselier:2013coba,Maxian:2018ek}, geometry~\cite{Shankar:2013ki,Olson:2015ja}
+
+\noindent Whole blood types of things
+\begin{itemize}[noitemsep, topsep=0pt]
+    \item 3D RBC effect on platelet deposition~\cite{Wang:2013gs}
+    \item 3D Platelet/microparticle margination~\cite{Vahidkhah:2014hy,Vahidkhah:2015ch}
+    \item IB-LBM Platelet Ad/cohesion~\cite{Wu:2014gt}
+    \item RBC-induced Leukocyte margination:
+        \begin{itemize}[noitemsep, topsep=0pt]
+            \item LBM simulation of 2D rigid RBCs + WBCs~\cite{Sun:2003cr}
+            \item BIM simulation of 2D RBCs + WBCs~\cite{Freund:2007kx}
+            \item Lindsay's stuff~\cite{Erickson:2010ep,Erickson:2011cf,Skorczewski:2013jn}
+            \item SDPD simulation of 2D RBCs + WBCs~\cite{Fedosov:2012dy}
+            \item SDPD simulation of 3D RBCs + WBCs~\cite{Fedosov:2014bs}
+        \end{itemize}
+    \item lattice boltzmann RBC: sentence on the method + cite cite cite
+\end{itemize}
+
+%This is an extension of their work.
+
+\noindent \textcolor{red}{Placeholder for clotting paragraph}
+
+Recent advances in parallelizing the IB method~\cite{Kassen:2020hj} allow us to
+perform our simulations entirely on the GPU. Sections~\ref{sec:discretization} and~
+\ref{sec:surfaces} detail our approaches to parallelizing the fluid equations and cell
+forces, respectively.
+
+The remainder of the paper proceeds as follows: Section~\ref{sec:ib} gives an overview of
+the IB method; Section~\ref{sec:discretization} deals with the discretization and
+solution of the incompressible Navier-Stokes equations; Section~\ref{sec:force} lists the
+types of forces used in our cell models; Section~\ref{sec:surfaces} details the RBF
+methods for surface reconstruction and quadrature; we report the results of our
+simulations in Section~\ref{sec:results}; and, finally, we discuss the results and give
+future directions in Section~\ref{sec:conclusion}.

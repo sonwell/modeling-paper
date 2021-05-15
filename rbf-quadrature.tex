@@ -1,0 +1,115 @@
+\subsection{Surface area weights via RBF quadrature}
+We now use the known parametrization of $\sphere$ to compute RBF-based quadrature weights
+for integration on any surface $\interface$ that is diffeomorphic to $\sphere$. This
+proceeds in two stages: we first compute quadrature weights on $\sphere$, then use the
+map from $\sphere$ to $\interface$ to obtain quadrature weights on the latter.
+
+As before, consider a function $\psi(\Xp):\sphere \to \mathbb{R}$. Our preliminary goal
+is to find a set of quadrature weights $\omega_j$ such that
+\begin{equation*}
+    \int\limits_{\sphere} f(\Xp) \d\Xp \approx \sum_{j=1}^{\sample\cardinality} \omega_j \psi(\sample\Xp_j).
+\end{equation*}
+We use a variant of the technique described by Fuselier \latin{et al.}~%
+\cite{Fuselier:2013coba}.  Choosing $\psi(\Xp) = \phi(\|\Xp-\sample\Xp_i\|)$ for each
+$\sample\Xp_i$ we see that
+\begin{equation}
+    \sum_{j=1}^{\sample\cardinality} \omega_j \phi(\|\sample\Xp_j-\sample\Xp_i\|)
+    \approx \int\limits_{\sphere}\phi(\|\Xp-\sample\Xp_i\|) \d\Xp.
+    \label{eq:cond1t}
+\end{equation}
+However, due to the homogeneity of $\sphere$, the right hand side of~\eqref{eq:cond1t} is
+a constant over the sphere. We therefore expect the left hand side to be a constant,
+which we denote $-I_\phi$. We can now rewrite~\eqref{eq:cond1t} as a constraint on the
+quadrature weights $\omega_j$:
+\begin{equation}
+    \sum_{j=1}^{\sample\cardinality} \omega_j\phi(\|\sample\Xp_j-\sample\Xp_i\|)  +  I_{\phi} = 0,
+    \label{eq:quadrature-weights}
+\end{equation}
+where $I_{\phi}$ is now treated as an unknown scalar. We require further that $\omega_j$
+sum to the surface area of $\sphere$, $4\pi$, \latin{i.e.},
+\begin{equation}
+    \sum_{j=1}^{\sample\cardinality} \omega_j  = 4\pi.
+    \label{eq:quadrature-constraint}
+\end{equation}
+These two constraints can again be collected into a block linear system to solve for the
+weights $\omega_j$ as a preprocessing step. $I_{\phi}$ serves as a Lagrange multipler
+that enforces \eqref{eq:quadrature-constraint}, and $-I_\phi$ is a good approximation to
+the integral of $\phi$ over $\sphere$. By choosing $\phi(r) = r$, we guarantee a unique
+solution. It is possible to improve the order of the quadrature weights by increasing the
+order of the PHS at the potential cost of poorer conditioning and either loss of
+invertibility or requiring knowledge of higher-order moments~\cite{Fuselier:2013coba}.
+
+%We use the same machinery from the previous section for quadrature on the surface.
+%Since we know the parametrization of $\sphere$, we can use RBFs to compute
+%integration weights for the surface in a straightforward manner. Let $\L$ be the operator
+%that integrates over $\sphere$ in Cartesian space. $\sphere$ is homogeneous,
+%which implies invariance under rotation; $\L\phi(\|\Xp-\Xp'\|)$, for fixed $\Xp'$, is
+%independent of $\Xp'$ and is therefore constant. We seek integration weights $\omega^A$
+%on $\sphere$ for each of the sample sites such that
+%\begin{equation}
+%    \omega^A\phi(\|\sample\Xp_A-\sample\Xp_B\|) = I_\phi \approx \L\phi
+%\end{equation}
+%for constant $I_\phi$. Here, the subscript $\phi$ is a reference to the basic function.
+%We require further that $\omega^A$ sum to the surface area of $\sphere$, $4\pi$.
+%Treating $I_\phi$ as an unknown and letting $p(\Xp) = 1$, we rewrite these requirements
+%as
+%\begin{equation}
+%    \omega^A\phi\left(\left\|\sample\Xp_A-\sample\Xp_B\right\|\right) - I_\phi p(\sample\Xp_B) = 0
+%    \label{eq:quadrature-weights}
+%\end{equation}
+%restricted to
+%\begin{equation}
+%    \omega^A p(\sample\Xp_A) = 4\pi,
+%    \label{eq:quadrature-constraint}
+%\end{equation}
+%which is similar in form for equations~\eqref{eq:interpolant}--\eqref{eq:constraints}
+%with only a constant polynomial. By choosing $\phi(r) = r$, we guarantee a unique
+%solution. It is possible to improve the order of the quadrature weights by increasing the
+%order of the PHS at the potential cost of poorer conditioning and either loss of
+%invertibility or requiring knowledge of higher-order moments, $\L p_M$, for each $p_M$
+%needed to guarantee invertibility~\cite{Fuselier:2013coba}.
+
+%For each set of quasi-uniform points on $\sphere$ we
+%tested, the system is invertible for $\phi(r)=r^{2k+1}$ for $1 \le k \le 4$, but quality
+%of the quadrature weights deteriorates with higher-order PHS, becoming unusable around
+%$k=4$. Poor conditioning typically causes a non-constant approximation $I_\phi$ when
+%higher-order spherical harmonics are included.
+
+Having described the computation of quadrature weights for $\sphere$, we now
+describe how to compute quadrature weights for $\interface$, which has parametrization
+$\X(\qs)$. The Jacobian $J$ for $\X$ satisfies
+%With quadrature weights for $\sphere$ at hand, we aim to compute weights for
+%$\interface$, which has parametrization $\X(\qs)$. The Jacobian $J$ for $\X$ satisfies
+$J^2 = \metric$. The Jacobian for $\Xp$ is known; $\tilde{J} = \cos\q[2]$. We can use a
+change of variables to express the infinitesimal area $\d\X$ as
+\begin{equation}\label{eq:quad-cov}
+    \d\X
+    = J\d\qs
+    = (J/\tilde{J})\d\Xp,
+\end{equation}
+where $\d\qs$ is an infinitesimal area in parameter space. The weights $\omega_j$ found
+above are discrete analogues of $\d\Xp$. Analytically evaluating $\tilde{J}$ at
+$\sample\Xp_j$ yields $\tilde{J}_j$, and the discrete analogue of $\d\qs$ at $\qs_j$,
+\begin{equation*}
+    \sigma_j=\omega_j/\tilde{J}_j,
+\end{equation*}
+can be computed at the outset of a simulation. To avoid numerical issues, we require that
+$\tilde{J}_j \neq 0$ for each sample site. This is true everywhere on $\sphere$ except
+the poles, $(0,\,0,\,\pm1)$. The Bauer spiral~\eqref{eq:bauer-spiral} conveniently avoids
+these points. We now arrive our weights for $\interface$. At $\X_A$, we have
+\begin{equation}
+    \weight[j] = \sigma_j J_j.
+\end{equation}
+$J_j$ is a byproduct of computing many of the force densities introduced in Section~%
+\ref{sec:force}. Computing $\weight[j]$, given $\sigma_j$ and $J_j$, amounts to a single
+multiplication, which can be done trivially in parallel. We observe further that $1/J$
+or its reference configuration counterpart is a prefactor of the operator the computes
+tension force density, dissipative force density, and the Laplace-Beltrami operator~%
+\eqref{eq:expanded-op}, and the denominator of the unit normal~\eqref{eq:unit-normal}. We
+can therefore forego the additional multiplication of the quadrature weights and the
+division in the force density computation.
+
+%We now have a framework in which we can compute discrete forces for certain surfaces. The
+%next section gives specific details for the formulas in Sections~\ref{sec:force} and~%
+%\ref{sec:surfaces} to give a complete picture of the models for RBCs, platelets, and the
+%endothelium.

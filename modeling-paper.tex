@@ -1,0 +1,152 @@
+\documentclass[1p,preprint,fleqn,number,sort&compress,times]{elsarticle}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage{xfrac}
+\usepackage{xspace}
+\usepackage{siunitx}
+\usepackage{fmtcount}
+\usepackage{ifthen}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{calc}
+\usepackage{stackengine}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\def\stackalignment{l}
+\usetikzlibrary{quotes,arrows.meta,shapes,shapes.misc,patterns}
+\pgfplotsset{colormap/viridis}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{external}
+%\tikzexternalize
+
+\tikzset{cross/.style={cross out, draw,
+         minimum size=2*(#1-\pgflinewidth),
+         inner sep=0pt, outer sep=0pt}}
+\DeclareRobustCommand\tikzu{\tikz\node[regular polygon, regular polygon sides=3,
+                                       color=black, fill=black, inner sep=0.707pt,
+                                       shape border rotate=-90, thick, draw] at (0, 0) {};}
+\DeclareRobustCommand\tikzv{\tikz\node[regular polygon, regular polygon sides=3,
+                                       color=black, fill=black, inner sep=0.707pt, thick,
+                                       draw] at (0, 0) {};}
+\DeclareRobustCommand\tikzp{\tikz\node[circle, color=black, fill=black, inner sep=1pt,
+                                       thick, draw] at (0, 0) {};}
+\DeclareRobustCommand\tikzuu{\tikz\node[regular polygon, regular polygon sides=4,
+                                        color=black, fill=black, inner sep=0.8035pt,
+                                        shape border rotate=45, thick, draw] at (0, 0) {};}
+
+\bibliographystyle{elsarticle-num}
+\biboptions{sort&compress}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+\DeclareCaptionSubType*{figure}
+\renewcommand\thesubfigure{\thefigure(\alph{subfigure})}
+
+
+\newcommand{\latin}[1]{\textit{#1}}
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+
+\newcommand{\param}{\theta}
+\newcommand{\q}[1][]{\if\relax\detokenize{#1}\relax\param\else\param^{#1}\fi}
+\newcommand{\qs}{\vec{\param}}
+\newcommand{\laplacian}{\Delta}
+\newcommand{\cross}{\times}
+\newcommand{\grad}[1][]{\nabla\if\relax\detokenize{#1}\relax\else{}_{#1}\fi}
+\renewcommand{\div}[1][]{\grad[#1]\cdot}
+\renewcommand{\d}{\relax\ifnum\lastnodetype>0\mskip\thinmuskip\fi\textnormal{d}}
+\renewcommand{\L}{\mathcal{L}}
+\DeclareMathOperator{\modulo}{mod}
+
+\newcommand{\domain}{\ensuremath{\Omega}}
+\newcommand{\interface}{\ensuremath{\Gamma}}
+\newcommand{\archetype}{\ensuremath{\mathbb{M}}}
+\newcommand{\sphere}{\ensuremath{\mathbb{S}^2}}
+\newcommand{\Dirac}{\delta}
+\newcommand{\Kronecker}{\delta}
+\newcommand{\Hadamard}{H}
+\newcommand{\cardinality}{n}
+\newcommand{\x}{\vec{x}}
+\newcommand{\X}{\vec{X}}
+\newcommand{\Xp}{\vec{\chi}}
+\newcommand{\sites}{\ensuremath{\Theta}}
+\newcommand{\data}[1]{\ensuremath{{#1}^\text{d}}}
+\newcommand{\sample}[1]{\ensuremath{{#1}^\text{s}}}
+\newcommand{\poly}[1]{\ensuremath{{#1}^\text{p}}}
+\newcommand{\reference}[1]{\hat{#1}}
+\newcommand{\metric}{g}
+\newcommand{\weight}[1][]{\if\relax\detokenize{#1}\relax W\else W_{#1}}
+\newcommand{\area}[1]{a(#1)}
+
+\newcommand{\density}{\rho}
+\newcommand{\viscosity}{\mu}
+\newcommand{\scinot}[2]{{#1}\times 10^{#2}}
+
+\renewcommand{\u}{\vec{u}}
+\newcommand{\U}{\dot{\vec{X}}}
+\newcommand{\f}{\vec{f}}
+\newcommand{\F}{\vec{F}}
+\newcommand{\e}{\vec{e}}
+\newcommand{\n}{\vec{n}}
+\newcommand{\um}{\relax\ifnum\lastnodetype>0\mskip\thinmuskip\fi\si{\micro\meter}}
+\newcommand{\dynpercm}{\relax\ifnum\lastnodetype>0\mskip\thinmuskip\fi\si{dyn\per\centi\meter}}
+\newcommand{\dynsecpercm}{\relax\ifnum\lastnodetype>0\mskip\thinmuskip\fi\si{dyn\cdot\second\per\centi\meter}}
+\newcommand{\us}{\relax\ifnum\lastnodetype>0\mskip\thinmuskip\fi\si{\micro\second}}
+\newcommand{\ms}{\relax\ifnum\lastnodetype>0\mskip\thinmuskip\fi\si{\milli\second}}
+\newcommand{\shear}{\dot{\gamma}}
+\newcommand{\range}[1]{\ensuremath{\{1,\,2,\,\ldots,\,#1\}}}
+\newcommand{\nth}[2][m]{\ordinalnum{#2}[#1]}
+\renewcommand{\th}{\textsuperscript{th}}
+\newcommand{\term}[1]{\textit{#1}}
+\newcommand{\XXX}{\textbf{\textcolor{red}{\textsf{XXX}}}}
+\DeclareMathOperator{\tr}{tr}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{A radial basis function-based immersed boundary method for the simulation of whole blood}
+
+\author[1]{Andrew Kassen\corref{corr}}  \ead{kassen@math.utah.edu}
+\author[1]{Aaron Barrett}               \ead{barrett@math.utah.edu}
+\author[2]{Varun Shankar}               \ead{shankar@cs.utah.edu}
+\author[1]{Aaron L. Fogelson\fnref{3}}  \ead{fogelson@math.utah.edu}
+
+\cortext[corr]{Corresponding author}
+\address[1]{Department of Mathematics, University of Utah, Salt Lake City, UT 84112, USA}
+\address[2]{School of Computing, University of Utah, Salt Lake City, UT 84112, USA}
+\address[3]{Department of Bioengineering, University of Utah, Salt Lake City, UT 84112, USA}
+
+
+\begin{abstract}
+    % XXX
+\end{abstract}
+
+\begin{keyword}
+    % XXX
+\end{keyword}
+
+\end{frontmatter}
+
+\input{introduction}
+\input{methods}
+\input{results}
+\input{discussion}
+\input{appendices}
+
+\section*{Acknowledgments}
+The authors thank Dr. Robert M. Kirby for access to computing resources at SCI Institute.
+
+\bibliography{modeling-paper}
+\end{document}
+% end of file template.tex
+
+% vim: cc=90 tw=89
