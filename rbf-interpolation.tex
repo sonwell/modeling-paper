@@ -1,102 +1,164 @@
-\subsection{Surface reconstruction with radial basis functions}
+\subsection{Surface reconstruction with radial basis functions}\label{sec:rbf-interpolation}
 
-RBFs have been shown to be a viable approach for representing cells on par with Fourier
-methods~\cite{Shankar:2013ki}. Whereas methods such as finite element require a mesh or
-other structured grid, RBFs are meshfree, and structural information is encoded purely as
-pointwise distances. In order to compute the forces of the previous section, we must be
-able to evaluate the interpolant and its first and second derivatives. We briefly
-describe these methods below.
+Radial basis functions (RBFs) are a meshfree approach to scattered data approximation
+where structural information is encoded purely as point-wise distances. With some
+exceptions, they are an appropriate tool for interpolation at arbitrary locations. This
+contrasts with, \latin{e.g.}, polynomials, where points must be chosen at grid vertices,
+or spherical harmonics, for which special node sets are typically used. RBFs are a viable
+approach for representing cells on par with Fourier methods~\cite{Shankar:2013ki}. They
+are therefore appealing for representing blood cells.
 
-Consider the 2-sphere, $\sphere$, with parametrization
+Because our choice of force model for the endothelium does not require geometric
+information, we limit the discussion to RBCs and platelets, which are topologically
+spherical. The 2-sphere, $\sphere$, has parametrization
 \begin{equation*}
-    \Xp(\qs) = \cos\q[1]\cos\q[2]\e_1 + \sin\q[1]\cos\q[2]\e_2 + \sin\q[2]\e_3,
+    \Xp(\theta,\,\varphi) =
+    \left[\begin{array}{c}
+        \cos\theta\cos\varphi \\
+        \sin\theta\cos\varphi \\
+        \sin\varphi
+    \end{array}\right],
 \end{equation*}
-$\qs\in\sites = (-\pi,\,\pi]\times[-\pi/2,\,\pi/2]$. Let $\data\sites = \{\qs_i\}$ be a
-set of $\data\cardinality$ distinct \emph{data sites}, and $\data\Xp_i = \Xp(\qs_i)$ for
-each $\qs_i \in \data\sites$. We use the Bauer spiral~\cite{Bauer:2000km} to generate a
-quasi-uniform set of $N$ points on the sphere in parallel:
-\begin{equation}
+$(\theta,\,\varphi)\in(-\pi,\,\pi]\times[-\pi/2,\,\pi/2]$.
+Let $\data\sites = \{(\data\theta_i,\,\data\varphi_i)\}$ be a set of $\data\cardinality$
+distinct \emph{data sites}. We place these points along the Bauer spiral~\cite{Bauer:2000km},
+\begin{equation}\label{eq:bauer-spiral}
     \begin{aligned}
-        \q[2]_i &= \sin^{-1}(-1 + (2 i - 1) / N), \\
-        \q[1]_i &= \pi - \modulo\left(\pi - \sqrt{\pi N} \q[2]_i,\,2\pi\right).
+        &\varphi_j = \sin^{-1}(-1 + (2i + 1) / N), \\
+        &\theta_j = \modulo\left(\sqrt{N\pi}\varphi_j + \pi,\,2\pi\right) - \pi,
     \end{aligned}
-    \label{eq:bauer-spiral}
 \end{equation}
-Suppose we wish to approximate $\psi(\Xp)$, a function defined on $\sphere$. With
-\emph{basic function} $\phi$, the RBFs $\phi(\|\Xp-\data\Xp_A\|)$ form our basis.
-Attractive choices for $\phi$ are the polyharmonic splines (PHS),
+where $N$ is the number of points, and $\modulo(a,\,b) = a - |b|\floor{a/|b|}$ is the
+positive modulo function. Let $\data\Xp_i = \Xp(\theta_i,\,\varphi_i)$ for each
+$(\theta_i,\,\varphi_i) \in \data\sites$. Suppose we wish to approximate $\psi(\Xp)$,
+defined on $\sphere$. From \emph{basic function} $\phi$, we form our interpolatory basis
+with the RBFs $\phi(\|\Xp-\data\Xp_i\|)$. Attractive choices for $\phi$ are the
+polyharmonic splines (PHS),
 \begin{equation*}
     \text{PHS:}\quad\phi(r) = \begin{cases}
-        r^k \log r, & \text{for even exponents } k \ge 2 \\
-        r^k, & \text{for odd exponents } k \ge 1,
+        r^{2k} \log r, \\
+        r^{2k+1},
     \end{cases}
+    \quad\text{for}\ k\in\mathbb{N},
 \end{equation*}
 which do not require a shape parameter, unlike Gaussian or multiquadric kernels~%
 \cite{Fasshauer:2007ui}. However, PHS are finitely differentiable and conditionally
-positive definite; they require additional polynomial terms to guarantee a unique
-interpolant. On $\sphere$, these are typically spherical harmonics. We denote these
-$\poly\cardinality$ appended polynomials by $\{p_k(\Xp)\}$. To achieve a twice
-continuously differentiable surface reconstruction, we are limited to PHS of order 5 or
-higher. An interpolant $s(\Xp)$ exactly recovers data at each of the data sites and
-therefore satisfies
-\begin{equation}
-    s(\data\Xp_j)
-    := \sum_{i=1}^{\data\cardinality} c_i \phi\left(\left\|\data\Xp_j-\data\Xp_i\right\|\right)
-    + \sum_{k=1}^{\poly\cardinality} d_k p_k(\data\Xp_j)
-    = \psi(\data\Xp_j).
-    \label{eq:interpolant}
+positive definite; they require additional polynomial terms up to degree $k$ to guarantee
+a unique interpolant. Heuristically, $\data\cardinality$ is chosen so that data sites
+outnumber polynomials at least 2-to-1 to maintain reasonable conditioning. On $\sphere$,
+the polynomials are typically spherical harmonics. We denote the polynomials by
+$p_k(\Xp)$, $k=1,\,\ldots,\,\poly\cardinality$. The interpolant takes the form
+\begin{equation}\label{eq:rbf-interp}
+    s(\Xp)
+    = \sum_{i=1}^{\data\cardinality} c_i \phi(\|\Xp-\data\Xp_i\|)
+    + \sum_{k=1}^{\poly\cardinality} d_k p_k(\Xp),
 \end{equation}
-We further constrain $c_i$ so that the polynomials recover polynomial data,
+and exactly recovers $\psi$ at each of the data sites,
+$s(\data\Xp_j) = \psi(\data\Xp_i)$, for $j = 1,\,\ldots,\,\data\cardinality$. We further
+constrain the coefficients $c_i$ so that the polynomials recover polynomial data,
 \begin{equation}
     \sum_{i=1}^{\data\cardinality} c_i p_k(\data\Xp_i) = 0.
     \label{eq:constraints}
 \end{equation}
-These equations are gathered into a symmetric block system.
-
-Suppose that $\X(\qs)$ is a parametrization of $\interface$, e.g., the membrane of an
-RBC. We identify the point $\X(\qs)$ on $\interface$ with the point $\Xp(\qs)$ on
-$\sphere$. Each component of $\X$ is therefore a function defined on $\sphere$.
-By sampling $\X$ at each point in $\data\sites$, we can approximately reconstruct the
-surface by interpolating each of the components. With a twice-differentiable interpolant
-for the reference and deformed configurations of the surface, we can evaluate the force
-densities of the previous section. For this, we require discrete differential operators.
-
-Let $\L$ be a linear operator. In particular, we are interested in the differential
-operators $\partial/\partial\q[\mu]$ and $\partial^2/\partial\q[\mu]\partial\q[\lambda]$.
-We approximate $\L\psi$ by applying $\L$ analytically to $s$. Evaluating $\L s$ at each
-data site involves dense $\data\cardinality\times(\data\cardinality+\poly\cardinality)$-%
-matrix operations.
-%Collecting values of
-%I$\L\phi(\|\Xp-\data\Xp_i\|)$ and $\L p_k(\Xp)$ at each data site into a matrix results in
-%a dense matrix multiplication to evaluate $\L s$.
-To maintain a point spacing that avoids
-leaking in the IB method, $\data\cardinality$ may be large. In the interest of saving
-memory and time for such cases, we opt instead to use fewer data sites to reconstruct the
-surface, and choose a larger set of $\sample\cardinality$ \emph{sample sites},
-$\sample\sites$. We must then also consider $\L$ the identity operator.  Evaluating
-$\L s$ at each sample site, we obtain
-\begin{equation}
-    \sum_{i=1}^{\data\cardinality} c_i \L\phi\left(\left\|\sample\Xp_j-\data\Xp_i\right\|\right) +
-    \sum_{k=1}^{\poly\cardinality} d_k \L p_k(\sample\Xp_j) := (L \data{\vec{\psi}})_j
+Collecting the values $\Phi=(\phi(\|\data\Xp_j-\data\Xp_i\|))$, $P=(p_k(\data\Xp_j))$,
+$\cvec{c} = (c_i)$, $\cvec{d} = (d_k)$, and $\cvec{\psi} = (\psi(\data\Xp_j))$, we form
+the dense symmetric block system
+\begin{equation}\label{eq:rbf-interp-matrix}
+    \left[\begin{array}{cc}
+            \Phi & P \\ P^T & 0
+    \end{array}\right]\left[\begin{array}{c}
+            \cvec{c} \\ \cvec{d}
+    \end{array}\right] = \left[\begin{array}{c}
+            \cvec{\psi} \\ \cvec{0}
+    \end{array}\right],
 \end{equation}
-where $\sample\Xp_j = \Xp(\qs_j)$, for each $\qs_j\in\sample\sites$, and
-$\data{\vec{\psi}}$ is the vector of values obtained by evaluating $\psi$ at each data
-site. The matrix $L$ is the discrete analogue of $\L$ applied at each sample site. We
-perform this procedure for each first and second derivative operator, and for the
-identity operator, to compute the points from which we spread the computed forces. In
-other words, the points denoted $\X$ in equation~\eqref{eq:ib-interp} correspond to the
-data sites, are tracked over the course of a simulations, and may be distinct from those
-in equation~\eqref{eq:ib-spread}, which are derived from the sample sites. For fixed
-$\data\sites$ and $\sample\sites$, we construct these operators only once.
+where the matrix block $0$ is the $\poly\cardinality\times\poly\cardinality$ zero matrix
+and $\cvec{0}$ is a vector of $\poly\cardinality$ zeros. Because $\data\sites$ is fixed,
+we need only construct this matrix once.
 
-The quantities $\metric_{\alpha\beta}$, $\metric^{\alpha\beta}$,
-$\dot{\metric}_{\alpha\beta}$, $\n$, $H$, and $K$ require only local first and second
-derivative data to compute. Ultimately, this means that after obtaining the necessary
-geometric data, calculating forces according to~\eqref{eq:expanded-op} is trivially
-parallelizable. The matrix $L$ is dense; its application can be performed in parallel
-with, e.g., a parallelized implementation of BLAS, and so forces are computed in parallel
-with few thread synchronizations.
+For RBC and platelet parametrizations, we identify the point $\X(\theta,\,\varphi,\,t)$
+on $\interface$ with the point $\Xp(\theta,\,\varphi)$ on $\sphere$. Each component of
+$\X$ is a function defined on $\sphere$. By sampling $\X$ at each point in $\data\sites$,
+we can approximately reconstruct the surface by interpolating each of the components. It
+is clear from Equations~\eqref{eq:skalak-law}--\eqref{eq:dissip-energy} that computing
+the force densities requires values of $I_1$, $I_2$, and $H$, among others. These values
+are derived from the first and second derivatives of $\X$. See~\ref{sec:forces} for
+details. To meet the smoothness requirements to evaluate force densities, we use
+$\phi(r) = r^7$ for each cell, with up to $5\th$ order spherical harmonics for RBCs and
+just the constant polynomial for platelets. While this does not guarantee a unique
+interpolant for the platelet, the resulting system~\eqref{eq:rbf-interp-matrix} is
+invertible nonetheless. The interpolants are then thrice differentiable. We now need the
+appropriate discrete differential operators.
 
-We now have a method for discretizing $\F$ and for computing an appropriate set of points
-for use in~\eqref{eq:ib-spread}. The following section is devoted to computing
-integration weights, $\weight[i]$, at each sample site, $\X$, using RBFs.
+\subsection{Discrete linear surface operators}
+
+Let $\L$ be a linear operator. In particular, we are interested in the first- and
+second-order partial differential operators, $\partial/\partial\theta$,
+$\partial^2/\partial\theta\partial\varphi$, \latin{etc}. We approximate $\L\psi$ by
+applying $\L$ analytically to $s$. This is straightforward, given a parametrized metric.
+For $\sphere$, this is
+\begin{equation}\label{eq:sphere-metric}
+    \begin{aligned}
+    \|\Xp(\theta_j,\,\varphi_j) - \Xp(\theta_i,\,\varphi_i)\|
+    &= \sqrt{2(1 - \cos\varphi_j\cos\varphi_i\cos(\theta_j-\theta_i) - \sin\varphi_j\sin\varphi_i)} \\
+    &= \sqrt{2(1-\Xp(\theta_j,\,\varphi_j)\cdot\Xp(\theta_i,\,\varphi_i))}.
+\end{aligned}
+\end{equation}
+However, evaluating $\L s$ at each data site involves dense operations against a
+$\data\cardinality\times(\data\cardinality+\poly\cardinality)$ matrix. Depending on the
+needs of the simulation, the number of data sites may be large.  In the interest of
+saving memory and time for such cases, we opt instead to use fewer data sites to
+reconstruct the surface, and choose a larger set of $\sample\cardinality$ \emph{sample
+sites}, $\sample\sites$. We must then also consider $\L$ the identity operator in order
+to obtain $\X$ at sample sites. Evaluating $\L s$ at each sample site with
+$\Xpsj = \Xp(\theta_j,\,\varphi_j)$ for each $(\theta_j,\,\varphi_j)\in\sample\sites$ and
+collecting values $\L\Phi = (\L\phi(\|\Xp-\data\Xp_i\|)|_{\Xpsj})$ and
+$\L P = (\L p_k(\Xp)|_{\Xpsj})$, we have
+\begin{equation}\label{eq:rbf-operator}
+    \begin{aligned}
+    \left[\begin{array}{cc}
+            \L\Phi & \L P
+    \end{array}\right]\left[\begin{array}{c}
+            \cvec{c} \\ \cvec{d}
+    \end{array}\right] &\hphantom{:}=
+    \left[\begin{array}{cc}
+            \L\Phi & \L P
+    \end{array}\right]\left[\begin{array}{cc}
+            \Phi & P \\ P^T & 0
+    \end{array}\right]^{-1}\left[\begin{array}{c}
+            \cvec{\psi} \\ \cvec{0}
+    \end{array}\right] \\ &:=
+    \left[\begin{array}{cc}
+            L & \ast
+    \end{array}\right]\left[\begin{array}{c}
+            \cvec{\psi} \\ \cvec{0}
+    \end{array}\right],
+\end{aligned}
+\end{equation}
+where we have used Equation~\eqref{eq:rbf-interp-matrix} to substitute for $\cvec{c}$ and
+$\cvec{d}$. The matrix $L$ is the discrete analogue of $\L$ applied at each sample site.
+This approach has been used for generating RBF-based differentiation matrices for the
+solution of PDEs~\cite{Fasshauer:2007ui}{\XXX\ldots} and in the context of the immersed
+boundary method~\cite{Shankar:2015km} and the method of regularized Stokeslets~%
+\cite{Olson:2015ja} to represent interfaces and approximate their geometries. It is
+important to note that $L$ is completely independent of the function $\psi$; in fact, it
+depends only on the functions $\phi$ and $p_k$, the fixed data sites $\data\sites$, and
+the fixed sample sites $\sample\sites$.  The block marked by $\ast$ is multiplied by
+zeros, and can be discarded. We compute a separate $L$ for each operator $\L$ as a
+preprocessing step, and simply apply these matrices to any function that needs to be
+evaluated or differentiated. It is also straightforward to generate versions of $L$ that
+produce derivatives at the data sites simply by replacing $\Xpsj$ with $\data\Xp_j$ in
+the above discussion. With these operators in hand, the force densities are readily
+discretized. The quantities $I_1$, $I_2$, and $H$ in Section~\ref{sec:energy} are
+calculated using local first and second derivatives. Application of the dense discrete
+differential operators is performed in parallel with a parallel implementation of
+\texttt{BLAS}. Lagrangian forces can therefore be computed in parallel with few thread
+synchronizations.
+
+We now have a method for computing a suitable set of points and for discretizing $\F$ for
+use in~\eqref{eq:ib-spread}. To compute a force from a force density, we need to
+approximate quadrature weights, or surface patch areas, for each sample site. The
+following section is devoted to computing quadrature weights $\weight[j]$ for each
+sample site using RBFs.
+
+% vim: cc=90 tw=89

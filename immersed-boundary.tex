@@ -1,35 +1,12 @@
-%\begin{table*}[tbh]
-%    \centering
-%    \setlength{\tabcolsep}{9pt}
-%    \renewcommand{\arraystretch}{1.5}
-%    \begin{tabular}{l|c|l}
-%                                                                                                               \toprule
-%        \textbf{Description}                  & \textbf{Example} & \textbf{Meaning}                         \\ \midrule
-%        Italic boldface                       & $\x$             & Cartesian vector                         \\
-%        Super- and subscripts:                &                  &                                          \\
-%        \hspace{0.4cm} Italic lowercase Latin & $u^a$            & Eulerian coordinate index                \\
-%        \hspace{0.4cm} Italic lowercase Greek & $\theta^\alpha$  & Lagrangian coordinate index              \\
-%        \hspace{0.4cm} Italic uppercase Latin & $\X_A$           & Set enumeration index                    \\
-%        \hspace{0.4cm} Upright Latin          & $\sample\sites$  & Differentiates between sets or functions \\
-%        Subscript comma                       & $\phi_{,\alpha}$ & Derivative in a coordinate direction     \\
-%        Superposed dot                        & $\dot{\X}$       & Time derivative                          \\
-%        Superposed hat                        & $\hat{H}$        & Reference value                          \\ \bottomrule
-%    \end{tabular}
-%    \caption{%
-%        A summary of the notation used throughout this paper.
-%    }
-%    \label{tab:notation}
-%\end{table*}
-
 \section{The immersed boundary method}\label{sec:ib}
 
-Consider a rectangular domain, $\domain\subset\mathbb{R}^3$, which contains one or more
-deformable structures and is otherwise filled with an incompressible, viscous fluid with
-constant density, $\density$, and viscosity, $\viscosity$. The IB method treats these
-structures as an extension of the fluid. The motion of any particle in $\domain$ is
+Consider a rectangular domain, $\domain\subset\R^3$, which contains one or more
+deformable structures and is otherwise filled with an incompressible, Newtonian fluid
+with constant density, $\density$, and viscosity, $\viscosity$. The IB method treats
+these structures as an extension of the fluid. The motion of any particle in $\domain$ is
 therefore governed by the incompressible Navier-Stokes equations,
 \begin{gather}
-    \density(\u + \div(\u\otimes\u)) = \viscosity\laplacian \u - \grad p + \f, \label{eq:ins-momentum} \\
+    \density(\u_t + \div(\u\otimes\u)) = \viscosity\laplacian \u - \grad p + \f, \label{eq:ins-momentum} \\
     \div \u = 0, \label{eq:ins-incomp}
 \end{gather}
 where, for $\x = (x,\,y,\,z) \in \domain$, $\u = \u(\x,\,t) = (u, v, w)$ is the fluid

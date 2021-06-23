@@ -1,46 +1,84 @@
 \subsection{Convergence study}
 
-\begin{table*}[ht]
-    \begin{center}
-        \begingroup
-        \setlength{\tabcolsep}{9pt}
-        \renewcommand{\arraystretch}{1.5}
-        \begin{tabular}{cc|cc|cc}
-                                                                                                                    \\ \toprule
-            $h$ ($\um$) & $k$ ($\us$) & $\|\u_h-\u_{0.5h}\|_2$ & order   & $\|\u_h-\u_{0.5h}\|_{\infty}$ & order    \\ \midrule
-            $1.00$      & $1.6$       & $2.2274\times10^{-2}$  &         & $7.4187\times10^{-2}$         &          \\
-            $0.50$      & $0.4$       & $4.3280\times10^{-4}$  & 5.71513 & $1.9083\times10^{-3}$         & 5.28079  \\
-            $0.25$      & $0.1$       & $1.4684\times10^{-4}$  & 1.55951 & $1.0847\times10^{-3}$         & 0.81497  \\ \bottomrule
-        \end{tabular}
-        \endgroup
-    \end{center}
-    \caption{%
-Convergence of the fluid velocity for a deformed sphere returning to its rest
-configuration in a $16\um\times16\um\times16\um$ triply periodic domain at
-$t=160\us$. The finest grid, with $h=0.125\um$ uses timestep $k=0.025\us$.
-    }
-    \label{tab:u-convergence}
-\end{table*}
+In this section, we perform a series of tests on a single perturbed RBC undergoing
+relaxation. We simplify the RBC model and use only Skalak's Law. We expect the IB method
+to approximate the fluid velocity at first order for thin shells, as it cannot recover
+the pressure jump across the interface. We stretch the RBC by a factor of 1.1 in the $z$
+direction and compress it in the $x$ direction to maintain its reference volume. We place
+the cell in the center of a $16\um\times16\um\times16\um$ domain with homogeneous
+Dirichlet boundary conditions in the $y$ direction and periodic boundaries elsewhere. The
+fluid velocity is initially zero. The cell is then allowed to relax for $180\us$.
 
-\begin{table*}[ht]
-    \begin{center}
-        \begingroup
-        \setlength{\tabcolsep}{9pt}
-        \renewcommand{\arraystretch}{1.5}
-        \begin{tabular}{cc|cc|cc}
-                                                                                                             \\ \toprule
-            $h$ ($\um$) & $\sample\cardinality$ & $\|\X_h-\X_{0.5h}\|_2$ & order   & $\|\X_h-\X_{0.5h}\|_{\infty}$ & order   \\ \midrule
-            $1.00$      & 220   & $2.9611\times10^{-3}$  &         & $4.7812\times10^{-3}$         &         \\
-            $0.50$      & 880   & $7.2997\times10^{-4}$  & 2.02020 & $1.1687\times10^{-3}$         & 2.03253 \\
-            $0.25$      & 3520  & $3.5909\times10^{-4}$  & 1.02351 & $6.0956\times10^{-4}$         & 0.93902 \\ \bottomrule
-        \end{tabular}
-        \endgroup
-    \end{center}
-    \caption{%
-Convergence of data sites for a deformed sphere returning to its rest
-configuration in a $16\um\times16\um\times16\um$ triply periodic domain at
-$t=16\us$. For each grid, we track 625 data sites on the sphere. The finest
-grid, with $h = 0.125\um$ used $n_s=14080$ sample sites.
-    }
-    \label{tab:x-convergence}
-\end{table*}
+\begin{table}[t!]
+    \centering
+    \caption[Convergence of fluid velocities for relaxing RBC test]{%
+Convergence of $\u$ for a sequence of grids. The refinement ratio $r$, defined as the
+refinement in $h$ relative to the coarsest grid, determines the simulation parameters:
+$rh = 0.8\um$ and $r\timestep = 180\ns$. Errors are computed between grids of refinement
+factor $r$ and $r+1$. Values of $\u$ are sampled at $t = 180\us$ at cell centers on the
+coarsest grid.
+    }\label{tab:u-rbc-conv}
+    \begingroup
+    \setlength{\tabcolsep}{9pt}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{c|cc|cc}
+                                                                                     \toprule
+        $r$ & $L_2$ error            & order   & $L_\infty$ error       & order   \\ \midrule
+        1   & $\scinot{1.74592}{-3}$ &         & $\scinot{1.59995}{-2}$ &         \\
+        2   & $\scinot{9.92788}{-5}$ &         & $\scinot{6.52038}{-4}$ &         \\
+        3   & $\scinot{3.65264}{-5}$ & 6.85983 & $\scinot{3.34322}{-4}$ & 1.06075 \\
+        4   & $\scinot{2.31069}{-5}$ & 2.87612 & $\scinot{2.30732}{-4}$ & 1.60689 \\
+        5   & $\scinot{1.65898}{-5}$ & 1.25668 & $\scinot{2.28193}{-4}$ & 0.83030 \\ \bottomrule
+    \end{tabular}
+    \endgroup
+\end{table}
+
+We use the 3-point kernel $\hat{\Dirac}_1$ derived by Roma \latin{et al.}~\cite{Roma:1999tx} for
+spreading and interpolation and the 2-stage RK method described in Section~\ref{sec:ib}
+to advance the fluid velocity. Fluid grids are chosen to have $20r$ grid points per
+$16\um$ in each direction for $r$ from 1 to 6. On successive grids, we compare the fluid
+velocity at cell centers in a regular grid of $20^3$ cells and surface positions at 1000
+surface points. For convergence or order $p$, we expect the ratio of successive errors to
+satisfy
+\begin{equation*}
+    \frac{\epsilon_r}{\epsilon_{r+1}} = \left|\frac{((r+1)/r)^p-1}{((r+2)/(r+1))^{-p}-1}\right|,
+\end{equation*}
+which we solve numerically for $p$. We compute the errors in $\X$ using discrete versions
+of the $L_2$ and $L_\infty$ norms,
+\begin{gather}
+    \|\X(\theta,\,\varphi)\|_2^2 =
+    \int\limits_{\sphere} \X(\theta,\,\varphi)\cdot\X(\theta,\,\varphi) \d\qs \quad\text{and} \\
+    \|\X(\theta,\,\varphi)\|_\infty^2 =
+    \max_{(\theta,\,\varphi)} \X(\theta,\,\varphi)\cdot\X(\theta,\,\varphi),
+\end{gather}
+respectively.
+
+\begin{table}[t!]
+    \centering
+    \caption[Convergence of surface positions for relaxing RBC test]{%
+Convergence of $\X$ for a sequence of grids. The refinement ratio $r$, defined as the
+refinement in $h$ relative to the coarsest grid, determines the simulation parameters:
+$r\timestep = 180\ns$, $n_d = 125r^2$, and $n_s = 500r^2$. Errors are computed between
+grids of refinement factor $r$ and $r+1$. Values of $\X$ are sampled at $t = 180\us$ at
+$N=1000$ Bauer spiral points.
+    }\label{tab:x-rbc-conv}
+    \begingroup
+    \setlength{\tabcolsep}{9pt}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{c|cc|cc}
+                                                                                     \toprule
+        $r$ & $L_2$ error            & order   & $L_\infty$ error       & order   \\ \midrule
+        1   & $\scinot{6.05447}{-3}$ &         & $\scinot{2.68249}{-3}$ &         \\
+        2   & $\scinot{1.61678}{-3}$ &         & $\scinot{6.86140}{-4}$ &         \\
+        3   & $\scinot{7.69150}{-4}$ & 2.74664 & $\scinot{3.30734}{-4}$ & 2.86457 \\
+        4   & $\scinot{4.66203}{-4}$ & 1.89474 & $\scinot{1.86139}{-4}$ & 1.84435 \\
+        5   & $\scinot{2.82578}{-4}$ & 1.46574 & $\scinot{1.18713}{-4}$ & 1.82742 \\ \bottomrule
+    \end{tabular}
+    \endgroup
+\end{table}
+
+Tables~\ref{tab:u-rbc-conv} and~\ref{tab:x-rbc-conv} show $L_2$ and
+$L_\infty$ errors in $\u$ and $\X$ between successive grids. We observe first-order
+convergence, as expected.  Satisfied with the convergence of our implementation, we
+henceforth continue using the Bauer spiral to discretize RBCs and use the complete RBC
+model, which we verify in the next section.

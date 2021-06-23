@@ -1,16 +1,16 @@
-\section{Solution of the incompressible Navier-Stokes equations}\label{sec:discretization}
+\section{Solution of the incompressible Navier-Stokes equations}\label{sec:ins}
 
 \input{disc-figure}
 
 To discretize the Navier-Stokes equations~\eqref{eq:ins-momentum}--\eqref{eq:ins-incomp},
 we use a marker-and-cell (MAC) grid~\cite{Welch:1965jv}: for grid cell center $\x_i$,
-scalar-valued function $s(\x)$ is discretized at $\x_i$, and component $\e\cdot\vec{v}$
-of vector-valued function $\vec{v}(\x)$ at $\x_i - \sfrac12h\e$, where $\e$ is a
+scalar-valued function $s(\x)$ is discretized at $\x_i$, and component $\e_a\cdot\vec{v}$
+of vector-valued function $\vec{v}(\x)$ at $\x_i - \sfrac12h\e_a$, where $\e_a$ is a
 canonical basis vector. Define the centered difference operator
 \begin{equation*}
     D_a\phi(\x) = \frac{\phi(\x+\sfrac12 h\e_a) - \phi(\x-\sfrac12 h\e_a)}{h},
 \end{equation*}
-for which, e.g., $D_1$ approximates a derivative in the $x$ direction. The discrete
+for which, e.g., $D_1$ approximates differentiation in the $x$ direction. The discrete
 divergence, gradient, and Laplacian operators use centered differences, resulting in a
 2-point stencil for each discrete first derivative and the standard 7-point discrete
 Laplacian. We also define the centered average operator
@@ -21,53 +21,58 @@ By averaging $u$ in the $y$ direction and $v$ in the $x$ direction, we obtain co
 approximations to $u$ and $v$ at the center of a cell edge. Averaging, e.g., $u$ in the
 $x$ direction yields an approximation to $u$ at the cell center. We can therefore
 discretize the components of the advection term $\div(\u\otimes\u)$ by
-\begin{equation}
-    \div(\u\otimes\u) \approx %D_b[H^{bl}_rH^{am}_s (A_l u^s(\x,\,t)) (A_m u^r(\x,\,t))].
+\begin{equation}\label{eq:advection}
+    \div[h](\u\otimes\u) := %D_b[H^{bl}_rH^{am}_s (A_l u^s(\x,\,t)) (A_m u^r(\x,\,t))].
     \left[\begin{array}{c}
-            D_1[(A_1 u) (A_1 u)] + D_2[(A_1 v) (A_2 u)] + D_3[(A_1 w) (A_3 u)] \\
-            D_1[(A_2 u) (A_1 v)] + D_2[(A_2 v) (A_2 v)] + D_3[(A_2 w) (A_3 v)] \\
-            D_1[(A_3 u) (A_1 w)] + D_2[(A_3 v) (A_2 w)] + D_3[(A_3 w) (A_3 w)]
-        \end{array}\right].
-        \label{eq:advection}
+        D_1[(A_1 u) (A_1 u)] + D_2[(A_1 v) (A_2 u)] + D_3[(A_1 w) (A_3 u)] \\
+        D_1[(A_2 u) (A_1 v)] + D_2[(A_2 v) (A_2 v)] + D_3[(A_2 w) (A_3 v)] \\
+        D_1[(A_3 u) (A_1 w)] + D_2[(A_3 v) (A_2 w)] + D_3[(A_3 w) (A_3 w)]
+    \end{array}\right].
 \end{equation}
-Figure~\ref{fig:discretization} illustrates the steps in computing $D_2[(A_1 v)(A_2 u)]$,
-which appears in the first component in Equation~\eqref{eq:advection}. 
+The symbol $\div[h]$ represents the discrete divergence operator.  Figure~%
+\ref{fig:discretization} illustrates the steps in computing $D_2[(A_1 v)(A_2 u)]$, which
+appears in the first component in Equation~\eqref{eq:advection}. Morinishi \latin{et al}.
+show that this scheme, $Div. - S2$ in their parlance, is conservative under the assumption
+that $\u$ is discretely divergence-free~\cite{Morinishi:1998us}.
 
-To advance the solution from time $t$ to $t+k$, we use an implicit-explicit Runge-Kutta
-(RK) method. We use either the 2nd-order 2-stage scheme described by Peskin~%
-\cite{Peskin:2002go} or the 1-stage backward-forward Euler scheme~\cite{Ascher:1997tm},
-which require only one spreading operation~\eqref{eq:ib-spread} per time step.
-For the first stage of either scheme, discretizing~\eqref{eq:ins-momentum} to advance
-time to $t+\alpha k$, where $\alpha$ is $\sfrac12$ and $1$, respectively, yields linear
-solves of Helmholtz type,
-\begin{equation}
-    \begin{alignedat}{2}
-        &(I - \alpha k\rho^{-1}\mu \laplacian_h) \u^\ast = \u^n - \alpha k\left[\div[h]\left(\u^n\otimes\u^n\right) + \rho^{-1}\left(\f^{n+\alpha} - \grad[h]p^n\right)\right] \quad && \text{in}~\domain, \\
-        &\u^\ast = \u^{n+\alpha} + \alpha k \grad[h] q^{n} \quad && \text{on}~\partial\domain,
-    \end{alignedat}
+To advance the solution, we use an implicit-explicit Runge-Kutta (RK) method. We use
+either the 1-stage backward-forward Euler scheme~\cite{Ascher:1997tm} or the 2nd-order
+2-stage scheme described by Peskin~\cite{Peskin:2002go}, which require only one spreading
+operation~\eqref{eq:ib-spread} per time step. For the backward-forward Euler scheme,
+discretizing Equation~\eqref{eq:ins-momentum} to advance time to $t+\timestep$, yields
+linear solves of Helmholtz type,
+\begin{equation}\label{eq:disc-momentum}
+    (I - \timestep\rho^{-1}\mu \laplacian_h) \u^\ast = \u^n - \timestep\left[\div[h]\left(\u^n\otimes\u^n\right) + \rho^{-1}\left(\f^{n+1} - \grad[h]p^n\right)\right] \quad\text{in}~\domain, \\
 \end{equation}
-where $\u^n$ is the velocity field at time step $n$, and $\laplacian_h$, $\grad[h]$, and
-$\div[h]$ are the discrete Laplacian, gradient, and divergence, respectively. The force
-density $\f^{n+\alpha}$ is advanced explicitly. The intermediate velocity field $\u^\ast$
-may not be divergence-free. To obtain a velocity field that satisfies~%
+with boundary conditions
+\begin{equation}\label{eq:disc-bdy}
+    \u^\ast = \u^{n+1}_b + \timestep \grad[h] q^{n} \quad\text{on}~\partial\domain,
+\end{equation}
+where superscripts denote the time step, $\u_b$ is velocity boundary data, and
+$\laplacian_h$ and $\grad[h]$ are the discrete Laplacian and gradient, respectively. The
+force density $\f^{n+1}$ is advanced explicitly. The intermediate velocity field
+$\u^\ast$ may not be divergence-free. To obtain a velocity field that satisfies~%
 \eqref{eq:ins-incomp}, we use projection method II (PmII) of Brown, Cortez, and Minion~%
-\cite{Brown:2001bq}. The method gives appropriate boundary conditions for $\u^\ast$, 
-updates the pressure
+\cite{Brown:2001bq}. PmII updates the pressure
 \begin{equation*}
-    p^{n+\alpha} = p^n + (\rho I - \alpha k\mu\laplacian_h)q^{n+\alpha},
+    p^{n+1} = p^n + (\rho I - \timestep\mu\laplacian_h)q^{n+1},
 \end{equation*}
 and generates the divergence-free velocity field
-\begin{equation*}
-    \u^{n+\alpha} = \u^\ast - \alpha k\grad[h]q^{n+\alpha}
-\end{equation*}
-using pseudo-pressure $q^{n+\alpha}$, which satisfies
+\begin{equation}\label{eq:vel-update}
+    \u^{n+1} = \u^\ast - \timestep\grad[h]q^{n+1}
+\end{equation}
+using pseudo-pressure $q^{n+1}$, which satisfies
 \begin{equation}
 \begin{alignedat}{2}
-    &\alpha k \laplacian_h q^{n+\alpha} = \div[h]\u^\ast &&\quad \text{in}~\domain, \\
-    &\n\cdot\grad[h] q^{n+\alpha} = 0                    &&\quad \text{on}~\partial\domain.
+    &\alpha k \laplacian_h q^{n+1} = \div[h]\u^\ast &&\quad \text{in}~\domain, \\
+    &\n\cdot\grad[h] q^{n+1} = 0                    &&\quad \text{on}~\partial\domain.
 \end{alignedat}
 \end{equation}
-In total, we perform 3 Helmholtz solves and 1 Poisson solve per RK stage.
+The velocity update~\eqref{eq:vel-update} provides the boundary conditions~%
+\eqref{eq:disc-bdy} using a lagged value of the pseudo-pressure. The 2-stage RK method
+consists of a backward-forward Euler step followed by a Crank-Nicolson-midpoint step,
+which involves only minor modifications to Equation~\eqref{eq:disc-momentum}. In total,
+we perform 3 Helmholtz solves and 1 Poisson solve per RK stage.
 
 We employ preconditioned conjugate gradients (PCG) to perform the solves. We use
 Chebyshev iteration as a preconditioner for the Helmholtz solves and as an error
@@ -86,3 +91,5 @@ the Helmholtz matrices, we scale equations involving near-boundary values, exclu
 the offending discrete second derivative and ghost cell terms. The trade-off is 3 extra
 diagonal matrix-vector multiplications per RK stage for the ability to use PCG for the
 linear solves. For details, see~\ref{sec:boundary-correction}.
+
+% vim: cc=90 tw=89
