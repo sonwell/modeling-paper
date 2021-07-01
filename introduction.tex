@@ -1,17 +1,17 @@
 \section{Introduction}
 
-Blood is a complex mixture of cellular and fluid components, most notably composed of red
-blood cells (RBCs) and platelets suspended in plasma. RBCs are primarily a transport
-mechanism for oxygen throughout the body. Platelets, meanwhile, play a key role in the
-maintenance of the vasculature. Blood flows through vessels, which vary in diameter
-between a few centimeters in the aorta to a few microns in the capillaries. Healthy blood
-vessels are lined by a single layer of endothelial cells, called the endothelium.
-Interactions between platelets and RBCs, and between platelets and the endothelium, are
-important for a platelet's function, but these interactions are typically studied in
-isolation.
+Blood is a complex mixture of cellular and fluid-phase components, most notably composed of red
+blood cells (RBCs) and platelets suspended in plasma. RBCs are primarily the basis for
+transporting oxygen throughout the body. Platelets, meanwhile, play a key role in the
+maintenance of the vasculature. Blood flows under pressure through vessels, which vary in
+diameter between a few centimeters in the aorta to a few microns in the capillaries.
+Healthy blood vessels are lined by a single layer of endothelial cells, called the
+endothelium.  Interactions between platelets and RBCs, and between platelets and the
+endothelium, are important for a platelet's function, but these interactions are
+typically studied in isolation.
 
 At rest, RBCs are biconcave disk-shaped cells approximately $8\um$ in diameter. The
-volume fraction occupied by RBCs, or \term{hematocrit}, ranges approximately from 36\% to
+volume fraction occupied by RBCs, or \term{hematocrit}, ranges from approximately 36\% to
 45\% in healthy humans. In order to deliver oxygen throughout the body, RBCs must be
 extremely flexible, as some vessels are smaller than the cell itself. Due to the wide
 variety of shapes exhibited by RBCs, their mechanical properties were studied intently
@@ -24,29 +24,31 @@ bending moduli~\cite{Mohandas:1994tg}, which have guided RBC models ever since~%
 \cite{Pozrikidis:2003ft,Fai:2013do}.
 
 Platelets in their inactive state are ellipsoidal disks, approximately 3--$4\um$ by
-$1\um$ in size. They are much more rigid than RBCs, a property afforded to the platelet
-by its small size. Platelets are also much less prevalent, with 10--20 RBCs per platelet.
-Less is known about the mechanical properties of platelets. Models range from perfectly
-rigid ellipsoids~\cite{Wang:2013gs} to systems of springs with~%
-\cite{Erickson:2010ep,Skorczewski:2013jn} or without~\cite{Wu:2014gt} a preferred
-curvature. One study estimates the shear modulus and viscosity for platelets~%
-\cite{Haga:1998wa}, but models tend to use a higher shear modulus than estimated and
-neglect viscous effects altogether.
+$1\um$ in size. They are much more rigid than RBCs due to its actin and microtubule-based
+cytoskeleton, a property afforded to the platelet by its small size. Platelets are also
+much less numerous, with 10--20 RBCs per platelet. Less is known about the mechanical
+properties of platelets. Models range from perfectly rigid ellipsoids~\cite{Wang:2013gs}
+to systems of springs with~\cite{Erickson:2010ep,Skorczewski:2013jn} or without~%
+\cite{Wu:2014gt} a preferred curvature. One study estimates the shear modulus and
+viscosity for platelets~\cite{Haga:1998wa}, but models tend to use a higher shear modulus
+than estimated and neglect viscous effects altogether.
 
 RBCs tend to move towards the center of a blood vessel, and in doing so may encounter
 platelets, but the relative size and deformability of the RBC means a platelet is ejected
-from the RBC's path, ultimately relegating the platelet to an RBC-free layer along the
+from the RBC's path, ultimately pushing the platelet into an RBC-free layer along the
 vessel wall. This is the margination process; it affects platelets and leukocytes (white
 blood cells) alike, and is the focus of many studies~\cite{Freund:2007kx,Erickson:2010ep,
 Erickson:2011cf,Zhao:2011do,Kumar:2011dd,Zhao:2012ggba,Fedosov:2012dy,Kumar:2012ie,
 Fedosov:2013ul,Muller:2014is,Fedosov:2014bs, Vahidkhah:2014hy,Vahidkhah:2015ch,
 Mehrabadi:2016fn}. From their marginated positions, platelets survey the vessel wall for
-injury. Injury sites release chemical signals which activate the platelet. This, in turn,
-leads the platelet to bind to the injury site and release its own chemical signals to
-recruit further platelets, which eventually results in the formation of a thrombus. All
-of this occurs in flowing blood, which sweeps these chemical signals downstream. While
-mechanisms for platelet activation have been proposed for low and pathologically high
-shear rates, the case of physiologically high shear rates is undecided~\cite{Fogelson:2015fb}.
+injury. Injury sites expose proteins, e.g., collagen and von Willebrand factor, to which
+platelets can bind and become activated. Platelet contact with the injured wall is the
+essential first step. This, in turn, leads the platelet to bind to the injury site and
+release its own chemical signals to recruit further platelets, which eventually results
+in the formation of a thrombus. All of this occurs in flowing blood, which sweeps these
+chemical signals downstream. While mechanisms for platelet activation have been proposed
+for low and pathologically high shear rates, the case of physiologically high shear rates
+is undecided~\cite{Fogelson:2015fb}.
 
 Models of platelet motion over a thrombus indicate that there are stagnation zones
 immediately upstream and downstream of the thrombus, where the fluid velocity is very
@@ -61,15 +63,21 @@ interaction model the endothelium as a flat surface~\cite{Wu:2014gt,Vahidkhah:20
 
 To simulate whole blood, we use the immersed boundary (IB) method. The IB method was
 developed by Peskin to study the flow of blood around heart valves~\cite{Peskin:1972wa}.
-It has since been used to simulate, among numerous others, vibrations in the inner ear~%
-\cite{BeyerJr:1990tb}, the opening of a porous parachute~\cite{Kim:2006ku}, and sperm
-motility~\cite{Dillon:2011cu}, and has generated numerous related methods. The use of
-radial basis function-based methods to represent immersed structures within the IB method
-has been used to simulate flow around an aggregate of platelets, and bears the moniker
-RBF-IB~\cite{Shankar:2015km}. The IB method remains popular for modeling fluid-structure
-interaction because of its simplicity. By treating the immersed structures as an
-extension of the fluid, an arbitrary parcel is assumed to behave like a fluid, so its
-motion is governed by the Navier-Stokes equations.
+It has since been used to simulate, among numerous other applications, vibrations in the
+inner ear~\cite{BeyerJr:1990tb}, the opening of a porous parachute~\cite{Kim:2006ku}, and
+sperm motility~\cite{Dillon:2011cu}, and has generated numerous related methods. The use
+of radial basis function (RBF)-based methods to represent immersed structures within the
+IB method has been applied to flow around an aggregate of platelets, and bears the
+moniker RBF-IB~\cite{Shankar:2015km}. The IB method remains popular for modeling fluid-%
+structure interaction because of its simplicity. By treating the immersed structures as
+an extension of the fluid, an arbitrary parcel is assumed to behave like a fluid, so its
+motion is governed by the Navier-Stokes equations, driven, perhaps, by local body forces
+through which the immersed structures influence the fluid motion.
+
+In addition to the IB method, RBFs have been used for generating differentiation matrices
+for the solution of PDEs~\cite{Fasshauer:2007ui}, surface reconstruction~%
+\cite{Hardy:1971tb,Carr:2001tb}, and in the context of regularized Stokeslets to
+represent interfaces and approximate their geometries~\cite{Olson:2015ja}.
 
 In this work, we validate the RBF-IB methodology for the simulation of whole blood. We
 use it to compare the flow of whole blood across bumpy and flat walls and characterize
@@ -77,8 +85,8 @@ the behavior and interactions of platelets. This paper proceeds incrementally, b
 with an overview of the IB method in Section~\ref{sec:ib}. We then describe our method
 for solving the incompressible Navier-Stokes equations in Section~\ref{sec:ins}. We
 describe the energy models used for each type of cell in Section~\ref{sec:energy} and
-Section~\ref{sec:rbfs} details our methods for discretizing the cells. Our results are
-given in Section~\ref{sec:results}.  Finally, we discuss the implications of our findings
-in Section~\ref{sec:conclusion}.
+Section~\ref{sec:rbfs} details our methods for discretizing the cells using RBFs. Our
+results are presented in Section~\ref{sec:results}.  Finally, we discuss the implications
+of our findings in Section~\ref{sec:conclusion}.
 
 % vim: cc=90 tw=89

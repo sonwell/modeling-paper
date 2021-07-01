@@ -10,315 +10,69 @@ will encounter situations where satisfying boundary conditions with linear ghost
 extrapolation leads to numerical error. This appendix explores these errors and provides
 a resolution that maintains compatibility with the conjugate gradients method.
 
-\subsection{A simple case}
-
-To illustrate the need for boundary correction, we consider a simplified problem. Because
-every linear solve in the fluid solver depends on some form of the discrete Laplacian, we
-focus our attention on that operator. Consider the 1-dimensional diffusion problem for
-$u = u(x, t)$,
-\begin{alignat}{2}
-    u_t      &= \mu u_{xx} + f           &&\quad \text{for} \ x\in(0,\,1), \label{eq:1d-diff} \\
-    \gamma_0 &= \alpha_0 u + \beta_0 u_x &&\quad \text{at} \ x=0, \label{eq:1d-0bcs} \\
-    \gamma_1 &= \alpha_1 u - \beta_1 u_x &&\quad \text{at} \ x=1, \label{eq:1d-1bcs}
-\end{alignat}
-where $\alpha_m^2 + \beta_m^2 \neq 0$ for $m = 0,\,1$. Here, subscripts $t$ and $x$
-indicate partial differentiation with respect to time and space, respectively. We
-discretize $[0,\,1]$ into $N$ cells of length $h=1/N$ and let $u_i^n$ approximate
-$u(x_i,\,n\timestep)$ at $x_i = h(g + i-1)$, where $i$ ranges over $\range{N}$, time $t =
-n\timestep$, and $g\in(0,\,1]$ is the one-dimensional grid staggering. Consider the
-boundary at $x=0$.  Let $x_0 = h(g-1)$ be a ghost point to the left of the boundary, and
-let $u^n_0$ be the extrapolated value of $u$ at the ghost point. Near the boundary, we
-use the linear approximations
-\begin{equation}\label{eq:1d-approx}
-    u(0, n\timestep) \approx au^n_1 + bu^n_g \quad \text{and} \quad u_x(0, nk) \approx a'u^n_1 + b'u^n_g.
+For a rectangular domain with Dirichlet boundary conditions along its top and bottom and
+periodic boundaries elsewhere, consider a region of the domain adjacent to a boundary.
+The horizontal component of the fluid velocity, $u$, is discretized at locations
+staggered $h/2$ vertically above the bottom of a grid cell, or below the top of a grid
+cell, as seen in Figure~\ref{fig:discretization}(b). We have boundary data for $u$ along
+the boundary at the same $x$ and $z$ coordinates as the grid points. Using a linear
+interpolant to fill a value at the ghost cell $h/2$ below the bottom boundary yields
+\begin{equation}\label{eq:ghost}
+    u_{i,\,-1,\,k} = 2\gamma_{i,\,k} - u_{i,\,0,\,k},
 \end{equation}
-We expect $a'$ and $b'$ to be of order $\mathcal{O}(h^{-1})$, and require that these
-approximations be at least first order:
-\begin{equation}\label{eq:1st-order}
-    a+b=1, \quad a'+b'=0,\ \quad \text{and} \quad a'hg + b'h(g-1) = 1.
-\end{equation}
-For simplicity, we drop the subscripts from $\alpha_0$, $\beta_0$, and $\gamma_0$, and
-the superscripts indicating the timestep. Substituting into the boundary condition yields
-\begin{equation}\label{eq:1d-bc}
-    \gamma = \alpha(au_1 + bu_0) + \beta(a'u_1 + b'u_0) + \mathcal{O}(h).
-\end{equation}
-Given a value $u_1$ and boundary data $\gamma$, we can extrapolate
-\begin{equation}
-    u_0 \approx (\alpha b + \beta b')^{-1}(\gamma-(\alpha a + \beta a')u_1),
-\end{equation}
-when $\alpha b + \beta b' \neq 0$. In the extraordinary case that this does not hold, the
-boundary condition is of Robin type, with neither $\alpha$ nor $\beta$ zero, and value at
-the ghost point is arbitrary.  We then have four linearly independent conditions for the
-weights $a$, $b$, $a'$, and $b'$: the three conditions in~\eqref{eq:1st-order} and
-$\alpha b + \beta b' = 0$. Solving for the weights reduces~\eqref{eq:1d-bc} to
-$\alpha u_1 = \gamma$. We do not consider this case further.
-
-Assuming $\alpha b + \beta b' \neq 0$, the standard 3-point discrete Laplacian at $x_1$
-gives the approximation
-\begin{equation}
-    \label{eq:1d-3ptl}
-    u_0 - 2u_1 + u_2
-    = (\alpha b + \beta b')^{-1}\gamma - \left(2 + (\alpha b + \beta b')^{-1}(\alpha a + \beta a')\right)u_1 + u_2.
-\end{equation}
-Replacing approximations with exact values and Taylor expanding about $x_1$ yields
-\begin{equation}
-    \label{eq:1d-3ptl-expanded}
+where $u_{i,\,-1,\,k}$ is the value at the ghost cell, $\gamma_{i,\,k}$ is the boundary
+datum, and $u_{i,\,1,\,k}$ is the value at the grid point within the domain. Using the
+standard 7-point Laplacian then yields
+\begin{equation}\label{eq:disc-lap}
     \begin{aligned}
-        u_0 - 2u_1 + u_2
-        &= (\alpha b + \beta b')^{-1}\left(\alpha\left(u-hgu_{xx} + \sfrac12(hg)^2 u_{xx}\right) + \beta(u_x - hgu_{xx})\right) \\
-        &\quad -\left(2+(\alpha b+\beta b')^{-1}(\alpha a + \beta a')\right)u + \left(u + hu_x + \sfrac12 h^2u_{xx}\right) + \mathcal{O}(h^3) \\
-        &= (\alpha b + \beta b')^{-1}(\alpha(1-a-b) - \beta(a'+b'))u \\
-        &\quad +(\alpha b + \beta b')^{-1}(\beta - \alpha hg + (\alpha b + \beta b')h)u_x \\
-        &\quad +(\alpha b + \beta b')^{-1}\left(\sfrac12\alpha(gh)^2-\beta hg +\sfrac12(\alpha b + \beta b')h^2\right)u_{xx} + \mathcal{O}(h^3).
+        (\laplacian_h \arr{u})_{i,\,0,\,k}
+        &= (D_{xx}\arr{u})_{i,\,0,\,k} + h^{-2}\left[u_{i,\,-1,\,k} - 2u_{i,\,0,\,k} + u_{i,\,1,\,k}\right] + (D_{zz}\arr{u})_{i,\,0,\,k} \\
+        &= (D_{xx}\arr{u})_{i,\,0,\,k} + h^{-2}\left[2\gamma_{i,\,k} - 3u_{i,\,0,\,k} + u_{i,\,1,\,k}\right] + (D_{zz}\arr{u})_{i,\,0,\,k},
     \end{aligned}
 \end{equation}
-The coefficient of $u$ vanishes according to~\eqref{eq:1st-order}. We further require
-that the coefficient of $u'$ be zero. That is,
-\begin{equation*}
-    \alpha b + \beta b' = -h^{-1}(\beta-\alpha hg).
-\end{equation*}
-Choosing $a=1-g$, $b=g$, $a'=h^{-1}$, and $b'=-h^{-1}$ satisfies these conditions. As a
-result,
-\begin{equation*}
-    \alpha a + \beta a' = h^{-1}(\beta + \alpha h(1-g)).
-\end{equation*}
-Finally, the first possibly nonzero coefficient is that of $u_{xx}$:
-\begin{equation}
+where $\arr{u}$ is the vector of $u_{i,\,j,\,k}$ values and $D_{xx}$ and $D_{zz}$ are the
+standard 3-point discrete second derivative operators with respect to $x$ and $z$,
+respectively. Because $D_{xx}\arr{u}$ and $D_{zz}\arr{u}$ only involve values at points
+within the domain, they are known to approximate their continuous counterparts to second
+order. We therefore focus on the remaining term. Replacing $u_{i,\,j,\,k}$ with
+$u(hi,\,h(j+0.5),\,h(k+0.5))$ and Taylor expanding about $(hi,\,0.5h,\,h(k+0.5))$ yields
+\begin{equation}\label{eq:expansion}
     \begin{aligned}
-        h^{-2}\left[u_0 - 2u_1 + u_2\right]
-        &\hphantom{:}= \left[\sfrac12 + g(\beta-\alpha hg)^{-1}(\beta-\sfrac12 hg)\right]u_{xx} + \mathcal{O}(h^2) \\
-        &\hphantom{:}= \left[1-\sfrac12(\beta-\alpha hg)^{-1}(\beta(1-2g)-\alpha hg(1-g))\right]u_{xx} + \mathcal{O}(h^2) \\
-        &:= (1-\epsilon)u_{xx} + \mathcal{O}(h^2).
-    \end{aligned}
-    \label{eq:lap-error}
-\end{equation}
-Near the boundary, when $\epsilon\neq0$, \latin{i.e.}, $\beta(1-2g)-\alpha hg(1-g)\neq0$,
-these approximations yield a $0^\text{th}$-order approximation to the Laplacian. Cases
-where $\epsilon \neq 0$ arise naturally from using staggered grids in a domain with at
-least one non-periodic dimension. In fact, for fixed $\alpha$ and $\beta$, only
-$g=g^\ast(\sfrac{2\beta}{\alpha h})$ results in $\epsilon = 0$, where
-\begin{equation*}
-    g^\ast(r) = \begin{cases}
-        \sfrac12\left(1+r+\sqrt{1+r^2}\right), & r \le 0 \\
-        \sfrac12\left(1+r-\sqrt{1+r^2}\right), & r > 0.
-    \end{cases}
-\end{equation*}
-For Neumann boundaries, $\epsilon = 0$ when $g = 0.5$; for Dirichlet boundaries, when
-$g = 1$. The case for the opposing boundary is very similar: simply substitute the
-correct boundary condition coefficients and data, $-h$ for $h$, and when $g\neq1$, $1-g$
-for $g$. We will use $\epsilon_0$ and $\epsilon_1$, when necessary, to distinguish the
-error factor when approximating the Laplacian at the $x=0$ and $x=1$ boundaries,
-respectively.
-
-\begin{figure}[t]
-%\tikzexternalenable
-\centering
-\begin{tikzpicture}
-    \begin{axis}[view={0}{90}, colorbar horizontal, xmin=0, xmax=0.5, ymin=0.01, ymax=0.99, ylabel=$x$, xlabel=$t$, scale only axis, width=1.95in, clip=false]
-        \addplot3[surf, mesh/cols=100, shader=interp] file {dirichlet.dat};
-        \node at (0.45, 0.9) {(a)};
-    \end{axis}
-\end{tikzpicture}
-\hspace{0.5cm}
-\begin{tikzpicture}
-    \begin{axis}[view={0}{90}, colorbar horizontal, xmin=0, xmax=0.5, ymin=0.01, ymax=0.99, xlabel=$t$, ytick=\empty, scale only axis, width=1.95in, clip=false]
-        \addplot3[surf, mesh/cols=99, shader=interp] file {neumann.dat};
-        \node at (0.45, 0.9) {(b)};
-    \end{axis}
-\end{tikzpicture}
-\caption[Propagation of boundary errors without correction]{%
-    Propagation of errors near the boundary in approximating the solution of
-    $u_t = u_{xx} + 1$ on $[0,\,1]$ without correction at the boundary. Initially, $u$ is
-    analytically steady: $u(x,\,0) = x(1-x)/2$. We expect no change in $u$ over time.
-    (a) $u$ satisfies homogeneous Dirichlet boundary conditions. The domain is
-    discretized using $h=0.01$, with points $x_i=h(i-0.5)$ for $i=1,\,\ldots,\,100$.
-    (b) $u$ satisfies the Neumann boundary conditions $u_x(0,\,t)=-u_x(1,\,t)=\sfrac12$.
-    The domain is discretized using $h=0.01$, with points $x_i = hi$ for
-    $i=1,\,\ldots,\,99$.
-}\label{fig:error}
-%\tikzexternaldisable
-\end{figure}
-
-Suppose that in approximating the solution to~\eqref{eq:1d-diff}--\eqref{eq:1d-1bcs}, we
-employ the Crank-Ni\-col\-son timestepping scheme. The discrete equations are
-\begin{equation}
-    \frac{u_i^{n+1}-u_i^n}{\timestep} = \frac{\mu}2\left(\frac{u_{i-1}^{n+1}-2u_i^{n+1}+u_{i+1}^{n+1}}{h^2} + \frac{u_{i-1}^n-2u_i^n+u_{i+1}^n}{h^2}\right) + f_i^{n+1/2},
-    \label{eq:disc-1d-diff}
-\end{equation}
-where superscripts denote the time step and subscripts the space step. With
-$\lambda=\mu\timestep$, we rewrite this in matrix form as
-\begin{equation}\label{eq:disc-1d-diff-mat}
-    (I-\sfrac12\lambda \laplacian_h)\vec{u}^{n+1} = (I+\sfrac12\lambda \laplacian_h)\vec{u}^n + \lambda B_h\vec{\gamma}^{n+1/2} + \timestep\vec{f}^{n+1/2},
-\end{equation}
-where $B_h$ modifies equations near the boundary with boundary data, according to~%
-\eqref{eq:1d-3ptl}. As we have shown, this introduces an error near the boundary.
-This error will propagate into the center of the domain at a rate dependent upon $\mu$.
-Figure~\ref{fig:error} illustrates this phenomenon. The convergence test in Table~%
-\ref{tab:dir-bdy-conv} shows that these errors vanish at second order for Dirichlet
-boundary conditions. While Dirichlet boundary errors vanish at second order, the method
-converges to the wrong steady state. It is clear from Figure~\ref{fig:error}(b) that
-despite the first-order convergence shown in Table~\ref{tab:neu-bdy-conv}, Neumann
-boundary errors will only grow as the simulation progresses.
-
-\begin{table}[t]
-\centering
-\caption[Convergence of Dirichlet boundary errors on a staggered grid]{%
-    Convergence test for Crank-Nicolson timestepping without boundary correction for the
-    test problem $u_t = u_{xx} + 1$ with initial steady conditions $u(x,\,0) = x(1-x)/2$
-    and homogeneous Dirichlet boundary conditions.
-}\label{tab:dir-bdy-conv}
-\begingroup
-\setlength{\tabcolsep}{9pt}
-\renewcommand{\arraystretch}{1.5}
-\begin{tabular}{cc|cc|cc}
-    \toprule
-    $N$ & $\timestep$ (ms) & $\|u-u_0\|_2$ &   order & $\|u-u_0\|_{\infty}$ &    order \\ \midrule
-     25 & 4                &   142.438496  &         &           194.026473 &          \\
-     50 & 2                &    35.639706  & 1.99878 &            49.254058 &  1.977949 \\
-    100 & 1                &     8.911804  & 1.99969 &            12.406781 &  1.989114 \\
-    200 & 0.5              &     2.228068  & 1.99992 &             3.113348 &  1.994590 \\
-    \bottomrule
-\end{tabular}
-\endgroup
-\end{table}
-
-\begin{table}[t]
-\centering
-\caption[Convergence of Neumann boundary errors on a staggered grid]{%
-    Convergence test for Crank-Nicolson timestepping without boundary correction for the
-    test problem $u_t = u_{xx} + 1$ with initial steady conditions $u(x,\,0) = x(1-x)/2$
-    and Neumann boundary conditions $u_x(0,\,t) = -u_x(1,\,t) = \sfrac12$.
-}\label{tab:neu-bdy-conv}
-\begingroup
-\setlength{\tabcolsep}{9pt}
-\renewcommand{\arraystretch}{1.5}
-\begin{tabular}{cc|cc|cc}
-    \toprule
-    $N$ & $\timestep$ (ms) & $\|u-u_0\|_2$ &   order & $\|u-u_0\|_{\infty}$ &   order  \\ \midrule
-     25 & 4                &   4308.714364 &         &          6950.600999 &          \\
-     50 & 2                &   2141.879730 & 1.00838 &          3559.181576 & 0.965592 \\
-    100 & 1                &   1067.893238 & 1.00411 &          1801.330925 & 0.982482 \\
-    200 & 0.5              &    533.192720 & 1.00204 &           906.192341 & 0.991174 \\
-    \bottomrule
-\end{tabular}
-\endgroup
-\end{table}
-
-
-\subsection{One-dimensional correction}
-
-To improve the approximations near the boundary, we replace the corresponding rows of~%
-\eqref{eq:disc-1d-diff-mat} with those obtained by discretizing the scaled equation
-\begin{equation}\label{eq:scaled}
-    (1-\epsilon)u_t = \mu(1-\epsilon)u_{xx} + (1-\epsilon)f.
-\end{equation}
-The solution should be identical to that of the original equation as long as
-$\epsilon\neq 1$, but the Laplacian constructed above need not be modified to approximate
-$(1-\epsilon) u_{xx}$. We simply multiply the remaining terms by $1-\epsilon$. Define the
-modified identity matrix
-\begin{equation}\label{eq:mod-ident}
-    \tilde{I} = \left[\begin{array}{ccccc}
-            1-\epsilon_0 &   &        &   &         \\
-                         & 1 &        &   &         \\
-                         &   & \ddots &   &         \\
-                         &   &        & 1 &         \\
-                         &   &        &   & 1-\epsilon_1
-            \end{array}\right].
-\end{equation}
-Rescaling equations for values near the boundary, equation~\eqref{eq:disc-1d-diff-mat}
-becomes
-\begin{equation}\label{eq:1d-diff-mat}
-    (\tilde{I}-\sfrac12\lambda \laplacian_h)\vec{u}^{n+1} = (\tilde{I}+\sfrac12\lambda \laplacian_h)\vec{u}^n + \lambda B\vec{\gamma}^{n+1/2} + \timestep\tilde{I}\vec{f}^{n+1/2}.
-\end{equation}
-This improves the error near the boundary to second-order at the cost of one more
-diagonal matrix-vector multiplication.
-
-Alternatively, one could approximate the Laplacian near the boundary using a quadratic
-interpolant. It would always give a second-order approximation but would break the
-symmetry of the discrete Laplacian. Linear interpolation maintains symmetry, and the
-coefficients obtained near the boundary are exactly those of the quadratic interpolant,
-scaled by $1-\epsilon$. The correction recovers the solutions to the problems illustrated
-in Figure~\ref{fig:error} to machine precision. By modifying only the identity matrix,
-the discrete Helmholtz operator, $\tilde{I}-\sfrac12\lambda \laplacian_h$, maintains its
-symmetry, and $\epsilon < 1$ is sufficient to maintain positive-definiteness. Many types
-of boundary conditions satisfy $\epsilon < 1$, most notably all boundary conditions of
-Dirichlet or Neumann type. We can therefore continue to use conjugate gradients for the
-linear solves.
-
-\subsection{Higher-dimensional correction}
-
-We now consider a higher-dimensional Laplacian. Construction, and therefore correction,
-proceeds recursively, by analog to the continuous Laplacian. For example, the
-three-dimensional Laplacian is the sum of the two-dimensional Laplacian in $x$ and $y$
-and the second-derivative operator with respect to $z$. The discrete analog of adding
-operators is the tensor sum, e.g.,
-\begin{equation*}
-    L_y \oplus L_x = I_y \odot L_x + L_y \odot I_x,
-\end{equation*}
-where $L_x$ and $L_y$ are square, one-dimensional discrete second-derivative operators
-with respect to $x$ and $y$, respectively; $I_x$ and $I_y$ are identity operators the
-same size as $L_x$ and $L_y$, respectively; and $\odot$ is the Kronecker tensor product.
-The Kronecker tensor product takes two square matrices, $A = (a_{ij}) \in \R^{n\times n}$
-and $B \in \R^{m\times m}$, and produces the $mn\times mn$ block matrix
-\begin{equation*}
-    A \odot B = \left[\begin{array}{cccc}
-            a_{11} B & a_{12} B & \hdots & a_{1n} B \\
-            a_{21} B & a_{22} B & \hdots & a_{2n} B \\
-            \vdots   & \vdots   & \ddots & \vdots   \\
-            a_{n1} B & a_{n2} B & \hdots & a_{nn} B
-    \end{array}\right].
-\end{equation*}
-If $A$ and $B$ are also symmetric, so is $A \odot B$. The two-dimensional discrete
-identity operator is also constructed via tensor product: $I_y \odot I_x$. The
-$d$-dimensional discrete Laplacian and identity operators are computed recursively via
-\begin{equation}\label{eq:hi-d-operators}
-    \begin{aligned}
-        &L^{[d]} = I^{[1]} \odot L^{[d-1]} + L^{[1]} \odot I^{[d-1]} = L^{[1]} \oplus L^{[d-1]}, \\
-        &I^{[d]} = I^{[1]} \odot I^{[d-1]},
+    h^{-2}\left[2\gamma_{i,\,k} - 3u_{i,\,0,\,k} + u_{i,\,1,\,k}\right]
+    &= h^{-2}\left[2\left(u - \frac{h}{2}u_y + \frac{h^2}{8}u_{yy} - \frac{h^3}{48}u_{yyy}\right) - 3u\right. \\
+    &\hphantom{=h^{-2}[}\left.+ \left(u + hu_y + \frac{h^2}{2}u_{yy} - \frac{h^3}{6}u_{yyy}\right)+\mathcal{O}(h^4)\right] \\
+    &= \frac34u_{yy} - \frac{5h}{24}u_{yyy} + \mathcal{O}(h^2),
     \end{aligned}
 \end{equation}
-where the superscript indicates the dimensionality of the operators.
+\latin{i.e.}, the leading coefficient is $3/4$ where we expect 1, meaning we obtain a
+0\textsuperscript{th}-order approximation to $u_{yy}$ near the boundary. The case is the
+same for the upper boundary.
 
-Consider a two-dimensional diffusion problem on the domain $\domain = [0,\,1]^2$,
-\begin{alignat}{2}
-    u_t      &= \mu\left(\frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2}\right) u + f     &&\quad \text{in} \ \domain, \label{eq:2d-diff} \\
-    \gamma   &= \mathcal{B}u             &&\quad \text{on} \ \partial\domain \label{eq:2d-bdy},
-\end{alignat}
-where $\mathcal{B}$ is a boundary operator.  We imagine the case where either one of the
-second derivatives composing the Laplacian requires correction at the boundary. Without
-loss of generality, we will assume they both do. We scale Equation~\eqref{eq:2d-diff} as
-we did in Equation~\eqref{eq:scaled}:
-\begin{equation}\label{eq:2d-scale-x}
-    (1-\epsilon_x) u_t = \mu\left(\frac{\partial^2}{\partial x^2} + (1-\epsilon_x)\frac{\partial^2}{\partial y^2}\right) u + (1-\epsilon_x) f
+Correcting this while maintaining symmetry of the $\laplacian_h$ operator is not as easy
+as using a second order interpolant for the ghost cell value or scaling the stencil for
+$D_{yy}$ near the boundary by $4/3$. Either of these options changes the weight of
+$u_{i,\,1,\,k}$, which destroys symmetry. Instead, we scale any equation involving a
+ghost cell by $3/4$, excluding the bracketed terms in Equation~\eqref{eq:disc-lap}. We
+define the modified identity operator $\tilde{I}$, which has a value of $3/4$ on the
+diagonal for rows corresponding to near-boundary equations and 1 elsewhere on the
+diagonal. We define the modified discrete Laplacian
+\begin{equation}\label{eq:mod-disc-lap}
+    \tilde{\laplacian}_h = \tilde{I}D_{xx} + D_{yy} + \tilde{I}D_{zz},
 \end{equation}
-near an $x$ boundary,
-\begin{equation}\label{eq:2d-scale-y}
-    (1-\epsilon_y) u_t = \mu\left((1-\epsilon_y)\frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2}\right) u + (1-\epsilon_y) f
-\end{equation}
-near a $y$ boundary, and
-\begin{equation}\label{eq:2d-scale-xy}
-    (1-\epsilon_{xy}) u_t = \mu\left((1-\epsilon_y)\frac{\partial^2}{\partial x^2} + (1-\epsilon_x)\frac{\partial^2}{\partial y^2}\right) u + (1-\epsilon_{xy}) f
-\end{equation}
-near $x$ and $y$ boundaries, where $\epsilon_x$ and $\epsilon_y$ correspond to the error
-in the discrete second $x$ and $y$ derivatives, respectively, and
-$1-\epsilon_{xy} = (1-\epsilon_x)(1-\epsilon_y)$. Let the subscripts $x$ and $y$ denote
-the 1-dimensional operator for the $x$ and $y$ dimension, respectively, of the modified
-identity, $\tilde{I}$, second derivative, $L$, and boundary operator $B$. We write the
-discretization of Equations~\eqref{eq:2d-scale-x}--\eqref{eq:2d-scale-xy} with
-Crank-Nicolson timestepping succinctly as
-\begin{multline}\label{eq:2d-corr-disc}
-    (\tilde{I}_y \odot \tilde{I}_x) \frac{\u^{n+1} - \u^n}{\timestep} =
-    \frac{\mu}{2}(\tilde{I}_y \odot L_x + L_y \odot \tilde{I}_x)(\u^{n+1} + \u^n) \\
-    +(\tilde{I}_y \odot B_x + B_y \odot \tilde{I}_x)\gamma^{n+\sfrac12} + (\tilde{I}_y \odot \tilde{I}_x) f^{n+\sfrac12},
-\end{multline}
-Letting $\tilde{I} = \tilde{I}_y \odot \tilde{I}_x$,
-$\laplacian_h = \tilde{I}_y \odot L_x + L_y \odot \tilde{I}_x$, and
-$B_h = \tilde{I}_y \odot B_x + B_y \odot \tilde{I}_x$, we can express Equation~%
-\eqref{eq:2d-corr-disc} identically to its one-dimensional analog, Equation~%
-\eqref{eq:1d-diff-mat}. For boundaries that do not require correction,
-$\tilde{I}\equiv I$, and the recursion~\eqref{eq:hi-d-operators} can be used to construct
-even higher-dimensional operators by replacing identity operators with their
-boundary-corrected counterparts. The system is symmetric positive-definite if every
-$\epsilon > 0$, and can be solved via conjugate gradients.
+where, away from the boundary, $D_{yy}$ is the standard 3-point discrete second
+derivative with respect to $y$, and defined according to Equation~\eqref{eq:disc-lap}
+otherwise. The resulting $D_{yy}$ is symmetric. In addition to replacing the discrete
+Laplacian $\laplacian_h$ with $\tilde{\laplacian}_h$, a timestepping scheme using this
+correction must replace instances of the identity matrix, many of which not written
+explicity, with the modified identity $\tilde{I}$. A stage of such a timestepping scheme
+takes the form
+\begin{equation*}
+    (\tilde{I} - \alpha k\tilde{\laplacian}_h)\arr{u}^n = (\tilde{I} + (1-\alpha)k\tilde{\laplacian}_h)\arr{u}^{n-1} + B_h\arr{\gamma} + \tilde{I}\arr{f},
+\end{equation*}
+where $B_h$ is an appropriate operator that modifies equations near the boundary with
+boundary data. This corrected scheme involves modified operators, but requires only an
+additional diagonal multiplication compared to the uncorrected scheme. The Helmholtz
+operator on the left-hand side remains symmetric positive definite after correction, and
+is therefore suitable for solution via conjugate gradients.
 
 % vim: cc=90 tw=89

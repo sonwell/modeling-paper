@@ -6,22 +6,24 @@ representing the RBC membrane experience drag and random forces. Gounley and Pen
 IB machinery to spread membrane viscosity to the fluid, thereby modifying the fluid
 stress term~\cite{Gounley:2015ho}. Our intent in adding a viscoelastic response is to aid
 in the numerical stability of the discrete RBCs. We wish to verify that the extended
-model, with dissipative force, retains the ability to tumble and tank-tread. To that end,
-we place a single RBC with $\data\cardinality = 625$ and $\sample\cardinality = 2500$ in
-the same domain as the previous section, now discretized to have $h = 0.4\um$ and with
-moving top and bottom walls. In the interest of reducing simulation time, we now use the
-backward-forward Euler timestepping scheme with a time step of $\timestep=0.1\us$. Here,
-the IB interaction operations use the 4-point B-spline, $\kernel(r) = B_3(r)$, which was
-first considered by Lee~\cite{Lee:2020tf}. It is similar in shape to the Roma kernel but
-has better smoothness properties. To recover the tumbling motions, the top wall has a
-fixed velocity of $\u_b=400\umpersec$ and the bottom wall $-\u_b$. This generates a shear
-rate of $\shear=50\persec$ in the absence of cells.  For tank-treading experiments, we
-use $\u_b = 8\mmpersec$ to generate a shear rate of $\shear=1000\persec$. These values
-are chosen outside the transitional region between tumbling and tank-treading for the
-elastic parameters used for the RBC~\cite{Kruger:2013ji}. The velocity field is initially
-steady for flow without cells. We rotate the cell 1 radian about the $x$-axis from a
-horizontally aligned orientation and place it at the center of the domain. The RBC
-exhibits both of these behaviors; Figure~\ref{fig:tumble-tread} shows one period of each.
+model, with dissipative force, retains the ability to tumble and tank-tread, which is
+commonly used to validate other RBC models~\cite{Yazdani:2011cl,Omori:2012hw,Fai:2013do,
+Xu:2013kk}. To that end, we place a single RBC with $\data\cardinality=625$ and
+$\sample\cardinality = 2500$ in the same domain as the previous section, now discretized
+to have $h = 0.4\um$ and with moving top and bottom walls. In the interest of reducing
+simulation time, we now use the backward-forward Euler timestepping scheme with a time
+step of $\timestep=0.1\us$. Here, the IB interaction operations use the 4-point B-spline,
+$\kernel(r) = B_3(r)$, which was first considered by Lee~\cite{Lee:2020tf}. It is similar
+in shape to the Roma kernel but has better smoothness properties. To recover the tumbling
+motions, the top wall has a fixed velocity of $\u_b=400\umpersec$ and the bottom wall
+$-\u_b$. This generates a shear rate of $\shear=50\persec$ in the absence of cells. For
+tank-treading experiments, we use $\u_b = 8\mmpersec$ to generate a shear rate of
+$\shear=1000\persec$. These values are chosen outside the transitional region between
+tumbling and tank-treading for the elastic parameters used for the RBC~%
+\cite{Kruger:2013ji}. The velocity field is initially steady for flow without cells. We
+rotate the cell 1 radian about the $x$-axis from a horizontally aligned orientation and
+place it at the center of the domain. The RBC exhibits both of these behaviors; Figure~%
+\ref{fig:tumble-tread} shows one period of each.
 
 \begin{figure}[t]
     \centering

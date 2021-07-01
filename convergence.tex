@@ -38,7 +38,7 @@ spreading and interpolation and the 2-stage RK method described in Section~\ref{
 to advance the fluid velocity. Fluid grids are chosen to have $20r$ grid points per
 $16\um$ in each direction for $r$ from 1 to 6. On successive grids, we compare the fluid
 velocity at cell centers in a regular grid of $20^3$ cells and surface positions at 1000
-surface points. For convergence or order $p$, we expect the ratio of successive errors to
+surface points. For convergence of order $p$, we expect the ratio of successive errors to
 satisfy
 \begin{equation*}
     \frac{\epsilon_r}{\epsilon_{r+1}} = \left|\frac{((r+1)/r)^p-1}{((r+2)/(r+1))^{-p}-1}\right|,

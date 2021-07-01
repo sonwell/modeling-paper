@@ -77,13 +77,13 @@ $h = 0.2\um$, and place two RBCs therein, each with $\data\cardinality=2500$ and
 $\sample\cardinality=10000$. The ratio $\sample\cardinality/\data\cardinality=4$ is
 chosen so that sample sites with spacing $h$ means data sites have spacing $2h$. We
 believe this to suffice in preventing cells from intersecting, but this is not guaranteed
-if the points do not maintain appropriate spacing throughout a simulation. We continue
-to use the 2-stage RK method with time step $\timestep = 50\ns$. To interpolate
-velocities and spread forces, we use the 4-point cosine $\kernel$~\cite{Peskin:2002go}.
-The cells are placed with cell centers on the line $x = z$, $y = 8\um$. They are
-initially separated by a gap of $4h = 0.8\um$ between their convex hulls, \latin{i.e.},
-ignoring the concavities. Inspired by Crowl \& Fogelson~\cite{Erickson:2011cf}, we add
-the fictitious force density
+if the points do not maintain appropriate spacing throughout a simulation. We use the
+2-stage RK method with time step $\timestep = 50\ns$. To interpolate velocities and
+spread forces, we use the 4-point cosine $\kernel$~\cite{Peskin:2002go}. The cells are
+placed with cell centers on the line $x = z$, $y = 8\um$. They are initially separated by
+a gap of $4h = 0.8\um$ between their convex hulls, \latin{i.e.}, ignoring the
+concavities. Inspired by Crowl \& Fogelson~\cite{Erickson:2011cf}, we add the fictitious
+force density
 \begin{equation*}
     \F_\text{fict} = \pm 0.1\dynpercm\cdot(\e_1+\e_2)/\sqrt{2},
 \end{equation*}

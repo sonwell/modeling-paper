@@ -6,20 +6,20 @@ diffeomorphic to $\sphere$, namely, RBC and platelet membranes.
 
 As before, consider a function $\psi(\Xp):\sphere \to \mathbb{R}$. We wish to find a set
 of quadrature weights $\omega_j$ such that
-\begin{equation*}
+\begin{equation}\label{eq:quad-desire}
     \int_{\sphere} \psi(\Xp) \d\Xp \approx \sum_{j=1}^{\sample\cardinality} \omega_j \psi(\Xpsj).
-\end{equation*}
+\end{equation}
 We use a variant of the technique described by Fuselier \latin{et al.}~%
 \cite{Fuselier:2013coba}.  Choosing $\psi(\Xp) = \phi(\|\Xp-\sample\Xp_i\|)$ for each
-$\sample\Xp_i$ we see that
+$\sample\Xp_i$, Equation~\eqref{eq:quad-desire} becomes
 \begin{equation}
     \sum_{j=1}^{\sample\cardinality} \omega_j \phi(\|\Xpsj-\sample\Xp_i\|)
-    \approx \int_{\sphere}\phi(\|\Xp-\sample\Xp_i\|) \d\Xp := \L\phi|_{\sample\Xp_i}.
+    \approx \int_{\sphere}\phi(\|\Xp-\sample\Xp_i\|) \d\Xp := \L\phi|_{\Xp=\sample\Xp_i}.
     \label{eq:cond1t}
 \end{equation}
 However, because the spherical metric~\eqref{eq:sphere-metric} depends only on the angle
 between two points, $\sphere$ is homogeneous. As a consequence, $\L\phi$ is constant over
-the sphere. We therefore expect the left hand side to be a constant, which we denote
+the sphere. We therefore expect the right-hand side to be a constant, which we denote
 $-I_\phi$. We require further that $\omega_j$ sum to the surface area of $\sphere$,
 \latin{i.e.},
 \begin{equation}
@@ -28,30 +28,31 @@ $-I_\phi$. We require further that $\omega_j$ sum to the surface area of $\spher
 \end{equation}
 Treating $I_\phi$ as an unknown scalar, we rewrite the constraints~\eqref{eq:cond1t} and%
 ~\eqref{eq:weight-sum} as a symmetric block linear system for $\omega_j$. Let
-$\Phi = (\phi(\|\Xpsj - \sample\Xp_i\|))$, $\vec{\omega} = (\omega_j)$, $\vec{0}$ 
-be a vector of $\sample\cardinality$ zeros, and $\vec{1}$ be defined similarly with ones.
+$\Phi = (\phi(\|\Xpsj - \sample\Xp_i\|))$, $\arr{\omega} = (\omega_j)$, $\arr{0}$ 
+be a vector of $\sample\cardinality$ zeros, and $\arr{1}$ be defined similarly with ones.
 Then
 \begin{equation}\label{eq:rbf-quadrature}
     \left[\begin{array}{cc}
-            \Phi & \vec{1} \\ \vec{1}^T & 0
+            \Phi & \arr{1} \\ \arr{1}^T & 0
     \end{array}\right]\left[\begin{array}{cc}
-            \vec{\omega} \\ I_\phi
+            \arr{\omega} \\ I_\phi
     \end{array}\right] = \left[\begin{array}{c}
-            \vec{0} \\ 4\pi
+            \arr{0} \\ 4\pi
     \end{array}\right].
 \end{equation}
 $I_{\phi}$ serves as a Lagrange multiplier that enforces~\eqref{eq:weight-sum}, and
 $-I_\phi$ is a good approximation to $\L\phi$. By choosing $\phi(r) = r$, we guarantee a
-unique solution with weights that converge at 3\textsuperscript{rd} order.  It is
-possible to improve the order of the quadrature weights by increasing the order of the
-PHS at the potential cost of poorer conditioning and either loss of invertibility or
-requiring knowledge of higher-order moments~\cite{Fuselier:2013coba}.
+unique solution and obtain weights that we observe to converge at 3\textsuperscript{rd}
+order. It is possible to improve the order of the quadrature weights by increasing the
+order of the PHS at the potential cost of poorer conditioning and either loss of
+invertibility or requiring knowledge of higher-order moments~\cite{Fuselier:2013coba}.
 
 Having described the computation of quadrature weights for $\sphere$, we now
 describe how to compute quadrature weights for $\interface$, which has parametrization
-$\X(\theta,\,\varphi)$ and Jacobian $J(\theta,\,\varphi)$. The Jacobian for $\Xp$ is
-known: $\cos\varphi$.  We can use a change of variables to express the infinitesimal area
-$\d\X$ as
+$\X(\theta,\,\varphi)$ and Jacobian $J(\theta,\,\varphi)$. The point
+$\X(\theta,\,\varphi)$ on the cell and $\Xp(\theta,\,\varphi)$ share surface coordinates
+and the Jacobian for $\Xp$ is known: $\cos\varphi$.  We can use a change of variables to
+express the infinitesimal area $\d\X$ as
 \begin{equation}\label{eq:quad-cov}
     \d\X
     = J(\theta,\,\varphi)\d\qs
@@ -73,10 +74,10 @@ these points. We now arrive our weights for $\interface$. At $\X_j$, we have
 where $J_j = J(\theta_j,\,\varphi_j)$. Computing $\weight[j]$ given $\sigma_j$ and $J_j$
 amounts to a single multiplication, which can be done trivially in parallel.
 
-The methods described in this section are not restricted to the sphere. In Section~%
-\ref{sec:whole-blood}, we simulate the endothelium, which is a topological torus, due to
-the periodicity of the domain. Though we do not need geometric information for the force
-model applied to the endothelium, the RBF methods above are also applicable to the torus,
-and therefore the endothelium. The following section describes the necessary
-modifications for the endothelium. We use a local variation of these methods as part of
-the simulation initialization process, described in Section~\ref{sec:blood-init}.
+%The methods described in this section are not restricted to the sphere. In Section~%
+%\ref{sec:whole-blood}, we simulate the endothelium, which is a topological torus, due to
+%the periodicity of the domain. Though we do not need geometric information for the force
+%model used for the endothelium, the RBF methods above are also applicable to the torus,
+%and therefore the endothelium. The following section describes the necessary
+%modifications for the endothelium. We use a local variation of these methods as part of
+%the simulation initialization process, described in Section~\ref{sec:blood-init}.

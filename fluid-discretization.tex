@@ -32,7 +32,7 @@ discretize the components of the advection term $\div(\u\otimes\u)$ by
 The symbol $\div[h]$ represents the discrete divergence operator.  Figure~%
 \ref{fig:discretization} illustrates the steps in computing $D_2[(A_1 v)(A_2 u)]$, which
 appears in the first component in Equation~\eqref{eq:advection}. Morinishi \latin{et al}.
-show that this scheme, $Div. - S2$ in their parlance, is conservative under the assumption
+show that this scheme, $Div. - S2$ in their parlance,\marginpar{{\color{tol/vibrant/red}``Use dash not comma.''} They call it ``$Div.-S2$'', so I think --- here would be confusing} is conservative under the assumption
 that $\u$ is discretely divergence-free~\cite{Morinishi:1998us}.
 
 To advance the solution, we use an implicit-explicit Runge-Kutta (RK) method. We use
@@ -48,12 +48,12 @@ with boundary conditions
 \begin{equation}\label{eq:disc-bdy}
     \u^\ast = \u^{n+1}_b + \timestep \grad[h] q^{n} \quad\text{on}~\partial\domain,
 \end{equation}
-where superscripts denote the time step, $\u_b$ is velocity boundary data, and
-$\laplacian_h$ and $\grad[h]$ are the discrete Laplacian and gradient, respectively. The
-force density $\f^{n+1}$ is advanced explicitly. The intermediate velocity field
-$\u^\ast$ may not be divergence-free. To obtain a velocity field that satisfies~%
-\eqref{eq:ins-incomp}, we use projection method II (PmII) of Brown, Cortez, and Minion~%
-\cite{Brown:2001bq}. PmII updates the pressure
+where superscripts denote the time step, $\u_b$ is velocity boundary data, $\laplacian_h$
+and $\grad[h]$ are the discrete Laplacian and gradient, respectively, and $q$ is
+described below. The force density $\f^{n+1}$ is advanced explicitly. The intermediate
+velocity field $\u^\ast$ may not be divergence-free. To obtain a velocity field that
+satisfies~\eqref{eq:ins-incomp}, we use projection method II (PmII) of Brown, Cortez, and
+Minion~\cite{Brown:2001bq}. PmII updates the pressure
 \begin{equation*}
     p^{n+1} = p^n + (\rho I - \timestep\mu\laplacian_h)q^{n+1},
 \end{equation*}
@@ -85,11 +85,11 @@ matrix-vector multiplication routine with Horner's method to evaluate the polyno
 In the case of a triply periodic domain, it is clear that the linear solves involve
 symmetric matrices. For Dirichlet or Neumann boundaries, we extrapolate using values at
 the neighboring grid points and boundary data to fill ghost points. In these situations,
-the discrete second derivative may actually approximate some non-unit multiple of its
-continuous counterpart near the boundary. To account for this but maintain symmetry of
-the Helmholtz matrices, we scale equations involving near-boundary values, excluding
-the offending discrete second derivative and ghost cell terms. The trade-off is 3 extra
-diagonal matrix-vector multiplications per RK stage for the ability to use PCG for the
-linear solves. For details, see~\ref{sec:boundary-correction}.
+the standard discrete second derivative may actually approximate some non-unit multiple
+of its continuous counterpart near the boundary. To account for this but maintain
+symmetry of the Helmholtz matrices, we scale equations involving near-boundary values,
+excluding the offending discrete second derivative and ghost cell terms. The trade-off is
+3 extra diagonal matrix-vector multiplications per RK stage for the ability to use PCG
+for the linear solves. For details, see~\ref{sec:boundary-correction}.
 
 % vim: cc=90 tw=89

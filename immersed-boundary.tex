@@ -11,22 +11,23 @@ therefore governed by the incompressible Navier-Stokes equations,
 \end{gather}
 where, for $\x = (x,\,y,\,z) \in \domain$, $\u = \u(\x,\,t) = (u, v, w)$ is the fluid
 velocity, $p = p(\x,\,t)$ is the pressure, and $\f = \f(\x,\,t)$ is an external force
-density. Treating the entire domain as a fluid allows us to discretize $\domain$
-independently of these structures--- the immersed boundaries---with a fixed regular grid
-of spacing $h$. This is
-the Eulerian grid.
+density. Here and throughout this paper, we use bold italic symbols to indicate a vector
+in $\R^3$. Treating the entire domain as a fluid allows us to discretize $\domain$
+independently of the immersed structures with a fixed regular grid of spacing $h$. This
+is the Eulerian grid.
 
 
-Let $\X = \X(\qs,\,t)$, for surface coordinates $\qs$ in $\sites\subset\mathbb{R}^2$, be
-a parametrization for the immersed boundary $\interface$. The boundary is impermeable to
-the fluid and moves at the local fluid velocity. A discrete representation of the
-boundary, consisting of a set of surface points, replaces its continuous counterpart.
-Surface points are typically chosen to be within approximately $h$ of their neighbors.
-This is the Lagrangian grid. Analytically convolving the fluid velocity against the Dirac
-delta function, $\Dirac(\x)$, yields the velocity of a surface point, but discretely,
-Eulerian and Lagrangian grid points are unlikely to coincide. The IB method replaces the
-singular Dirac delta function with a smoothed, $h$-dependent analogue, $\Dirac_h(\x)$.
-The Lagrangian point $\X$ evolves according to
+Let $\X = \X(\theta,\,\varphi,\,t)$, for surface coordinates $(\theta,\,\varphi)$ in
+$\sites\subset\mathbb{R}^2$, be a parametrization for the immersed boundary $\interface$.
+Though the interface changes with time, we suppress the time argument $t$ for brevity. A
+discrete representation of the boundary, consisting of a set of surface points, replaces
+its continuous counterpart.  Surface points are typically chosen to be within
+approximately $h$ of their neighbors.  This is the Lagrangian grid. These boundary points
+move at the local fluid velocity.  Analytically convolving the fluid velocity against the
+Dirac delta function, $\Dirac(\x)$, yields the velocity of a surface point, but
+discretely, Eulerian and Lagrangian grid points are unlikely to coincide. The IB method
+replaces the singular Dirac delta function with a smoothed, $h$-dependent analogue,
+$\Dirac_h(\x)$. The Lagrangian point $\X$ evolves according to
 \begin{equation}\label{eq:ib-interp}
     \vec{\dot{X}}
         = \int\limits_{\domain} \u(\x) \Dirac(\x-\X) \d\x
@@ -34,8 +35,9 @@ The Lagrangian point $\X$ evolves according to
 \end{equation}
 where $i$ enumerates the Eulerian grid points, and a superposed dot denotes partial
 differentiation with respect to $t$. As a boundary deforms, it generates a force density
-$\F = \F(\qs,\,t)$, which it imparts onto the fluid as $\f$ in~ \eqref{eq:ins-momentum}.
-By similar reasoning as the velocity, the $\F$ is transferred to the fluid at $\x$ via
+$\F = \F(\X,\,t)$, which it imparts onto the fluid as $\f$ in~ \eqref{eq:ins-momentum}.
+Again, we suppress $t$ when using $\F$. By similar reasoning as the velocity, $\F$ is
+transferred to the fluid at $\x$ via
 \begin{equation}\label{eq:ib-spread}
         \f(\x)
         = \int\limits_{\interface} \F(\X)\Dirac(\x-\X) \d\X
