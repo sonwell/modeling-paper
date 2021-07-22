@@ -1,23 +1,24 @@
 \section{Force models}\label{sec:forces}
 In this section, we list the force densities associated with each of the energy densities
 given in Section~\ref{sec:energy}. For simplicity, we adopt the Einstein summation
-notation. A Greek letter featuring as a subscript and superscript within a term indicates
-summation over ${1,\,2}$ for that letter. We also adopt the comma notation for partial
-differentiation, where subscripts following a comma indicate partial differentiation with
-respect to the corresponding coordinates, \latin{e.g}.,
-$\phi_{,\alpha\beta} = \partial^2\phi/\partial\q[\alpha]\partial\q[\beta]$.
+notation. A Greek letter featuring as a subscript and superscript within a term,
+\latin{e.g.}, $a_\alpha b^\alpha$, indicates summation over $\{1,\,2\}$ for that letter.
+We also adopt the comma notation for partial differentiation, where subscripts following
+a comma indicate partial differentiation with respect to the corresponding coordinates,
+\latin{e.g}., $\phi_{,\alpha\beta} = \partial^2\phi/\partial\q[\alpha]\partial\q[\beta]$.
+The surface coordinates $\q[1]$ and $\q[2]$ correspond to $\theta$ and $\phi$ of
+Sections~\ref{sec:energy} and~\ref{sec:rbfs} in either order.
 
-We begin with Hookean and damped spring forces, which are the simplest of the forces we
-consider. The spring force density takes the form
+We begin with Hookean and damped spring forces, whose force density takes the form
 \begin{equation}
     \F_\text{spring} = -k (\X - \X') - \eta(\vec{\dot{X}}-\vec{\dot{X}}').
 \end{equation}
 where $\X'$ is the tether location, $\vec{\dot{X}}$ is the surface velocity,
 $\vec{\dot{X}}'$ is the prescribed velocity, $k$ is the spring constant, and $\eta$ is
-the damping constant.  It is common practice to treat each spring as an individual, so
-that the quadrature weight $\weight[j]$ is absorbed into the coefficients, and $k$ has
-units of force per length and $\eta$ units of force-time per length. Implementation of
-these forces requires no geometric information outside of positions and velocities.
+the damping constant. It is common practice to treat each spring individually, so that
+the quadrature weight $\weight[j]$ is absorbed into the coefficients: $k$ has units of
+force per length and $\eta$ units of force-time per length. Implementation of these
+forces requires no geometric information outside of positions and velocities.
 
 Next, we consider tension, which generates forces based on stretching or compressing
 and relative direction of the surface tangent vectors. We construct the \emph{metric
@@ -30,12 +31,12 @@ Green-Lagrange strain tensor,
     \epsilon_\alpha^\beta = \frac12\left(\metric_{\alpha\mu}\reference\metric^{\mu\beta}-\Kronecker_\alpha^\beta\right),
 \end{equation}
 encode information about relative changes in lengths and areas. We can then use this to
-express the Tension energy density invariants $I_1 = 2\epsilon_\mu^\mu$ and
-$I_2 = 4\epsilon + I_1$, where $\epsilon_\mu^\mu$ and $\epsilon$ are the trace and
-determinant of $\epsilon_\alpha^{\smash\beta}$, respectively. The tension energy density
-function, $W(I_1,\,I_2)$, is therefore a function only of the tangents, $\X_{,\alpha}$.
-For Skalak's Law~\eqref{eq:skalak-law} and neo-Hookean tension~\eqref{eq:neohookean}, the
-tension force density is computed~\cite{Maxian:2018ek} via
+express the invariants $I_1 = 2\epsilon_\mu^\mu$ and $I_2 = 4\epsilon + I_1$, where
+$\epsilon_\mu^\mu$ and $\epsilon$ are the trace and determinant, respectively, of
+$\epsilon_\alpha^{\smash\beta}$. The tension energy density function, $W(I_1,\,I_2)$, is
+therefore a function only of the tangents, $\X_{,\alpha}$. For Skalak's Law~%
+\eqref{eq:skalak-law} and neo-Hookean tension~\eqref{eq:neohookean}, the tension force
+density is computed via~\cite{Maxian:2018ek}
 \begin{equation}\label{eq:tension-force}
     \F_\text{tension} = \frac{1}{\sqrt{\reference\metric}}\left(\sqrt{\reference\metric}s^{\alpha\beta}\X_{,\beta}\right)_{,\alpha},
 \end{equation}
@@ -54,9 +55,9 @@ cross product of the tangent vectors and normalizing:
 \end{equation}
 The tensor $b_{\alpha\beta} = \n\cdot\X_{,\alpha\beta}$ encodes information about the
 curvature of the surface. The principle curvatures are the eigenvalues of the
-\emph{shape tensor}, $K_\alpha^\beta = b_{\alpha\mu}\metric^{\mu\beta}$, with
-$2H = K_\mu^\mu$ the total curvature, and $K$ the Gaussian curvature. The Canham-Helfrich
-force density takes the form~\cite{Zhongcan:1989ue}%
+\emph{shape tensor}, $K_\alpha^\beta = b_{\alpha\mu}\metric^{\mu\beta}$, whose trace
+$2H = K_\mu^\mu$ is the total curvature, and whose determinant $K$ is the Gaussian
+curvature. The Canham-Helfrich force density takes the form~\cite{Zhongcan:1989ue}%
 \begin{equation}\label{eq:bending-force}
     \F_\text{CH} = -4\kappa\left(\laplacian(H-H')+2(H-H')(H^2-K+HH')\right)\n,
 \end{equation}
