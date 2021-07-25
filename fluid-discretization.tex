@@ -35,12 +35,14 @@ appears in the first component in Equation~\eqref{eq:advection}. Morinishi \lati
 show that this scheme, $Div. - S2$ in their parlance,\comment{Use dash not comma.}{They call it ``$Div.-S2$'', so I think --- here would be confusing} is conservative under the assumption
 that $\u$ is discretely divergence-free~\cite{Morinishi:1998us}.
 
-To advance the solution, we use an implicit-explicit Runge-Kutta (RK) method. We use
-either the 1-stage backward-forward Euler scheme~\cite{Ascher:1997tm} or the 2nd-order
-2-stage scheme described by Peskin~\cite{Peskin:2002go}, which require only one spreading
-operation~\eqref{eq:ib-spread} per time step. For the backward-forward Euler scheme,
-discretizing Equation~\eqref{eq:ins-momentum} to advance time to $t+\timestep$, yields
-linear solves of Helmholtz type,
+To advance the solution, we use either the backward-forward Euler-based scheme~%
+\cite{Ascher:1997tm} or the 2-stage scheme described by Peskin~\cite{Peskin:2002go},
+modified to advance structures using the newest velocities. The modification makes these
+schemes first-order in time, but allow us to separate the Eulerian update from the
+Lagrangian update by requiring only information at the beginning of the timestep to
+evaluate forces and moving the structure at the end of the timestep. For the
+backward-forward Euler scheme, discretizing Equation~\eqref{eq:ins-momentum} to advance
+time to $t+\timestep$, yields linear solves of Helmholtz type,
 \begin{equation}\label{eq:disc-momentum}
     (I - \timestep\rho^{-1}\mu \laplacian_h) \u^\ast = \u^n - \timestep\left[\div[h]\left(\u^n\otimes\u^n\right) + \rho^{-1}\left(\f^{n+1} - \grad[h]p^n\right)\right] \quad\text{in}~\domain, \\
 \end{equation}

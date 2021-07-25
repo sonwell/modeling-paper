@@ -69,10 +69,11 @@ takes the form
 \begin{equation*}
     (\tilde{I} - \alpha k\tilde{\laplacian}_h)\arr{u}^n = (\tilde{I} + (1-\alpha)k\tilde{\laplacian}_h)\arr{u}^{n-1} + B_h\arr{\gamma} + \tilde{I}\arr{f},
 \end{equation*}
-where $B_h$ is an appropriate operator that modifies equations near the boundary with
-boundary data. This corrected scheme involves modified operators, but requires only an
-additional diagonal multiplication compared to the uncorrected scheme. The Helmholtz
-operator on the left-hand side remains symmetric positive definite after correction, and
-is therefore suitable for solution via conjugate gradients.
+where $\alpha$ is either 0.5 or 1, depending on the scheme and stage, and $B_h$ is an
+appropriate operator that modifies equations near the boundary with boundary data. This
+corrected scheme involves modified operators, but requires only an additional diagonal
+multiplication compared to the uncorrected scheme. The Helmholtz operator on the
+left-hand side remains symmetric positive definite after correction, and is therefore
+suitable for solution via conjugate gradients.
 
 % vim: cc=90 tw=89

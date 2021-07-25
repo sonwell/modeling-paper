@@ -35,7 +35,7 @@ $\Dirac_h(\x)$. The Lagrangian point $\X$ evolves according to
 \end{equation}
 where $i$ enumerates the Eulerian grid points, and a superposed dot denotes partial
 differentiation with respect to $t$. As a boundary deforms, it generates a force density
-$\F = \F(\X,\,t)$, which it imparts onto the fluid as $\f$ in~ \eqref{eq:ins-momentum}.
+$\F = \F(\X,\,t)$, which it imparts onto the fluid as $\f$ in~\eqref{eq:ins-momentum}.
 Again, we suppress $t$ when using $\F$. By similar reasoning as the velocity, $\F$ is
 transferred to the fluid at $\x$ via
 \begin{equation}\label{eq:ib-spread}
@@ -44,13 +44,20 @@ transferred to the fluid at $\x$ via
         \approx \sum_{j} \weight[j]\F(\X_j) \Dirac_h(\x-\X_j),
 \end{equation}
 where $j$ enumerates the Lagrangian grid points, and $\weight[j]$ is the integration
-weight corresponding to Lagrangian grid point $\X_j$.
+weight corresponding to Lagrangian grid point $\X_j$. Though the IB method typically uses
+the same the Lagrangian points in Equations~\eqref{eq:ib-interp} and~\eqref{eq:ib-spread},
+the RBF-IB method does not always adhere to this tradition. Instead, we may use fewer
+points to smoothly approximate $\X$ and evaluate $\F$ at a larger set of points. This
+larger set of points is chosen so that neighboring points are approximately within $h$ of
+one another. This spacing aligns with traditional IB implementations, though the points
+used to evaluate forces may not move at the local fluid velocity according to Equation~%
+\eqref{eq:ib-interp}.
 
 In addition to a velocity vector field, equation~\eqref{eq:ib-spread} illustrates the
 need for three pieces of information for each immersed structure: the position of points
-on the structure, $\X_j$; a force density at each of those points, $\F(\X_j)$; and
-surface integration weights, $\weight[j]$, for those points. Equation~\eqref{eq:ib-interp}
-tells us how to update $\X_j$. The next three sections describe our methods for solving~%
-\eqref{eq:ins-momentum}--\eqref{eq:ins-incomp}, give analytic expressions for $\F$, and
-detail the discretization of the structure(s) to obtain $\F(\X_j)$ and $\weight[j]$,
-respectively.
+$\X_j$ used to evaluate forces on the structure; a force density $\F(\X_j)$ at each of
+those points; and surface integration weights $\weight[j]$ for those points. Equation~%
+\eqref{eq:ib-interp} tells us how to move the structure. The next three sections describe
+our methods for solving~\eqref{eq:ins-momentum}--\eqref{eq:ins-incomp}, give analytic
+expressions for $\F$, and detail the discretization of the structures to obtain $\X_j$,
+$\F(\X_j)$, and $\weight[j]$.

@@ -88,7 +88,7 @@ $\phi(r) = r^7$ for RBCs and platelets, with up to $5\th$ order spherical harmon
 RBCs and just the constant polynomial for platelets. While this does not guarantee a
 unique interpolant for the platelet, the resulting system~\eqref{eq:rbf-interp-matrix} is
 invertible nonetheless. The interpolants are then thrice differentiable. We next describe
-the appropriate discrete differential operators.
+the construction of the necessary discrete differential operators.
 
 \subsection{Discrete linear surface operators}
 
@@ -139,15 +139,14 @@ site, but $(\theta_j,\,\varphi_j)\in\sample\sites$ is.} we have
 \end{equation}
 where we have used Equation~\eqref{eq:rbf-interp-matrix} to substitute for $\arr{c}$ and
 $\arr{d}$. The matrix $L$ is the discrete analogue of $\L$ applied at each sample site.
-It is
-important to note that $L$ is completely independent of the function $\psi$; in fact, it
-depends only on the functions $\phi$ and $p_k$, the fixed data sites $\data\sites$, and
-the fixed sample sites $\sample\sites$.  The block marked by $\ast$ is multiplied by
-zeros, and can be discarded. We compute a separate $L$ for each operator $\L$ as a
-preprocessing step, and simply apply these matrices to any function that needs to be
-evaluated or differentiated. It is also straightforward to generate versions of $L$ that
-produce derivatives at the data sites simply by replacing $\Xpsj$ with $\data\Xp_j$ in
-the above discussion. With these operators in hand, the force densities are readily
+It is important to note that $L$ is completely independent of the function $\psi$; in
+fact, it depends only on the functions $\phi$ and $p_k$, the fixed data sites
+$\data\sites$, and the fixed sample sites $\sample\sites$.  The block marked by $\ast$ is
+multiplied by zeros, and can be discarded. We compute a separate $L$ for each operator
+$\L$ as a preprocessing step, and simply apply these matrices to any function that needs
+to be evaluated or differentiated. It is also straightforward to generate versions of $L$
+that produce derivatives at the data sites simply by replacing $\Xpsj$ with $\data\Xp_j$
+in the above discussion. With these operators in hand, the force densities are readily
 discretized. The quantities $I_1$, $I_2$, and $H$ in Section~\ref{sec:energy} are
 calculated using local first and second derivatives. Application of the dense discrete
 differential operators is performed in parallel with a parallel implementation of
