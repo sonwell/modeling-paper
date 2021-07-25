@@ -68,6 +68,8 @@
 \DeclareCaptionSubType*{figure}
 \renewcommand\thesubfigure{\alph{subfigure}}
 
+\newcommand{\parcom}[1]{\marginpar[\raggedleft#1]{\raggedright#1}}
+\newcommand{\comment}[2]{\parcom{\if\relax\detokenize{#1}\relax\else{\color{tol/vibrant/red}#1}\newline\fi#2}}
 \newcommand{\latin}[1]{\textit{#1}}
 \newcommand{\reg}{\textsuperscript{\textregistered}}
 \newcommand{\cmark}{\makebox[1em][c]{\textcolor{tol/vibrant/teal}{\ding{51}}}}

@@ -111,12 +111,11 @@ needs of the simulation, the number of data sites may be large.  In the interest
 saving memory and time for such cases, we opt instead to use fewer data sites to
 reconstruct the surface, and choose a larger set of $\sample\cardinality$ \emph{sample
 sites}, $\sample\sites$, at which to evaluate $\L$. We must then also consider $\L$ the
-identity operator in order
-to obtain $\X$ at sample sites. Evaluating $\L s$ at each sample site
-%with $\Xpsj = \Xp(\theta_j,\,\varphi_j)$ for each $(\theta_j,\,\varphi_j)\in\sample\sites$
-and collecting values $\L\Phi = (\L\phi(\|\Xp-\data\Xp_i\|)|_{\Xp=\Xpsj})$ and
-$\L P = (\L p_k(\Xp)|_{\Xp=\Xpsj})$, where $\Xpsj = \Xp(\theta_j,\,\varphi_j)$ for each
-$(\theta_j,\,\varphi_j)\in\sample\sites$\marginpar{$\Xpsj$ is \emph{not} a sample site, but $(\theta_j,\,\varphi_j)\in\sample\sites$ is}, we have
+identity operator in order to obtain $\X$ at sample sites. Evaluating $\L s$ at each
+sample site and collecting values $\L\Phi = (\L\phi(\|\Xp-\data\Xp_i\|)|_{\Xp=\Xpsj})$
+and $\L P = (\L p_k(\Xp)|_{\Xp=\Xpsj})$, where $\Xpsj = \Xp(\theta_j,\,\varphi_j)$ for
+each $(\theta_j,\,\varphi_j)\in\sample\sites$,\comment{}{$\Xpsj$ is \emph{not} a sample
+site, but $(\theta_j,\,\varphi_j)\in\sample\sites$ is.} we have
 \begin{equation}\label{eq:rbf-operator}
     \begin{aligned}
     \left[\begin{array}{cc}
