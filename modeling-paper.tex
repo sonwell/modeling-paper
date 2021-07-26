@@ -68,8 +68,6 @@
 \DeclareCaptionSubType*{figure}
 \renewcommand\thesubfigure{\alph{subfigure}}
 
-\newcommand{\parcom}[1]{\marginpar[\raggedleft#1]{\raggedright#1}}
-\newcommand{\comment}[2]{\parcom{\if\relax\detokenize{#1}\relax\else{\color{tol/vibrant/red}#1}\newline\fi#2}}
 \newcommand{\latin}[1]{\textit{#1}}
 \newcommand{\reg}{\textsuperscript{\textregistered}}
 \newcommand{\cmark}{\makebox[1em][c]{\textcolor{tol/vibrant/teal}{\ding{51}}}}
@@ -201,15 +199,7 @@
 
 
 \begin{abstract}
-    We use radial basis functions to represent cells in immersed boundary simulations of
-    whole blood, focusing on the interaction between red blood cells, platelets, and the
-    endothelium. We consider the effect of endothelial geometry on platelet motion. We
-    find red blood cells to be crucial for understanding the motion of platelets, to the
-    point that wall geometry has a negligible effect. We observe behaviors for which the
-    platelet remains near the endothelium for extended periods and red blood
-    cell-mediated interactions between platelets and endothelium for which the platelet
-    has reduced speed. We suggest that these behaviors as mechanisms for vascular
-    maintenance.
+We present a new method for the geometric reconstruction of elastic surfaces simulated by the immersed boundary method with the goal of simulating the motion and interactions of cells in whole blood. Our method uses parameter-free radial basis functions for high-order meshless parametric reconstruction of point clouds and the elastic force computations required by the immersed boundary method. This numerical framework allows us to consider the effect of endothelial geometry and red blood cell motion on the motion of platelets. We find red blood cells to be crucial for understanding the motion of platelets, to the point that vessel wall geometry has a negligible effect. We observe behaviors for which the platelets remain near the endothelium for extended periods, including a novel platelet motion only seen in 3-dimensional simulations that we term ``unicycling''. We also observe red blood cell-mediated interactions between platelets and endothelium for which the platelet has reduced speed. We suggest that these behaviors serve as mechanisms for vascular maintenance.
 \end{abstract}
 
 \begin{keyword}
