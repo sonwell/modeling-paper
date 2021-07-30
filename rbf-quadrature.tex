@@ -1,10 +1,10 @@
 \subsection{Surface area weights via RBF quadrature}\label{sec:rbf-quadrature}
 
-We now use the known parametrization of $\sphere$ to compute RBF-based quadrature weights
+We also use the known parametrization of $\sphere$ to compute RBF-based quadrature weights
 on $\sphere$ as a preliminary step in computing quadrature weights on any surface
 diffeomorphic to $\sphere$, namely, RBC and platelet membranes.
 
-As before, consider a function $\psi(\Xp):\sphere \to \mathbb{R}$. We wish to find a set
+As before, consider a function $\psi(\Xp):\sphere \to \mathbb{R}$, and $\phi: \sphere \times \sphere \to \mathbb{R}$ be a radial kernel defined on the sphere. We wish to find a set
 of quadrature weights $\omega_j$ such that
 \begin{equation}\label{eq:quad-desire}
     \int_{\sphere} \psi(\Xp) \d\Xp \approx \sum_{j=1}^{\sample\cardinality} \omega_j \psi(\Xpsj).
@@ -18,7 +18,7 @@ $\sample\Xp_i$, Equation~\eqref{eq:quad-desire} becomes
     \label{eq:cond1t}
 \end{equation}
 However, because the spherical metric~\eqref{eq:sphere-metric} depends only on the angle
-between two points, $\sphere$ is homogeneous. As a consequence, $\L\phi$ is constant over
+between two points, $\L\phi$ is constant over
 the sphere. We therefore expect the right-hand side to be a constant, which we denote
 $-I_\phi$. We require further that $\omega_j$ sum to the surface area of $\sphere$,
 \latin{i.e.},
@@ -44,14 +44,14 @@ $I_{\phi}$ serves as a Lagrange multiplier that enforces~\eqref{eq:weight-sum}, 
 $-I_\phi$ is a good approximation to $\L\phi$. By choosing $\phi(r) = r$, we guarantee a
 unique solution and obtain weights that we observe to converge at 3\textsuperscript{rd}
 order. It is possible to improve the order of the quadrature weights by increasing the
-order of the PHS at the potential cost of poorer conditioning and either loss of
+order of the PHS RBF at the potential cost of poorer conditioning and either loss of
 invertibility or requiring knowledge of higher-order moments~\cite{Fuselier:2013coba}.
 
 Having described the computation of quadrature weights for $\sphere$, we now
 describe how to compute quadrature weights for $\interface$, which has parametrization
 $\X(\theta,\,\varphi)$ and Jacobian $J(\theta,\,\varphi)$. The point
 $\X(\theta,\,\varphi)$ on the cell and $\Xp(\theta,\,\varphi)$ share surface coordinates
-and the Jacobian for $\Xp$ is known: $\cos\varphi$.  We can use a change of variables to
+and the determinant of the Jacobian for the spherical coordinate mapping (for radius 1) is simply $\cos\varphi$.  We use a change of variables to
 express the infinitesimal area $\d\X$ as
 \begin{equation}\label{eq:quad-cov}
     \d\X
