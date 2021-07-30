@@ -1,5 +1,7 @@
 \section{The immersed boundary method}\label{sec:ib}
 
+\subsection{Overview}
+\label{sec:ib_old}
 Consider a rectangular domain, $\domain\subset\R^3$, which contains one or more
 deformable structures and is otherwise filled with an incompressible, Newtonian fluid
 with constant density, $\density$, and viscosity, $\viscosity$. The IB method treats
@@ -44,20 +46,24 @@ transferred to the fluid at $\x$ via
         \approx \sum_{j} \weight[j]\F(\X_j) \Dirac_h(\x-\X_j),
 \end{equation}
 where $j$ enumerates the Lagrangian grid points, and $\weight[j]$ is the integration
-weight corresponding to Lagrangian grid point $\X_j$. Though the IB method typically uses
-the same the Lagrangian points in Equations~\eqref{eq:ib-interp} and~\eqref{eq:ib-spread},
-the RBF-IB method does not always adhere to this tradition. Instead, we may use fewer
-points to smoothly approximate $\X$ and evaluate $\F$ at a larger set of points. This
-larger set of points is chosen so that neighboring points are approximately within $h$ of
-one another. This spacing aligns with traditional IB implementations, though the points
-used to evaluate forces may not move at the local fluid velocity according to Equation~%
-\eqref{eq:ib-interp}.
+weight corresponding to Lagrangian grid point $\X_j$. 
 
 In addition to a velocity vector field, equation~\eqref{eq:ib-spread} illustrates the
 need for three pieces of information for each immersed structure: the position of points
 $\X_j$ used to evaluate forces on the structure; a force density $\F(\X_j)$ at each of
 those points; and surface integration weights $\weight[j]$ for those points. Equation~%
 \eqref{eq:ib-interp} tells us how to move the structure. The next three sections describe
-our methods for solving~\eqref{eq:ins-momentum}--\eqref{eq:ins-incomp}, give analytic
-expressions for $\F$, and detail the discretization of the structures to obtain $\X_j$,
-$\F(\X_j)$, and $\weight[j]$.
+our methods for solving~\eqref{eq:ins-momentum}--\eqref{eq:ins-incomp} (Section 3), give analytic
+expressions for energy functionals used to derive $\F$ (Section 4 and Appendix b), and detail the discretization of the structures to obtain $\X_j$,
+$\F(\X_j)$, and $\weight[j]$ (Section 5). However, before we do so, we discuss the specific variant
+of the IB method employed herein.
+
+\subsection{The RBF-IB method}
+\label{sec:rbfib}
+The classical IB method uses the same the Lagrangian points in Equations~\eqref{eq:ib-interp} and~\eqref{eq:ib-spread}. However, there exist several IB methods
+use different sets of points instead. For instance, the method in~\cite{Griffith:2017id} uses a finite element representation for the structure, and consequently spreads forces from (Lagrangian)
+quadrature points, interpolates velocities to quadrature points, and then projects them using the finite element basis to the nodes. The RBF-IB method used in this work also does something similar. A small set of $\data\cardinality$ Lagrangian points approximately $2h$ apart is used to approximate $\X$ and this set of points is moved by~\eqref{eq:ib-interp}. In addition, a larger set of $\sample\cardinality$ points chosen to be approximately $h$ apart is used to spread forces using~\eqref{eq:ib-spread}. While the former set is widely spaced, the spacing of the latter set of points aligns with traditional IB implementations.
+
+This potentially raises certain concerns, which we address here. The first major concern relates to the force-spreading and velocity interpolation operations. In traditional IB methods, these operators are formally adjoint, leading to conservation of energy/power~\cite{peskin:2002}. However, in the RBF-IB method, these operators are no longer adjoint, leading to concerns about numerical stability. In previous work~\cite{Shankar2015:km}, the authors demonstrated that the RBF-IB method dissipated energy in 2D simulations as expected, despite the absence of formal adjointness. In this work, we show similar results for an RBC relaxation problem in a full 3D simulation. The second major concern related to the wide $2h$ spacing of the smaller set of points used to approximate $\X$ and update the structure. 
+
+
