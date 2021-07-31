@@ -7,7 +7,8 @@
         group name=energy,
         group size=2 by 1
     },
-    width=2.5in, %0.4\textwidth,
+    width=2.5in,
+    height=2.5in,
     xmin=-10,
     xmax=190,
     ymin=9e-12,
@@ -20,10 +21,8 @@
     xlabel={time ($\us$)},
     xlabel near ticks,
     ylabel near ticks,
-    height=2.5in
 ]
 \nextgroupplot[ylabel={energy ($\erg$)}]
-    %, mark=diamond*, color=tol/vibrant/magenta, mark options={fill=tol/vibrant/magenta}
     \addplot+[only marks, mark options={fill=tol/vibrant/blue}] coordinates {%
         (  0, 48.4709e-11)
         ( 18, 7.56723e-11)
@@ -39,7 +38,6 @@
     }; \label{plot:energy100}
     \node [fill=white] at (rel axis cs: 0.075, 0.95) {(a)};
 \nextgroupplot
-    %, mark=triangle*, color=tol/vibrant/blue, mark options={fill=tol/vibrant/blue}
     \addplot+[only marks, mark options={fill=tol/vibrant/blue}] coordinates {%
         (  0, 4.84709e-10)
         ( 18, 7.30549e-11)
@@ -55,17 +53,6 @@
     }; \label{plot:energy120}
     \node [fill=white] at (rel axis cs: 0.075, 0.95) {(b)};
 \end{groupplot}
-%\path (energy c1r1.south west|-current bounding box.south)--
-%coordinate(legendpos) (energy c1r2.south east|-current bounding box.south);
-%\matrix[
-%    matrix of nodes,
-%    anchor=north,
-%    inner sep=0.2em,
-%    %draw
-%  ]at([yshift=-1ex]legendpos)
-%  {
-%      \ref{plot:energy100}& $r = 100$ &[5pt]
-%      \ref{plot:energy120}& $r = 120$ \\};
 \end{tikzpicture}
 \caption{%
 Energy~\eqref{eq:energy} as a function of time for the relaxing RBC test of Section~%
