@@ -1,7 +1,6 @@
 \section{The immersed boundary method}\label{sec:ib}
 
-\subsection{Overview}
-\label{sec:ib_old}
+\subsection{Overview}\label{sec:ib_old}
 Consider a rectangular domain, $\domain\subset\R^3$, which contains one or more
 deformable structures and is otherwise filled with an incompressible, Newtonian fluid
 with constant density, $\density$, and viscosity, $\viscosity$. The IB method treats
@@ -18,7 +17,6 @@ in $\R^3$. Treating the entire domain as a fluid allows us to discretize $\domai
 independently of the immersed structures with a fixed regular grid of spacing $h$. This
 is the Eulerian grid.
 
-
 Let $\X = \X(\theta,\,\varphi,\,t)$, for surface coordinates $(\theta,\,\varphi)$ in
 $\sites\subset\mathbb{R}^2$, be a parametrization for the immersed boundary $\interface$.
 Though the interface changes with time, we suppress the time argument $t$ for brevity. A
@@ -28,7 +26,7 @@ approximately $h$ of their neighbors.  This is the Lagrangian grid. These bounda
 move at the local fluid velocity.  Analytically convolving the fluid velocity against the
 Dirac delta function, $\Dirac(\x)$, yields the velocity of a surface point, but
 discretely, Eulerian and Lagrangian grid points are unlikely to coincide. The IB method
-replaces the singular Dirac delta function with a smoothed, $h$-dependent analogue,
+replaces the singular Dirac delta function with a smoothed, $h$-dependent analog,
 $\Dirac_h(\x)$. The Lagrangian point $\X$ evolves according to
 \begin{equation}\label{eq:ib-interp}
     \vec{\dot{X}}
@@ -51,19 +49,35 @@ weight corresponding to Lagrangian grid point $\X_j$.
 In addition to a velocity vector field, equation~\eqref{eq:ib-spread} illustrates the
 need for three pieces of information for each immersed structure: the position of points
 $\X_j$ used to evaluate forces on the structure; a force density $\F(\X_j)$ at each of
-those points; and surface integration weights $\weight[j]$ for those points. Equation~%
-\eqref{eq:ib-interp} tells us how to move the structure. The next three sections describe
-our methods for solving~\eqref{eq:ins-momentum}--\eqref{eq:ins-incomp} (Section 3), give analytic
-expressions for energy functionals used to derive $\F$ (Section 4 and Appendix b), and detail the discretization of the structures to obtain $\X_j$,
-$\F(\X_j)$, and $\weight[j]$ (Section 5). However, before we do so, we discuss the specific variant
-of the IB method employed herein.
+those points; and surface integration weights $\weight[j]$ for those points. The equation
+moves according to~\eqref{eq:ib-interp}. The next three sections describe our methods for
+solving~\eqref{eq:ins-momentum}--\eqref{eq:ins-incomp} (Section~\ref{sec:ins}), give
+analytic expressions for energy functionals used to derive $\F$ (Section~\ref{sec:energy}
+and Appendix~\ref{sec:forces}), and detail the discretization of the structures to obtain
+$\X_j$, $\F(\X_j)$, and $\weight[j]$ (Section 5). However, before we do so, we discuss
+the specific variant of the IB method employed herein.
 
-\subsection{The RBF-IB method}
-\label{sec:rbfib}
-The classical IB method uses the same the Lagrangian points in Equations~\eqref{eq:ib-interp} and~\eqref{eq:ib-spread}. However, there exist several IB methods
-use different sets of points instead. For instance, the method in~\cite{Griffith:2017id} uses a finite element representation for the structure, and consequently spreads forces from (Lagrangian)
-quadrature points, interpolates velocities to quadrature points, and then projects them using the finite element basis to the nodes. The RBF-IB method used in this work also does something similar. A small set of $\data\cardinality$ Lagrangian points approximately $2h$ apart is used to approximate $\X$ and this set of points is moved by~\eqref{eq:ib-interp}. In addition, a larger set of $\sample\cardinality$ points chosen to be approximately $h$ apart is used to spread forces using~\eqref{eq:ib-spread}. While the former set is widely spaced, the spacing of the latter set of points aligns with traditional IB implementations.
+\subsection{The RBF-IB method}\label{sec:rbfib}
+The classical IB method uses the same the Lagrangian points for interpolation~%
+\eqref{eq:ib-interp} and spreading~\eqref{eq:ib-spread}. However, there exist several IB
+methods use different sets of points instead. For instance, the method in~%
+\cite{Griffith:2017id} uses a finite element representation for the structure, and
+consequently spreads forces from (Lagrangian) quadrature points, interpolates velocities
+to quadrature points, and then projects them using the finite element basis to the nodes.
+The RBF-IB method used in this work also does something similar. A small set of
+$\data\cardinality$ Lagrangian points approximately $2h$ apart is used to approximate
+$\X$ and this set of points is moved by~\eqref{eq:ib-interp}. In addition, a larger set
+of $\sample\cardinality$ points chosen to be approximately $h$ apart is used to spread
+forces using~\eqref{eq:ib-spread}. While the former set is widely spaced, the spacing of
+the latter set of points aligns with traditional IB implementations.
 
-This potentially raises certain concerns, which we address here. The first major concern relates to the force-spreading and velocity interpolation operations. In traditional IB methods, these operators are formally adjoint, leading to conservation of energy/power~\cite{peskin:2002}. However, in the RBF-IB method, these operators are no longer adjoint, leading to concerns about numerical stability. In previous work~\cite{Shankar2015:km}, the authors demonstrated that the RBF-IB method dissipated energy in 2D simulations as expected, despite the absence of formal adjointness. In this work, we show similar results for an RBC relaxation problem in a full 3D simulation. The second major concern related to the wide $2h$ spacing of the smaller set of points used to approximate $\X$ and update the structure. 
-
-
+This potentially raises certain concerns, which we address here. The first major concern
+relates to the force-spreading and velocity interpolation operations. In traditional IB
+methods, these operators are formally adjoint, leading to conservation of energy/power~%
+\cite{Peskin:2002go}. However, in the RBF-IB method, these operators are no longer
+adjoint, leading to concerns about numerical stability. In previous work~%
+\cite{Shankar2015:km}, the authors demonstrated that the RBF-IB method dissipated energy
+in 2D simulations as expected, despite the absence of formal adjointness. In this work,
+we show similar results for an RBC relaxation problem in a full 3D simulation. The second
+major concern related to the wide $2h$ spacing of the smaller set of points used to
+approximate $\X$ and update the structure. 
