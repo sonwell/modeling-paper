@@ -65,8 +65,11 @@
 \definecolor{tol/vibrant/magenta}{RGB}{238,51,119}
 \definecolor{tol/vibrant/grey}{RGB}{187,187,187}
 
+\definecolor{highlighter}{RGB}{222,244,64}
+
 \DeclareCaptionSubType*{figure}
 \renewcommand\thesubfigure{\alph{subfigure}}
+\newcommand{\hi}[1]{\begingroup\setlength{\fboxsep}{0pt}\colorbox{highlighter!80}{#1}\endgroup}
 
 \newcommand{\latin}[1]{\textit{#1}}
 \newcommand{\reg}{\textsuperscript{\textregistered}}

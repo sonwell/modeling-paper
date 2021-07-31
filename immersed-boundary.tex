@@ -47,33 +47,32 @@ transferred to the fluid at $\x$ via
 where $j$ enumerates the Lagrangian grid points, and $\weight[j]$ is the integration
 weight corresponding to Lagrangian grid point $\X_j$. 
 
-In addition to a velocity vector field, equation~\eqref{eq:ib-spread} illustrates the
-need for three pieces of information for each immersed structure: the position of points
-$\X_j$ used to evaluate forces on the structure; a force density $\F(\X_j)$ at each of
-those points; and surface integration weights $\weight[j]$ for those points. The
-structure moves according to~\eqref{eq:ib-interp}. The next three sections describe our
-methods for solving~\eqref{eq:ins-momentum}--\eqref{eq:ins-incomp} (Section~%
-\ref{sec:ins}), give analytic expressions for energy functionals used to derive $\F$
-(Section~\ref{sec:energy} and~\ref{sec:forces}), and detail the discretization of the
-structures to obtain $\X_j$, $\F(\X_j)$, and $\weight[j]$ (Section~\ref{sec:rbfs}).
-However, before we do so, we discuss the specific variant of the IB method employed
-herein.
+In addition to a velocity vector field,~\eqref{eq:ib-spread} illustrates the need for
+three pieces of information for each immersed structure: the points \hi{$\X_j$ used to
+evaluate forces on the structure}; a force density $\F(\X_j)$ at each of those points;
+and surface integration weights $\weight[j]$ for those points. The structure moves
+according to~\eqref{eq:ib-interp}. The next three sections describe our methods for
+solving~\eqref{eq:ins-momentum}--\eqref{eq:ins-incomp} (Section~\ref{sec:ins}), give
+analytic expressions for energy functionals used to derive $\F$ (Section~\ref{sec:energy}
+and~\ref{sec:forces}), and detail the discretization of the structures to obtain
+\hi{$\X_j$}, $\F(\X_j)$, and $\weight[j]$ (Section~\ref{sec:rbfs}). However, before we
+do so, we discuss the specific variant of the IB method employed herein.
 
 \subsection{The RBF-IB method}\label{sec:rbfib}
 
 The classical IB method uses the same the Lagrangian points in interpolation~%
 \eqref{eq:ib-interp} and spreading~\eqref{eq:ib-spread}. However, there exist several IB
-methods use different sets of points instead. For instance, the method in~%
-\cite{Griffith:2017id} uses a finite element representation for the structure, and
-consequently spreads forces from (Lagrangian) quadrature points, interpolates velocities
-to quadrature points, and then projects them using the finite element basis to the
-individual element nodes. The RBF-IB method introduced in~\cite{Shankar:2015km} and used
-in this work also does something similar. A small set of $\data\cardinality$ Lagrangian
-points approximately $2h$ apart is used to approximate $\X$ and this set of points is
-moved by~\eqref{eq:ib-interp}. In addition, a larger set of $\sample\cardinality$ points
-chosen to be approximately $h$ apart is used to spread forces using~\eqref{eq:ib-spread}.
-While the former set is widely spaced, the spacing of the latter set of points aligns
-with traditional IB implementations.
+methods which use different sets of points for each operation instead. For instance,
+Griffith and Luo~\cite{Griffith:2017id} use a finite element representation for the
+structure, and consequently spread forces from (Lagrangian) quadrature points,
+interpolate velocities to quadrature points, and then project them using the finite
+element basis to the individual element nodes. The RBF-IB method~\cite{Shankar:2015km}
+used in this work also does something similar. A small set of \hi{$\data\cardinality$
+Lagrangian points} approximately $2h$ apart is used to approximate $\X$ and this set of
+points is moved by~\eqref{eq:ib-interp}. In addition, a larger set of
+\hi{$\sample\cardinality$ points} chosen to be approximately $h$ apart is used to spread
+forces using~\eqref{eq:ib-spread}. While the former set is widely spaced, the spacing of
+the latter set of points aligns with traditional IB implementations.
 
 This potentially raises certain concerns, which we address here. The first major concern
 relates to the force-spreading and velocity interpolation operations. In traditional IB
