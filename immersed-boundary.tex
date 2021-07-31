@@ -50,15 +50,14 @@ weight corresponding to Lagrangian grid point $\X_j$.
 In addition to a velocity vector field, equation~\eqref{eq:ib-spread} illustrates the
 need for three pieces of information for each immersed structure: the position of points
 $\X_j$ used to evaluate forces on the structure; a force density $\F(\X_j)$ at each of
-<<<<<<< HEAD
 those points; and surface integration weights $\weight[j]$ for those points. The
 structure moves according to~\eqref{eq:ib-interp}. The next three sections describe our
 methods for solving~\eqref{eq:ins-momentum}--\eqref{eq:ins-incomp} (Section~%
 \ref{sec:ins}), give analytic expressions for energy functionals used to derive $\F$
-(Section~\ref{sec:energy} and Appendix~\ref{sec:forces}), and detail the discretization
-of the structures to obtain $\X_j$, $\F(\X_j)$, and $\weight[j]$ (Section~%
-\ref{sec:rbfs}). However, before we do so, we discuss the specific variant of the IB
-method employed herein.
+(Section~\ref{sec:energy} and~\ref{sec:forces}), and detail the discretization of the
+structures to obtain $\X_j$, $\F(\X_j)$, and $\weight[j]$ (Section~\ref{sec:rbfs}).
+However, before we do so, we discuss the specific variant of the IB method employed
+herein.
 
 \subsection{The RBF-IB method}\label{sec:rbfib}
 

@@ -4,8 +4,10 @@ We also use the known parametrization of $\sphere$ to compute RBF-based quadratu
 on $\sphere$ as a preliminary step in computing quadrature weights on any surface
 diffeomorphic to $\sphere$, namely, RBC and platelet membranes.
 
-As before, consider a function $\psi(\Xp):\sphere \to \mathbb{R}$, and $\phi: \sphere \times \sphere \to \mathbb{R}$ be a radial kernel defined on the sphere. We wish to find a set
-of quadrature weights $\omega_j$ such that
+As before, consider a function $\psi:\sphere\to\R$ defined on the sphere, and a radial
+kernel $K:\sphere\times\sphere\to\R$ for which
+$K(\Xp_i,\,\Xp_j)\equiv\phi(\|\Xp_i-\Xp_j\|)$. We wish to find a set of quadrature
+weights $\omega_j$ such that
 \begin{equation}\label{eq:quad-desire}
     \int_{\sphere} \psi(\Xp) \d\Xp \approx \sum_{j=1}^{\sample\cardinality} \omega_j \psi(\Xpsj).
 \end{equation}
@@ -18,10 +20,9 @@ $\sample\Xp_i$,~\eqref{eq:quad-desire} becomes
     \label{eq:cond1t}
 \end{equation}
 However, because the spherical metric~\eqref{eq:sphere-metric} depends only on the angle
-between two points, $\L\phi$ is constant over
-the sphere. We therefore expect the right-hand side to be a constant, which we denote
-$-I_\phi$. We require further that $\omega_j$ sum to the surface area of $\sphere$,
-\latin{i.e.},
+between two points, $\L\phi$ is constant over the sphere. We therefore expect the
+right-hand side to be a constant, which we denote $-I_\phi$. We require further that
+$\omega_j$ sum to the surface area of $\sphere$, \latin{i.e.},
 \begin{equation}
     \sum_{j=1}^{\sample\cardinality} \omega_j  = 4\pi.
     \label{eq:weight-sum}
@@ -39,20 +40,21 @@ Treating $I_\phi$ as an unknown scalar, we rewrite the constraints~\eqref{eq:con
 \end{equation}
 where $\arr{\omega}$ are the unknown weights, $\Phi$ represents the evaluations of
 $\phi$, and $\arr{0}$ and $\arr{1}$ are vectors of $\sample\cardinality$ zeros and ones,
-respectively.
-$I_{\phi}$ serves as a Lagrange multiplier that enforces~\eqref{eq:weight-sum}, and
-$-I_\phi$ is a good approximation to $\L\phi$. By choosing $\phi(r) = r$, we guarantee a
-unique solution and obtain weights that we observe to converge at 3\textsuperscript{rd}
-order. It is possible to improve the order of the quadrature weights by increasing the
-order of the PHS RBF at the potential cost of poorer conditioning and either loss of
-invertibility or requiring knowledge of higher-order moments~\cite{Fuselier:2013coba}.
+respectively. $I_{\phi}$ serves as a Lagrange multiplier that enforces~%
+\eqref{eq:weight-sum}, and $-I_\phi$ is a good approximation to $\L\phi$. By choosing
+$\phi(r) = r$, we guarantee a unique solution and obtain weights that we observe to
+converge at 3\textsuperscript{rd} order. It is possible to improve the order of the
+quadrature weights by increasing the order of the PHS RBF at the potential cost of poorer
+conditioning and either loss of invertibility or requiring knowledge of higher-order
+moments~\cite{Fuselier:2013coba}.
 
 Having described the computation of quadrature weights for $\sphere$, we now
 describe how to compute quadrature weights for $\interface$, which has parametrization
 $\X(\theta,\,\varphi)$ and Jacobian $J(\theta,\,\varphi)$. The point
 $\X(\theta,\,\varphi)$ on the cell and $\Xp(\theta,\,\varphi)$ share surface coordinates
-and the determinant of the Jacobian for the spherical coordinate mapping (for radius 1) is simply $\cos\varphi$.  We use a change of variables to
-express the infinitesimal area $\d\X$ as
+and the determinant of the Jacobian for the spherical coordinate mapping (for radius 1)
+is simply $\cos\varphi$.  We use a change of variables to express the infinitesimal area
+$\d\X$ as
 \begin{equation}\label{eq:quad-cov}
     \d\X
     = J(\theta,\,\varphi)\d\qs
