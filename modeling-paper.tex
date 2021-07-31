@@ -72,7 +72,8 @@
 \newcommand{\reg}{\textsuperscript{\textregistered}}
 \newcommand{\cmark}{\makebox[1em][c]{\textcolor{tol/vibrant/teal}{\ding{51}}}}
 \newcommand{\xmark}{\makebox[1em][c]{\textcolor{tol/vibrant/red}{\ding{55}}}}
-\newcommand{\midtilde}{\raisebox{-0.25em}{\textasciitilde}}
+\newcommand{\midtilde}{\raisebox{-0.25\baselineskip}{\textasciitilde}}
+
 \renewcommand{\vec}[1]{\boldsymbol{#1}}
 \newcommand{\arr}[1]{\vv{#1}\vphantom{\ensuremath{#1}}}
 \newcommand{\arrvec}[1]{\arr{\vec{#1}}}
@@ -219,8 +220,10 @@ We present a new method for the geometric reconstruction of elastic surfaces sim
 \makeatletter
 \gdef\thesubsection{\@Alph\c@section.\the\value{subsection}}%
 \makeatother
+\renewcommand\thefigure{\arabic{figure}}
 \input{correction}
 \input{forces}
+\input{energy-fig}
 \section{Supplementary materials}\label{sec:supp}
 Videos for Figures~\ref{fig:unicycle} and~\ref{fig:rbc-plt-endo-collision} can be found
 online.

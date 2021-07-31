@@ -1,5 +1,4 @@
-\subsection{Convergence study}
-\label{sec:conv}
+\subsection{Convergence study}\label{sec:convergence}
 
 In this section, we perform a series of tests on a single perturbed RBC undergoing
 relaxation. We simplify the RBC model and use only Skalak's Law. We expect the IB method
@@ -34,13 +33,13 @@ coarsest grid.
     \endgroup
 \end{table}
 
-We use the 3-point kernel $\hat{\Dirac}_1$ derived by Roma \latin{et al.}~\cite{Roma:1999tx} for
-spreading and interpolation and the 2-stage RK method described in Section~\ref{sec:ib}
-to advance the fluid velocity. Fluid grids are chosen to have $20r$ grid points per
-$16\um$ in each direction for $r$ from 1 to 6. On successive grids, we compare the fluid
-velocity at cell centers in a regular grid of $20^3$ cells and surface positions at 1000
-surface points. For convergence of order $p$, we expect the ratio of successive errors to
-satisfy
+We use the 3-point kernel $\hat{\Dirac}_1$ derived by Roma \latin{et al.}~%
+\cite{Roma:1999tx} for spreading and interpolation and the 2-stage RK method described in
+Section~\ref{sec:ib} to advance the fluid velocity. Fluid grids are chosen to have $20r$
+grid points per $16\um$ in each direction for $r$ from 1 to 6. On successive grids, we
+compare the fluid velocity at cell centers in a regular grid of $20^3$ cells and surface
+positions at 1000 surface points. For convergence of order $p$, we expect the ratio of
+successive errors to satisfy
 \begin{equation*}
     \frac{\epsilon_r}{\epsilon_{r+1}} = \left|\frac{((r+1)/r)^p-1}{((r+2)/(r+1))^{-p}-1}\right|,
 \end{equation*}
@@ -78,8 +77,8 @@ $N=1000$ Bauer spiral points.
     \endgroup
 \end{table}
 
-Tables~\ref{tab:u-rbc-conv} and~\ref{tab:x-rbc-conv} show $L_2$ and
-$L_\infty$ errors in $\u$ and $\X$ between successive grids. We observe first-order
-convergence, as expected.  Satisfied with the convergence of our implementation, we
-henceforth continue using the Bauer spiral to discretize RBCs and use the complete RBC
-model, which we verify in the next section.
+Tables~\ref{tab:u-rbc-conv} and~\ref{tab:x-rbc-conv} show $L_2$ and $L_\infty$ errors in
+$\u$ and $\X$ between successive grids. We observe first-order convergence, as expected.
+Satisfied with the convergence of our implementation, we henceforth continue using the
+Bauer spiral to discretize RBCs and use the complete RBC model, which we verify in the
+next section.

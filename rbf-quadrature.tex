@@ -11,7 +11,7 @@ of quadrature weights $\omega_j$ such that
 \end{equation}
 We use a variant of the technique described by Fuselier \latin{et al.}~%
 \cite{Fuselier:2013coba}.  Choosing $\psi(\Xp) = \phi(\|\Xp-\sample\Xp_i\|)$ for each
-$\sample\Xp_i$, Equation~\eqref{eq:quad-desire} becomes
+$\sample\Xp_i$,~\eqref{eq:quad-desire} becomes
 \begin{equation}
     \sum_{j=1}^{\sample\cardinality} \omega_j \phi(\|\Xpsj-\sample\Xp_i\|)
     \approx \int_{\sphere}\phi(\|\Xp-\sample\Xp_i\|) \d\Xp := \L\phi|_{\Xp=\sample\Xp_i}.
@@ -27,10 +27,7 @@ $-I_\phi$. We require further that $\omega_j$ sum to the surface area of $\spher
     \label{eq:weight-sum}
 \end{equation}
 Treating $I_\phi$ as an unknown scalar, we rewrite the constraints~\eqref{eq:cond1t} and%
-~\eqref{eq:weight-sum} as a symmetric block linear system for $\omega_j$. Let
-$\Phi = (\phi(\|\Xpsj - \sample\Xp_i\|))$, $\arr{\omega} = (\omega_j)$, $\arr{0}$ 
-be a vector of $\sample\cardinality$ zeros, and $\arr{1}$ be defined similarly with ones.
-Then
+~\eqref{eq:weight-sum} in the symmetric block linear system %for $\omega_j$. Let
 \begin{equation}\label{eq:rbf-quadrature}
     \left[\begin{array}{cc}
             \Phi & \arr{1} \\ \arr{1}^T & 0
@@ -38,8 +35,11 @@ Then
             \arr{\omega} \\ I_\phi
     \end{array}\right] = \left[\begin{array}{c}
             \arr{0} \\ 4\pi
-    \end{array}\right].
+    \end{array}\right],
 \end{equation}
+where $\arr{\omega}$ are the unknown weights, $\Phi$ represents the evaluations of
+$\phi$, and $\arr{0}$ and $\arr{1}$ are vectors of $\sample\cardinality$ zeros and ones,
+respectively.
 $I_{\phi}$ serves as a Lagrange multiplier that enforces~\eqref{eq:weight-sum}, and
 $-I_\phi$ is a good approximation to $\L\phi$. By choosing $\phi(r) = r$, we guarantee a
 unique solution and obtain weights that we observe to converge at 3\textsuperscript{rd}
@@ -59,8 +59,8 @@ express the infinitesimal area $\d\X$ as
     = J(\theta,\,\varphi)\sec\varphi\d\Xp,
 \end{equation}
 where $\d\qs$ is an infinitesimal area in parameter space. The weights $\omega_j$ found
-above are discrete analogues of $\d\Xp$ at $\sample\Xp_j$. The discrete analogue of
-$\d\qs$ at the $j^\text{th}$ sample site,
+above are discrete analogs of $\d\Xp$ at $\sample\Xp_j$. The discrete analog of $\d\qs$
+at the $j^\text{th}$ sample site,
 \begin{equation*}
     \sigma_j=\sec\varphi_j\omega_j,
 \end{equation*}

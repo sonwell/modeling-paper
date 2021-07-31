@@ -52,20 +52,19 @@ Correcting this while maintaining symmetry of the $\laplacian_h$ operator is not
 as using a second order interpolant for the ghost cell value or scaling the stencil for
 $D_{yy}$ near the boundary by $4/3$. Either of these options changes the weight of
 $u_{i,\,1,\,k}$, which destroys symmetry. Instead, we scale any equation involving a
-ghost cell by $3/4$, excluding the bracketed terms in Equation~\eqref{eq:disc-lap}. We
-define the modified identity operator $\tilde{I}$, which has a value of $3/4$ on the
-diagonal for rows corresponding to near-boundary equations and 1 elsewhere on the
-diagonal. We define the modified discrete Laplacian
+ghost cell by $3/4$, excluding the bracketed terms in~\eqref{eq:disc-lap}. We define the
+modified identity operator $\tilde{I}$, which has a value of $3/4$ on the diagonal for
+rows corresponding to near-boundary equations and 1 elsewhere on the diagonal. We define
+the modified discrete Laplacian
 \begin{equation}\label{eq:mod-disc-lap}
     \tilde{\laplacian}_h = \tilde{I}D_{xx} + D_{yy} + \tilde{I}D_{zz},
 \end{equation}
 where, away from the boundary, $D_{yy}$ is the standard 3-point discrete second
-derivative with respect to $y$, and defined according to Equation~\eqref{eq:disc-lap}
-otherwise. The resulting $D_{yy}$ is symmetric. In addition to replacing the discrete
-Laplacian $\laplacian_h$ with $\tilde{\laplacian}_h$, a timestepping scheme using this
-correction must replace instances of the identity matrix, many of which not written
-explicity, with the modified identity $\tilde{I}$. A stage of such a timestepping scheme
-takes the form
+derivative with respect to $y$, and defined according to~\eqref{eq:disc-lap} otherwise.
+The resulting $D_{yy}$ is symmetric. In addition to replacing the discrete Laplacian
+$\laplacian_h$ with $\tilde{\laplacian}_h$, a timestepping scheme using this correction
+must replace instances of the identity matrix, many of which not written explicity, with
+the modified identity $\tilde{I}$. A stage of such a timestepping scheme takes the form
 \begin{equation*}
     (\tilde{I} - \alpha k\tilde{\laplacian}_h)\arr{u}^n = (\tilde{I} + (1-\alpha)k\tilde{\laplacian}_h)\arr{u}^{n-1} + B_h\arr{\gamma} + \tilde{I}\arr{f},
 \end{equation*}

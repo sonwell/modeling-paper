@@ -1,10 +1,17 @@
 \subsection{Surface reconstruction with radial basis functions}\label{sec:rbf-interpolation}
 
-We now describe our RBF method for reconstructing cell surfaces. RBF interpolation is a meshfree approach to scattered data interpolation
-where structural information is encoded purely as point-wise distances. This
-contrasts with, \latin{e.g.}, polynomials, where points must be chosen at grid vertices, or spherical harmonics, for which special node sets are typically used. RBFs have been shown to be a viable approach for representing cells on par with Fourier methods~\cite{Shankar:2013ki}. They are therefore appealing for representing blood cells and platelets. 
+We now describe our RBF method for reconstructing cell surfaces. RBF interpolation is a
+meshfree approach to scattered data interpolation where structural information is encoded
+purely as point-wise distances. This contrasts with, \latin{e.g.}, polynomials, where
+points must be chosen at grid vertices, or spherical harmonics, for which special node
+sets are typically used. RBFs have been shown to be a viable approach for representing
+cells on par with Fourier methods~\cite{Shankar:2013ki}. They are therefore appealing for
+representing blood cells and platelets.
 
-Since our goal is to produce a parametric reconstruction of cells, we choose to parametrize both red blood cells and platelets on the 2-sphere, $\sphere$. We use a spherical coordinate mapping to relate Cartesian points on the 2-sphere to their corresponding parametric points. This mapping is given by:
+Since our goal is to produce a parametric reconstruction of cells, we choose to
+parametrize both red blood cells and platelets on the 2-sphere, $\sphere$. We use a
+spherical coordinate mapping to relate Cartesian points on the 2-sphere to their
+corresponding parametric points. This mapping is given by:
 \begin{equation}
     \Xp(\theta,\,\varphi) =
     \left[\begin{array}{c}
@@ -18,27 +25,43 @@ Let $\data\sites = \{(\data\theta_i,\,\data\varphi_i)\}$ be a set of $\data\card
 distinct \emph{data sites}, defined by the Bauer spiral~\cite{Bauer:2000km},
 \begin{equation}\label{eq:bauer-spiral}
     \begin{aligned}
-        &\varphi_j = \sin^{-1}(-1 + (2i + 1) / \data\cardinality), \\
-        &\theta_j = \modulo\left(\sqrt{N\pi}\varphi_j + \pi,\,2\pi\right) - \pi,
+        &\varphi_j = \sin^{-1}(-1 + (2i + 1) / \data\cardinality), \\ % XXX are we sure we want to write this? Have to explain how it changes for sample sites
+        &\theta_j = \modulo\left(\sqrt{\data\cardinality\pi}\varphi_j + \pi,\,2\pi\right) - \pi,
     \end{aligned}
 \end{equation}
-where $\modulo(a,\,b) = a - b\floor{a/b}$ is the modulo function. Let $\data\Xp_i = \Xp(\theta_i,\,\varphi_i)$ for each $(\theta_i,\,\varphi_i) \in \data\sites$. In this setting, our goal is to construct a parametric mapping from $\data\sites$ to the Cartesian locations of points on cell surfaces. For RBC and platelet parametrizations, we identify the point $\X(\theta,\,\varphi,\,t)$
-on $\interface$ with the point $\Xp(\theta,\,\varphi)$ on $\sphere$. Each component of
-$\X$ is then a function defined on $\sphere$. The problem of surface reconstruction therefore involves approximating each of these functions from the $\data\sites$ using an RBF interpolant. For the discussion that follows, we use $\psi(\Xp) : \sphere \to \mathbb{R}$ denote a function that we wish to approximate.
+where $\modulo(a,\,b) = a - b\floor{a/b}$ is the modulo function. Let
+$\data\Xp_i = \Xp(\theta_i,\,\varphi_i)$ for each $(\theta_i,\,\varphi_i)\in\data\sites$.
+In this setting, our goal is to construct a parametric mapping from $\data\sites$ to the
+Cartesian locations of points on cell surfaces. For RBC and platelet parametrizations, we
+identify the point $\X(\theta,\,\varphi,\,t)$ on $\interface$ with the point
+$\Xp(\theta,\,\varphi)$ on $\sphere$. Each component of $\X$ is then a function defined
+on $\sphere$. The problem of surface reconstruction therefore involves approximating each
+of these functions from the $\data\sites$ using an RBF interpolant. For the discussion
+that follows, we use $\psi(\Xp) : \sphere \to \mathbb{R}$ denote a function that we wish
+to approximate.
 
-Let $\phi : \sphere \times \sphere \to \mathbb{R}$ be a \emph{radial kernel} or \emph{radial function} with the property that $\phi\left({\bf x},{\bf y}\right) = \phi\left(\|{\bf x} - {\bf y}\|\right)$. In the case of $\sphere$, we can typically write this as $\phi\left(\|{\bf x} - {\bf y}\|\right) = \phi\left(2 - 2 {\bf x}^T {\bf y}\right)$; in this setting, the radial kernels are sometimes called \emph{spherical basis functions}. In addition to the radial kernels, let $p_k(\Xp)$,
-$k=1,\,\ldots,\,\poly\cardinality$ denote the first $\poly \cardinality$ spherical harmonics, which form a natural basis for polynomial approximation on $\sphere$. Then, the RBF interpolant to a function $\psi(\Xp)$ takes the form
+Let $K:\sphere\times\sphere\to\R$ be a \emph{radial kernel} with the property that
+$K(\Xp_i,\,\Xp_j)\equiv\phi(\|\Xp_i-\Xp_j\|)$ for some $\phi$. These kernels are
+sometimes called \emph{spherical basis functions}. In addition to the radial kernels, let
+$p_k(\Xp)$, $k=1,\,\ldots,\,\poly\cardinality$ denote the first $\poly\cardinality$
+spherical harmonics, which form a natural basis for polynomial approximation on
+$\sphere$. Then, the RBF interpolant to $\psi(\Xp)$ takes the form
 \begin{equation}\label{eq:rbf-interp}
     s(\Xp)
     = \sum_{i=1}^{\data\cardinality} c_i \phi(\|\Xp-\data\Xp_i\|)
     + \sum_{k=1}^{\poly\cardinality} d_k p_k(\Xp),
 \end{equation}
-where $c_i$ and $d_k$ are unknown interpolation coefficients. In order to uniquely find the coefficients $c_i$ and $d_k$, we impose two conditions on \eqref{eq:rbf-interp}:
-\begin{align}
-s\left(\data\Xp_i \right) &= \psi\left(\data\Xp_i\right), i=1,\ldots,\data\cardinality, \label{eq:interp_constraint}\\
-\sum_{i=1}^{\data\cardinality} c_i p_k(\data\Xp_i) &= 0, k=1,\ldots,\poly\cardinality,\label{eq:constraints}
-\end{align}
-where \eqref{eq:interp_constraint} enforces that \eqref{eq:rbf-interp} exactly interpolates the function $\psi(\Xp)$, and \eqref{eq:constraints} enforces that \eqref{eq:rbf-interp} reproduce the first $\poly\cardinality$ spherical harmonics exactly~\cite{Fasshauer:2007ui}. The equations \eqref{eq:rbf-interp}, \eqref{eq:interp_constraint}, and \eqref{eq:constraints} can be collected into a dense symmetric block system of the form
+where $c_i$ and $d_k$ are unknown interpolation coefficients. To find $c_i$ and $d_k$, we
+impose two conditions on~\eqref{eq:rbf-interp}:
+\begin{gather}
+    s(\data\Xp_j) = \psi(\data\Xp_j), \qquad j=1,\ldots,\data\cardinality,~\text{and} \label{eq:interp_constraint} \\
+    \sum_{i=1}^{\data\cardinality} c_i p_k(\data\Xp_i) = 0, \qquad k=1,\ldots,\poly\cardinality, \label{eq:constraints}
+\end{gather}
+where~\eqref{eq:interp_constraint} enforces that~\eqref{eq:rbf-interp} exactly
+interpolate the function $\psi(\Xp)$, and~\eqref{eq:constraints} enforces that~%
+\eqref{eq:rbf-interp} reproduce the first $\poly\cardinality$ spherical harmonics
+exactly~\cite{Fasshauer:2007ui}. We collect~\eqref{eq:interp_constraint} and~%
+\eqref{eq:constraints} into a dense symmetric block system of the form
 \begin{equation}\label{eq:rbf-interp-matrix}
     \left[\begin{array}{cc}
             \Phi & P \\ P^T & 0
@@ -48,23 +71,46 @@ where \eqref{eq:interp_constraint} enforces that \eqref{eq:rbf-interp} exactly i
             \arr{\psi} \\ \arr{0}
     \end{array}\right],
 \end{equation}
-where $\arr{c}$ and $\arr{d}$ are the unknown coefficients, $\Phi$ represents the evaluations of $\phi$, $P$ represents evaluations of the polynomials $p_k$, the matrix block $0$ is the $\poly\cardinality\times\poly\cardinality$ zero matrix, and $\arr{0}$ is a vector of $\poly\cardinality$ zeros. Because $\data\sites$ is fixed,
-we need construct this matrix and compute its factors only once even though $\psi(\Xp)$ changes. The matrix in \eqref{eq:rbf-interp-matrix} is invertible for any conditionally positive definite kernel $\phi$ as long as the data sites $\data\sites$ are unisolvent for the first $\poly\cardinality$ spherical harmonics, \emph{i.e.}, $P$ is of full rank~\cite{Fasshauer:2007ui}. A common heuristic choice to ensure this is to set $\data\cardinality = 2 \poly\cardinality$~\cite{SWJCP2018}. 
+where $\arr{c}$ and $\arr{d}$ are the unknown coefficients, $\Phi$ represents the
+evaluations of $\phi$, $P$ represents evaluations of the polynomials $p_k$, the matrix
+block $0$ is the $\poly\cardinality\times\poly\cardinality$ zero matrix, and $\arr{0}$ is
+a vector of $\poly\cardinality$ zeros. Because $\data\sites$ is fixed, we need only
+construct this matrix and compute its factors once even though $\psi(\Xp)$ changes. The
+matrix in~\eqref{eq:rbf-interp-matrix} is invertible for any conditionally positive
+definite kernel $\phi$ of order $m$ as long as the data sites $\data\sites$ are
+unisolvent for the first $\poly\cardinality \ge (m+1)^2$ spherical harmonics,
+\latin{i.e.}, $P$ is of full rank~\cite{Fasshauer:2007ui}. A common heuristic choice to
+ensure this is to set $\data\cardinality = 2 \poly\cardinality$~\cite{SWJCP2018}. 
 
-It now remains to discuss the choice of $\phi$. In previous work~\cite{Shankar:2015km}, we chose $\phi$ to be an infinitely-smooth and positive-definite kernel. While these kernels offer spectral convergence rates, they require tuning a so-called shape parameter~\cite{Fasshauer:2007ui}. In this work, we instead choose $\phi$ to be a polyharmonic spline (PHS), which is a conditionally-positive definite kernel with finite smoothness. More specifically, we set $\phi(r) = r^7$, augmented with fifth-order spherical harmonics to represent RBCs, or with just the constant spherical harmonic for platelets. As mentioned previously, we identify the point $\X(\theta,\,\varphi,\,t)$
-on $\interface$ with the point $\Xp(\theta,\,\varphi)$ on $\sphere$. Consequently, by sampling $\X$ at each point in $\data\sites$,
-we can approximately reconstruct the surface by interpolating each of the components. 
+It now remains to discuss the choice of $\phi$. In previous work~\cite{Shankar:2015km},
+we chose $\phi$ to be an infinitely-smooth and positive-definite kernel. While these
+kernels offer spectral convergence rates, they require tuning a so-called shape
+parameter~\cite{Fasshauer:2007ui}. In this work, we instead choose $\phi$ to be a
+polyharmonic spline (PHS), which is a conditionally-positive definite kernel with finite
+smoothness. In this work, we set $\phi(r) = r^7$, augmented with fifth-order spherical
+harmonics to represent RBCs, or just the constant spherical harmonic for platelets. As
+mentioned previously, we identify the point $\X(\theta,\,\varphi,\,t)$ on $\interface$
+with the point $\Xp(\theta,\,\varphi)$ on $\sphere$. Consequently, by sampling $\X$ at
+each point in $\data\sites$, we can approximately reconstruct the surface by
+interpolating each of the components. 
 
-We can also use \eqref{eq:rbf-interp} to interpolate other quantities defined on $\sphere$, since it applies to any generic function $\psi(\Xp): \sphere \to \mathbb{R}$. We also use \eqref{eq:rbf-interp} to compute force densities required by the IB method. It is clear from Equations~\eqref{eq:skalak-law}--\eqref{eq:dissip-energy} that computing the force densities requires values of $I_1$, $I_2$, and $H$, among others. These values are derived from the first and second derivatives of $\X$. For efficiency, it is possible to reformulate the process of interpolation followed by differentiation as a single application of a discrete differential operator (or a differentiation matrix). We discuss this in the next section.
+We can also use~\eqref{eq:rbf-interp} to interpolate other quantities defined on
+$\sphere$, since it applies to any generic function $\psi(\Xp): \sphere \to \mathbb{R}$.
+In this work, we also use~\eqref{eq:rbf-interp} to compute force densities required by
+the IB method. It is clear from~\eqref{eq:skalak-law}--\eqref{eq:dissip-energy} that
+computing the force densities requires values of $I_1$, $I_2$, and $H$, among others.
+These values are derived from the first and second derivatives of $\X$. For efficiency,
+it is possible to reformulate the process of interpolation followed by differentiation as
+a single application of a discrete differential operator (or a differentiation matrix).
+We discuss this in the next section.
 
 \subsection{Discrete linear surface operators}
 
 Let $\L$ be a linear operator. In particular, we are interested in the first- and
 second-order partial differential operators, $\partial/\partial\theta$,
 $\partial^2/\partial\theta\partial\varphi$, \latin{etc}. We approximate $\L\psi$ by
-applying $\L$ analytically to the interpolant $s$ defined in Equation~%
-\eqref{eq:rbf-interp}. This is straightforward, given a parametrized metric. For
-$\sphere$, this is
+applying $\L$ analytically to the interpolant $s$ defined in~\eqref{eq:rbf-interp}. This
+is straightforward, given a parametrized metric. For $\sphere$, this is
 \begin{equation}\label{eq:sphere-metric}
     \begin{aligned}
     \|\Xp(\theta_j,\,\varphi_j) - \Xp(\theta_i,\,\varphi_i)\|
@@ -78,12 +124,8 @@ needs of the simulation, the number of data sites may be large.  In the interest
 saving memory and time for such cases, we opt instead to use fewer data sites to
 reconstruct the surface, and choose a larger set of $\sample\cardinality$ \emph{sample
 sites}, $\sample\sites$, at which to evaluate $\L$. We must then also consider $\L$ the
-identity operator in order
-to obtain $\X$ at sample sites. Evaluating $\L s$ at each sample site
-%with $\Xpsj = \Xp(\theta_j,\,\varphi_j)$ for each $(\theta_j,\,\varphi_j)\in\sample\sites$
-and collecting values $\L\Phi = (\L\phi(\|\Xp-\data\Xp_i\|)|_{\Xp=\Xpsj})$ and
-$\L P = (\L p_k(\Xp)|_{\Xp=\Xpsj})$, where $\Xpsj = \Xp(\theta_j,\,\varphi_j)$ for each
-$(\theta_j,\,\varphi_j)\in\sample\sites$\marginpar{$\Xpsj$ is \emph{not} a sample site, but $(\theta_j,\,\varphi_j)\in\sample\sites$ is}, we have
+identity operator in order to obtain $\X$ at sample sites. Evaluating $\L s$ at each
+sample site we have
 \begin{equation}\label{eq:rbf-operator}
     \begin{aligned}
     \left[\begin{array}{cc}
@@ -105,9 +147,9 @@ $(\theta_j,\,\varphi_j)\in\sample\sites$\marginpar{$\Xpsj$ is \emph{not} a sampl
     \end{array}\right],
 \end{aligned}
 \end{equation}
-where we have used Equation~\eqref{eq:rbf-interp-matrix} to substitute for $\arr{c}$ and
-$\arr{d}$. The matrix $L$ is the discrete analogue of $\L$ applied at each sample site.
-It is
+where $\L\Phi$ and $\L P$ represent evaluations of $\L\phi$ and $\L p_k$, respectively,
+and we have used~\eqref{eq:rbf-interp-matrix} to substitute for $\arr{c}$ and $\arr{d}$.
+The matrix $L$ is the discrete analog of $\L$ applied at each sample site. It is
 important to note that $L$ is completely independent of the function $\psi$; in fact, it
 depends only on the functions $\phi$ and $p_k$, the fixed data sites $\data\sites$, and
 the fixed sample sites $\sample\sites$.  The block marked by $\ast$ is multiplied by

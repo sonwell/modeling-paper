@@ -1,63 +1,67 @@
 \section{Discussion}\label{sec:conclusion}
 
 In this article, we developed a cohesive numerical framework based on the RBF-IB method
-for whole blood simulation. We have shown that a
-continuous energy RBF-based model RBC incorporating dissipative forces exhibits the traditional
-tumbling and tank-treading behaviors. We the simulated the flow of whole
-blood involving RBCs and platelets over a model endothelium to. We considered both flat
-and bumpy endothelial shapes and flow with and without RBCs along a bumpy wall.
+for whole blood simulation. We have shown that a continuous energy RBF-based model RBC
+incorporating dissipative forces exhibits the traditional tumbling and tank-treading
+behaviors. We simulated the flow of whole blood involving RBCs and platelets over a model
+endothelium. We considered both flat and bumpy endothelial shapes and flow with and
+without RBCs along a bumpy wall.
 
-The most prominent result of the whole blood simulations is that simulations
-involving platelets but neglecting the influence of RBCs cannot capture the true nature of platelet motion.
-In fact, platelets experience augmented shear rates due to RBCs and RBCs act to confine platelets to the
-cell-free layer. Simulations without RBCs fail to capture the more irregular aspects
-of platelet motion. In fact, our simulations show that interaction with RBCs can disturb otherwise regular wobbling motions exhibited by platelets, and also appear to delay tumbling. Our results
-also demonstrate that certain platelet behaviors can only be observed by considering
-numerous starting configurations in developed flows involving RBCs.
+<<<<<<< HEAD
+The most prominent result of the whole blood simulations is that simulations involving
+platelets but neglecting the influence of RBCs cannot capture the true nature of platelet
+motion.  In fact, platelets experience augmented shear rates due to RBCs and RBCs act to
+confine platelets to the cell-free layer. Simulations without RBCs fail to capture the
+more irregular aspects of platelet motion. In fact, our simulations show that interaction
+with RBCs can disturb otherwise regular wobbling motions exhibited by platelets, and also
+appear to delay tumbling. Our results also demonstrate that certain platelet behaviors
+can only be observed by considering numerous starting configurations in developed flows
+involving RBCs.
 
-A prominent finding is that the effect of RBCs generally overwhelms the effects of the wall topography. Figure~%
-\ref{fig:flow-profiles} shows that the flat wall yields slightly faster fluid velocities,
-but the flow profiles for flat and bumpy walls are qualitatively the same, except for the
-immediate vicinity of the wall. The result is a region of space between the bumps with a
-velocity gradient. Platelets following the shape of the bumpy wall crest the bump, dip
-into the region of lower velocity, and tumble. This feature is absent from the flat wall,
-but tumbling is not an extraordinary behavior. In either case, we observe ``unicycling'', a unique behavior in
-which the platelet rolls in the flow direction along its edge. Unicycling can be
-stabilized by RBCs which flank the platelet, or by an RBC that partially encapsulates the
-platelet while passing over it. Conversely, it can also be destabilized by RBC passing on one side.
-The endothelial protrusions are also sufficient to orient a platelet while unicycling,
-but without RBCs to confine the platelet near the wall, the platelet does not roll along
-the wall for long. However, we find that unicycling itself seems to be stable. Unicycling also
-highlights the need for 3D simulations---it is a behavior that would not be
-captured by or predicted from a 2D simulation. We also observe platelet-endothelial interactions
-for both endothelial shapes. These interactions are typically caused by RBCs driving the
+Another prominent finding is that the effect of RBCs generally overwhelms the effects of
+the wall topography. Figure~\ref{fig:flow-profiles} shows that the flat wall yields
+slightly faster fluid velocities, but the flow profiles for flat and bumpy walls are
+qualitatively the same, except for the immediate vicinity of the wall. The result is a
+region of space between the bumps with a velocity gradient. Platelets following the shape
+of the bumpy wall crest the bump, dip into the region of lower velocity, and tumble. This
+feature is absent from the flat wall, but tumbling is not an extraordinary behavior. In
+either case, we observe ``unicycling'', a unique behavior in which the platelet rolls in
+the flow direction along its edge. Unicycling can be stabilized by RBCs which flank the
+platelet, or by an RBC that partially encapsulates the platelet while passing over it.
+Conversely, it can also be destabilized by RBC passing on one side.  The endothelial
+protrusions are also sufficient to orient a platelet while unicycling, but without RBCs
+to confine the platelet near the wall, the platelet does not roll along the wall for
+long. However, we find that unicycling itself seems to be stable. Unicycling also
+highlights the need for 3D simulations---it is a behavior that would not be captured by
+or predicted from a 2D simulation. We also observe platelet-endothelial interactions for
+both endothelial shapes. These interactions are typically caused by RBCs driving the
 platelet into the endothelium. The collisions are characterized by significant
-deformation to the platelet and a reduction in its speed. From a qualitative standpoint, the
-endothelial shape alone has minimal impact on the motion of the platelets, meaning that
-for modeling a healthy blood vessel, a flat wall suffices.
+deformation to the platelet and a reduction in its speed. From a qualitative standpoint,
+the endothelial shape alone has minimal impact on the motion of the platelets, meaning
+that for modeling a healthy blood vessel, a flat wall suffices.
 
-It is also reasonable to consider an alternative interpretation of the flat wall: a model exposed
-subendothelium. Near contact with the subendothelium increases the chance of platelet activation.
-Unicycling keeps an edge of the platelet near the wall, without hindering mobility. The
-vertical alignment is often maintained much longer than wall contacts from tumbling, and
-we do not observe wobbling in the presence of RBCs. We propose unicycling as an effective
-means by which platelets survey the vasculature for injury. Of course, the platelet can
-only distinguish a healthy vessel from an injury by encountering the necessary chemical
-signals. Until then, the platelets unicycle around bumps along the healthy endothelium as
-well. This also implies that unicycling indirectly assists in platelet activation for these
-shear rates.
+It is also reasonable to consider an alternative interpretation of the flat wall: a model
+exposed subendothelium. Near contact with the subendothelium increases the chance of
+platelet activation.  Unicycling keeps an edge of the platelet near the wall, without
+hindering mobility. The vertical alignment is often maintained much longer than wall
+contacts from tumbling, and we do not observe wobbling in the presence of RBCs. We
+propose unicycling as an effective means by which platelets survey the vasculature for
+injury. Of course, the platelet can only distinguish a healthy vessel from an injury by
+encountering the necessary chemical signals. Until then, the platelets unicycle around
+bumps along the healthy endothelium as well. This also implies that unicycling indirectly
+assists in platelet activation for these shear rates.
 
-We also consider yet another alternative interpretation of the bumpy wall. Because the bumps are
-approximately the same size as a platelet, we can consider this to be a rough model of
-a subendothelium with a few deposited platelets. Under this interpretation, we view
-platelet-wall contact as interactions between an unactivated platelet and the
+We also consider yet another alternative interpretation of the bumpy wall. Because the
+bumps are approximately the same size as a platelet, we can consider this to be a rough
+model of a subendothelium with a few deposited platelets. Under this interpretation, we
+view platelet-wall contact as interactions between an unactivated platelet and the
 subendothelium, when contact occurs in a valley, or between an unactivated platelet and
-an  activated platelet adhering to the subendothelium, when
-contact occurs on a bump.  These interactions correlate with a reduction in velocity at
-the contact zone and the platelet membrane becomes flattened at the point of contact. We
-suggest that the decreased velocity may be sufficient to allow bonds to form between the
-platelets or between the platelet and subendothelium. By flattening, the platelet exposes
-more surface area at the point of contact, so that the activation signals are more likely
-to reach the platelet. The observed velocity reduction seems insufficient for this, but
-the resolution of our simulations is also unlikely to allow cells to pass within bonding
-distance of one another. Overcoming this limitation we leave as a future direction.
+an activated platelet adhering to the subendothelium, when contact occurs on a bump.
+These interactions correlate with a reduction in velocity at the contact zone and the
+platelet membrane becomes flattened at the point of contact. We suggest that the
+decreased velocity may be sufficient to allow bonds to form between the platelets or
+between the platelet and subendothelium. By flattening, the platelet exposes more surface
+area at the point of contact, so that the activation signals are more likely to reach the
+platelet. The observed velocity reduction seems insufficient for this, but the resolution
+of our simulations is also unlikely to allow cells to pass within bonding distance of one
+another. Overcoming this limitation we leave as a future direction.

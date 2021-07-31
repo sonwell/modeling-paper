@@ -31,8 +31,8 @@ discretize the components of the advection term $\div(\u\otimes\u)$ by
 \end{equation}
 The symbol $\div[h]$ represents the discrete divergence operator.  Figure~%
 \ref{fig:discretization} illustrates the steps in computing $D_2[(A_1 v)(A_2 u)]$, which
-appears in the first component in Equation~\eqref{eq:advection}. Morinishi \latin{et al}.
-show that this scheme, $Div. - S2$ in their parlance, is conservative under the assumption
+appears in the first component in~\eqref{eq:advection}. Morinishi \latin{et al}.\ show
+that this scheme, $Div. - S2$ in their parlance, is conservative under the assumption
 that $\u$ is discretely divergence-free~\cite{Morinishi:1998us}.
 
 To advance the solution, we use either the backward-forward Euler-based scheme~%
@@ -41,8 +41,8 @@ modified to advance structures using the newest velocities. The modification mak
 schemes first-order in time, but allow us to separate the Eulerian update from the
 Lagrangian update by requiring only information at the beginning of the timestep to
 evaluate forces and moving the structure at the end of the timestep. For the
-backward-forward Euler scheme, discretizing Equation~\eqref{eq:ins-momentum} to advance
-time to $t+\timestep$, yields linear solves of Helmholtz type,
+backward-forward Euler scheme, discretizing~\eqref{eq:ins-momentum} to advance time to
+$t+\timestep$, yields linear solves of Helmholtz type,
 \begin{equation}\label{eq:disc-momentum}
     (I - \timestep\rho^{-1}\mu \laplacian_h) \u^\ast = \u^n - \timestep\left[\div[h]\left(\u^n\otimes\u^n\right) + \rho^{-1}\left(\f^{n+1} - \grad[h]p^n\right)\right] \quad\text{in}~\domain, \\
 \end{equation}
@@ -73,8 +73,8 @@ using pseudo-pressure $q^{n+1}$, which satisfies
 The velocity update~\eqref{eq:vel-update} provides the boundary conditions~%
 \eqref{eq:disc-bdy} using a lagged value of the pseudo-pressure. The 2-stage RK method
 consists of a backward-forward Euler step followed by a Crank-Nicolson-midpoint step,
-which involves only minor modifications to Equation~\eqref{eq:disc-momentum}. In total,
-we perform 3 Helmholtz solves and 1 Poisson solve per RK stage.
+which involves only minor modifications to~\eqref{eq:disc-momentum}. In total, we perform
+3 Helmholtz solves and 1 Poisson solve per RK stage.
 
 We employ preconditioned conjugate gradients (PCG) to perform the solves. We use
 Chebyshev iteration as a preconditioner for the Helmholtz solves and as an error
