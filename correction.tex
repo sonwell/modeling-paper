@@ -63,8 +63,9 @@ where, away from the boundary, $D_{yy}$ is the standard 3-point discrete second
 derivative with respect to $y$, and defined according to~\eqref{eq:disc-lap} otherwise.
 The resulting $D_{yy}$ is symmetric. In addition to replacing the discrete Laplacian
 $\laplacian_h$ with $\tilde{\laplacian}_h$, a timestepping scheme using this correction
-must replace instances of the identity matrix, many of which not written explicity, with
-the modified identity $\tilde{I}$. A stage of such a timestepping scheme takes the form
+must replace instances of the identity matrix, many of which are not written explicity,
+with the modified identity $\tilde{I}$. A stage of such a timestepping scheme takes the
+form
 \begin{equation*}
     (\tilde{I} - \alpha k\tilde{\laplacian}_h)\arr{u}^n = (\tilde{I} + (1-\alpha)k\tilde{\laplacian}_h)\arr{u}^{n-1} + B_h\arr{\gamma} + \tilde{I}\arr{f},
 \end{equation*}

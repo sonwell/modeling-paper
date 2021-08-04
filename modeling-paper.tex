@@ -70,6 +70,7 @@
 \DeclareCaptionSubType*{figure}
 \renewcommand\thesubfigure{\alph{subfigure}}
 \newcommand{\hi}[1]{\begingroup\setlength{\fboxsep}{0pt}\colorbox{highlighter!80}{#1}\endgroup}
+\renewcommand{\hi}{}
 
 \newcommand{\latin}[1]{\textit{#1}}
 \newcommand{\reg}{\textsuperscript{\textregistered}}
@@ -114,6 +115,7 @@
 \newcommand{\density}{\rho}
 \newcommand{\viscosity}{\mu}
 \newcommand{\scinot}[2]{{#1}\times 10^{#2}}
+\newcommand{\sci}[1]{\times10^{#1}}
 
 \renewcommand{\u}{\vec{u}}
 \newcommand{\floor}[1]{\left\lfloor{#1}\right\rfloor}
@@ -203,7 +205,20 @@
 
 
 \begin{abstract}
-We present a new method for the geometric reconstruction of elastic surfaces simulated by the immersed boundary method with the goal of simulating the motion and interactions of cells in whole blood. Our method uses parameter-free radial basis functions for high-order meshless parametric reconstruction of point clouds and the elastic force computations required by the immersed boundary method. This numerical framework allows us to consider the effect of endothelial geometry and red blood cell motion on the motion of platelets. We find red blood cells to be crucial for understanding the motion of platelets, to the point that the geometry of the vessel wall has a negligible effect. We describe certain interactions that force the platelets remain near the endothelium for extended periods, including a novel platelet motion only seen in 3-dimensional simulations that we term ``unicycling''. We also observe red blood cell-mediated interactions between platelets and endothelium for which the platelet has reduced speed. We suggest that these behaviors serve as mechanisms for vascular maintenance.
+We present a new method for the geometric reconstruction of elastic surfaces simulated by
+the immersed boundary method with the goal of simulating the motion and interactions of
+cells in whole blood. Our method uses parameter-free radial basis functions for
+high-order meshless parametric reconstruction of point clouds and the elastic force
+computations required by the immersed boundary method. This numerical framework allows us
+to consider the effect of endothelial geometry and red blood cell motion on the motion of
+platelets. We find red blood cells to be crucial for understanding the motion of
+platelets, to the point that the geometry of the vessel wall has a negligible effect in
+the presence of RBCs. We describe certain interactions that force the platelets to remain
+near the endothelium for extended periods, including a novel platelet motion that can be
+seen only in 3-dimensional simulations that we term ``unicycling''. We also observe red
+blood cell-mediated interactions between platelets and the endothelium for which the
+platelet has reduced speed. We suggest that these behaviors serve as mechanisms that
+allow platelets to better maintain vascular integrity.
 \end{abstract}
 
 \begin{keyword}
@@ -220,18 +235,17 @@ We present a new method for the geometric reconstruction of elastic surfaces sim
 \input{results}
 \input{discussion}
 \appendix
-\makeatletter
-\gdef\thesubsection{\@Alph\c@section.\the\value{subsection}}%
-\makeatother
 \input{correction}
 \input{forces}
 \section{Supplementary materials}\label{sec:supp}
 Videos for Figures~\ref{fig:unicycle} and~\ref{fig:rbc-plt-endo-collision} can be found
-online.
+in the online supplement.
 
 \section*{Acknowledgments}
 The authors thank Dr.\ Robert M.\ Kirby for access to computing resources at SCI
-Institute.
+Institute. A. T. K., A. B., and A. L. F. acknowledge support for this project under NHLBI 
+grant 1U01HL143336 and NSF grants DMS-1716898 and DMS-1521748. V. S. acknowledges support
+for this project under NSF grants CISE CCF 1714844 and DMS-1521748.
 
 \bibliography{modeling-paper}
 \end{document}

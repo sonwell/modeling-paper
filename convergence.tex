@@ -16,11 +16,11 @@ grid points per $16\um$ in each direction for $r$ from 1 to 6. On successive gri
 compare the fluid velocity at cell centers in a regular grid of $20^3$ cells and surface
 positions at 1000 surface points. For convergence of order $p$, we expect the ratio of
 successive errors to satisfy
-\begin{equation*}
+\begin{equation}
     \frac{\epsilon_r}{\epsilon_{r+1}} = \left|\frac{((r+1)/r)^p-1}{((r+2)/(r+1))^{-p}-1}\right|,
-\end{equation*}
-which we solve numerically for $p$. We compute the errors in $\X$ using discrete versions
-of the $L_2$ and $L_\infty$ norms,
+\end{equation}
+which we solve numerically to determine $p$. We compute the errors in $\X$ using discrete
+versions of the $L_2$ and $L_\infty$ norms,
 \begin{gather}
     \|\X(\theta,\,\varphi)\|_2^2 =
     \int\limits_{\sphere} \X(\theta,\,\varphi)\cdot\X(\theta,\,\varphi) \d\qs \quad\text{and} \\
@@ -66,7 +66,7 @@ Convergence of $\X$ for a sequence of grids. The refinement ratio $r$, defined a
 refinement in $h$ relative to the coarsest grid, determines the simulation parameters:
 $r\timestep = 180\ns$, $n_d = 125r^2$, and $n_s = 500r^2$. Errors are computed between
 grids of refinement factor $r$ and $r+1$. Values of $\X$ are sampled at $t = 180\us$ at
-$N=1000$ Bauer spiral points.
+$1000$ Bauer spiral points.
     }\label{tab:x-rbc-conv}
     \begingroup
     \setlength{\tabcolsep}{9pt}

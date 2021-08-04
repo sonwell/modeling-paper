@@ -1,13 +1,13 @@
 \subsection{Surface area weights via RBF quadrature}\label{sec:rbf-quadrature}
 
-We also use the known parametrization of $\sphere$ to compute RBF-based quadrature weights
-on $\sphere$ as a preliminary step in computing quadrature weights on any surface
+We use the known parametrization of $\sphere$ to compute RBF-based quadrature weights on
+$\sphere$ as a preliminary step in computing quadrature weights on any surface
 diffeomorphic to $\sphere$, namely, RBC and platelet membranes.
 
 As before, consider a function $\psi:\sphere\to\R$ defined on the sphere, and a radial
-kernel $K:\sphere\times\sphere\to\R$ for which
-$K(\Xp_i,\,\Xp_j)\equiv\phi(\|\Xp_i-\Xp_j\|)$. We wish to find a set of quadrature
-weights $\omega_j$ such that
+kernel $\phi:\sphere\times\sphere\to\R$,
+$\phi(\Xp_i,\,\Xp_j)\equiv\phi(\|\Xp_i-\Xp_j\|)$.
+We wish to find a set of quadrature weights $\omega_j$ such that
 \begin{equation}\label{eq:quad-desire}
     \int_{\sphere} \psi(\Xp) \d\Xp \approx \sum_{j=1}^{\sample\cardinality} \omega_j \psi(\Xpsj).
 \end{equation}
@@ -21,11 +21,10 @@ $\sample\Xp_i$,~\eqref{eq:quad-desire} becomes
 \end{equation}
 However, because the spherical metric~\eqref{eq:sphere-metric} depends only on the angle
 between two points, $\L\phi$ is constant over the sphere. We therefore expect the
-right-hand side to be a constant, which we denote $-I_\phi$. We require further that
+right-hand side to be a constant, which we denote $-I_\phi$. We require further that the
 $\omega_j$ sum to the surface area of $\sphere$, \latin{i.e.},
-\begin{equation}
+\begin{equation}\label{eq:weight-sum}
     \sum_{j=1}^{\sample\cardinality} \omega_j  = 4\pi.
-    \label{eq:weight-sum}
 \end{equation}
 Treating $I_\phi$ as an unknown scalar, we rewrite the constraints~\eqref{eq:cond1t} and%
 ~\eqref{eq:weight-sum} in the symmetric block linear system %for $\omega_j$. Let

@@ -8,15 +8,16 @@ flow with a shear rate of $\shear=1000\persec$. This serves as our model near-wa
 of a blood vessel.
 
 For whole blood simulations, we return to the 4-point B-spline, $B_3$, as the IB kernel.
-Because we are limited to very small time steps with either timestepping scheme, we use
-backward-forward Euler with $\timestep=50\ns$ to reduce simulation time. We observe
-qualitative agreement between these two schemes.  We have already settled on an RBC
-discretization in the previous section. We use the same spiral method to discretize the
-platelet, but with 900 data and sample sites. Using the same number of sample sites and
-data sites aligns more closely with traditional IB methods. We also find that the Bauer
-spiral places points more densely along the edge of the platelet, which is helpful in
-resolving the large curvatures there. We parametrize the surface of the endothelium over
-$(\theta,\,\varphi) \in [0,\,2\pi)^2$ with reference shape
+Because some RBC configurations generate large forces, the stopping condition of the
+previous section limits us to small timesteps. In the interest of reducing simulation
+time, we therefore use backward-forward Euler with $\timestep=50\ns$. In tests, we
+observe qualitative agreement between this scheme and the two-stage RK scheme. We have
+already settled on an RBC discretization in the previous section. We use the same spiral
+method to discretize the platelet, but with 900 data and sample sites. Using the same
+number of sample sites and data sites aligns more closely with traditional IB methods. We
+also find that the Bauer spiral places points more densely along the edge of the
+platelet, which is helpful in resolving the large curvatures there. We parametrize the
+surface of the endothelium over $(\theta,\,\varphi)\in[0,\,2\pi)^2$ with reference shape
 \begin{equation}
     \vec{\hat{X}}_\text{endo}(\theta,\,\varphi) = \left[\begin{array}{c}
             16\um\cdot(\theta/2\pi)  \\
@@ -31,7 +32,7 @@ discretized using 16000 points, defined by the spiral
     \theta_i &= \modulo\left(\left\lceil\!\sqrt{N}\mskip\thinmuskip\right\rceil\varphi_i,\,2\pi\right).
 \end{align*}
 We consider two shapes for the endothelium. The first, $y=1\um$, emulates the flat wall
-typically seen in near-wall simulations of RBCs or platelets. The other attempts to
+typically used in near-wall simulations of RBCs or platelets. The other attempts to
 recreate the elongated endothelial cell shape typical of exposure to high-shear
 conditions,
 \begin{equation*}
@@ -46,17 +47,18 @@ motion, we consider two platelets along a flat wall. They are placed parallel to
 at distances of $0.3\um$ and $0.5\um$. The domain does not contain any RBCs. At a
 distance of $0.3\um$, the platelet is expected to ``wobble'', in which the platelet tilts
 slightly upward and downward, periodically~\cite{King:2005fv}. On the other hand, the
-platelet initially $0.5\um$ from the wall should tumble end-over-end $0.5\um$. We observe
-wobbling at a frequency of approximately $10\persec$ and tumbling with a frequency of
-approximately $30\persec$. We also note that the edge of the tumbling platelet remains
-pointed towards the wall for only 3--$4\ms$.
+platelet initially $0.5\um$ from the wall should tumble end-over-end. We observe wobbling
+at a frequency of approximately $10\persec$ and tumbling with a frequency of
+approximately $30\persec$. These figures are in reasonable agreement with other studies~%
+\cite{King:2005fv}. We also note that the edge of the tumbling platelet remains pointed
+towards the wall for only 3--$4\ms$.
 
 \subsubsection{Initialization}\label{sec:blood-init}
 
-We begin by assuming that the platelets have already been marginated by the RBCs. We
-think of the domain as having three layers with the endothelium at the bottom, RBCs on
-top, and platelets in between. We begin by settling the endothelium and RBCs before
-placing platelets.
+We assume that the platelets have already been marginated by the RBCs. We think of the
+domain as having three layers with the endothelium at the bottom, RBCs on top, and
+platelets in between. We begin by settling the endothelium and RBCs before placing
+platelets in the space between the RBCs and the endothelium.
 
 In addition to the endothelium, we place 2 rows of 4 RBCs, each in their reference
 configuration, in the domain with the RBCs' centers of mass on the plane $y=6\um$.
@@ -76,9 +78,9 @@ in which we place platelets. To find reasonable starting orientations for the pl
 we randomly choose points on the endothelium and one on each platelet surface. Each of
 the simulations in the upcoming sections contains two platelets, so we choose two points
 on the endothelium that are at least $3.9\um$, a platelet diameter plus $4h$, apart. The
-resulting platelet are spaced far enough apart as to not intersect. We compute normal
-vectors on the surfaces of the endothelium and platelets at these points. The platelets
-are oriented so that the normal emanating from the platelet opposes the normal at the
+resulting platelets are spaced far enough apart to not intersect. We compute normal
+vectors on the surfaces of the endothelium and platelets at these points. We orient the
+platelets so that the normal emanating from the platelet opposes the normal at the
 corresponding point on the endothelium. The platelet is then placed so its chosen surface
 point is separated from the endothelium point by a random distance between $0.3\um$ and
 $1\um$. If the generated orientation does not pass within $0.4\um$ of an RBC, the
@@ -88,9 +90,8 @@ algorithm typically succeeds within 2 attempts.
 This initialization process is performed once for each endothelial configuration and we
 take the first four acceptable initial configurations for each. In the following section,
 we present behaviors found in these simulations. As a point of comparison, we also
-consider the initial configurations for the bumpy wall with the RBCs removed from the
-domain.
-
+consider the same initial configurations for the bumpy wall with the RBCs removed from
+the domain.
 
 \subsubsection{Characterization of flow and cell behaviors}
 
@@ -129,31 +130,31 @@ cases.
         \end{axis}
     \end{tikzpicture}
     \caption[A comparison of fluid velocity profiles]{%
-Time- and space-averaged fluid velocity profiles for each of the test cases.
-%The F\r{a}hr{\ae}us-Lindqvist effect is clearly evident when RBCs are included.
-The inclusion of RBCs (red and blue curves) causes the region inhabited by platelets,
+Time- and space-averaged fluid velocity profiles for each of the test cases. The
+inclusion of RBCs (red and blue curves) causes the region inhabited by platelets,
 1--$4\um$, to experience a higher shear rate than it would without RBCs (yellow curve).
     }\label{fig:flow-profiles}
 \end{figure}
 
 Flow profiles are shown in Figure~\ref{fig:flow-profiles}. The most notable difference
 among the three flow profiles is the nearly Couette flow when RBCs are absent. The only
-distinction between this and Couette flow is the smoother transition at the wall, due to
-the bumps. This is also the distinguishing feature between the profiles corresponding to
-bumpy and flat walls in the presence of RBCs. The smooth transition from the bumps
-results in marginally slower flow speeds throughout the domain, compared to the flat
-wall. The inclusion of RBCs causes the bends in the red and blue curves around $y = 3\um$
-and $y = 9\um$. Platelets inhabit the region between $y=1$ and $3\um$. In simulations
-featuring RBCs, the platelets experience higher shear rates than those without RBCs where
-there is a reduction in apparent viscosity in the RBC-free layer. This is a consequence
-of the F\r{a}hr{\ae}us effect. In pressure-driven flow through a tube, we expect
-approximately parabolic flow.  The bend near $y = 9\um$ is therefore nonphysical and
-arises from satisfying boundary conditions at the top boundary. However, the increased
-shear rate in the region between $y=9$ and $12\um$ seems to be useful in deterring RBCs
-from approaching the upper boundary. An exclusionary region of just 1--$2\um$ along the
-top boundary increases the effective hematocrit to 37--41\%. Furthermore, the reduced
-shear rate in the region containing RBCs results in slower tank-treading compared to a
-dilute suspension of RBCs, with one period now lasting approximately $40\ms$.
+distinction between this and Couette flow with $\shear=1000\persec$ is the smoother
+transition at the wall due to the bumps. This is also the distinguishing feature between
+the profiles corresponding to bumpy and flat walls in the presence of RBCs. The smooth
+transition from the bumps results in marginally slower flow speeds throughout the domain,
+compared to the flat wall. The inclusion of RBCs causes the bends in the red and blue
+curves around $y = 3\um$ and $y = 9\um$. Platelets located between $y=1\um$ and $y=3\um$
+experience higher shear rates than in simulations featuring RBCs than in those without
+RBCs. The region near the upper boundary also experiences an increased shear rate. In
+pressure-driven flow through a tube, we expect parabolic flow. The bend near $y = 9\um$
+is therefore nonphysical and arises from satisfying boundary conditions at the top
+boundary. However, the increased shear rate in the region between $y = 9\um$ and $12\um$
+seems to be useful in deterring RBCs from approaching the upper boundary. This region
+acts as another RBC-free layer where the RBCs excurse only infrequently. An exclusionary
+region of just 1--$2\um$ along the top boundary increases the effective hematocrit to
+37--41\%. Furthermore, the reduced shear rate in the region containing RBCs results in
+slower tank-treading compared to a dilute suspension of RBCs, with one period now lasting
+approximately $40\ms$.
 
 RBCs are effective at preventing the platelets from moving too far from the endothelium.
 The furthest observed distance from the endothelium any platelet takes is just under
@@ -314,17 +315,17 @@ video corresponding to this simulation.
     }\label{fig:rbc-plt-endo-collision}
 \end{figure}
 
-We notice that in simulations with a bumpy endothelium, platelets will collide with the
-bumps. This tends to occur while the platelet is tumbling, and the edge of the platelet
-makes contact with the endothelium. This interaction is characterized by deformations
-that flatten the edge of the platelet and a \midtilde5\% relative change in the aspect
-ratio of the major axes of the platelet. However, the collision need not occur along the
-edge of the platelet, nor, indeed, against a bump in the endothelium. Similar collisions
-occur in the case of a flat wall, suggesting that RBCs mediate this behavior. A clear
-case of this is illustrated in Figure~\ref{fig:rbc-plt-endo-collision}(a)--(d). We also
-note that the few milliseconds preceding the unicycling in Figure~\ref{fig:unicycle}
-correspond to a collision with the wall, showing that this is yet another trigger for
-unicycling to occur.
+We notice that in simulations with a bumpy endothelium, platelets collide with the bumps.
+This tends to occur while the platelet is tumbling, and the edge of the platelet makes
+contact with the endothelium. This interaction is characterized by deformations that
+flatten the edge of the platelet and a \midtilde5\% relative change in the aspect ratio
+of the major axes of the platelet. However, the collision need not occur along the edge
+of the platelet, nor, indeed, against a bump in the endothelium. Somewhat surprisingly,
+collisions with a flat wall occur at roughly the same frequency, suggesting that RBCs
+mediate this behavior. A clear case of this is illustrated in Figure~%
+\ref{fig:rbc-plt-endo-collision}(a)--(d). We also note that the few milliseconds
+preceding the unicycling in Figure~\ref{fig:unicycle} correspond to a collision with the
+wall, showing that this is yet another trigger for unicycling to occur.
 
 Because the platelet comes into contact with the endothelium, or nearly does so, the
 platelet slows along the area of contact. Figure~\ref{fig:rbc-plt-endo-collision}(e)

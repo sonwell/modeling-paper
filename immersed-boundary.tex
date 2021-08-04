@@ -37,7 +37,7 @@ $\Dirac_h(\x)$. The Lagrangian point $\X$ evolves according to
 where $i$ enumerates the Eulerian grid points, and a superposed dot denotes partial
 differentiation with respect to $t$. As a boundary deforms, it generates a force density
 $\F = \F(\X,\,t)$, which it imparts onto the fluid as $\f$ in~\eqref{eq:ins-momentum}.
-Again, we suppress $t$ when using $\F$. By similar reasoning as the velocity, $\F$ is
+Again, we suppress $t$ when using $\F$. By similar reasoning as for the velocity, $\F$ is
 transferred to the fluid at $\x$ via
 \begin{equation}\label{eq:ib-spread}
         \f(\x)
@@ -60,14 +60,14 @@ do so, we discuss the specific variant of the IB method employed herein.
 
 \subsection{The RBF-IB method}\label{sec:rbfib}
 
-The classical IB method uses the same the Lagrangian points in interpolation~%
+The classical IB method uses the same Lagrangian points in interpolation~%
 \eqref{eq:ib-interp} and spreading~\eqref{eq:ib-spread}. However, there exist several IB
-methods which use different sets of points for each operation instead. For instance,
-Griffith and Luo~\cite{Griffith:2017id} use a finite element representation for the
-structure, and consequently spread forces from (Lagrangian) quadrature points,
-interpolate velocities to quadrature points, and then project them using the finite
+methods which instead use different sets of points for each operation instead. For
+instance, Griffith and Luo~\cite{Griffith:2017id} use a finite element representation for
+the structure, and consequently spread forces from (Lagrangian) quadrature points,
+interpolate velocities to quadrature points, and then project these using the finite
 element basis to the individual element nodes. The RBF-IB method~\cite{Shankar:2015km}
-used in this work also does something similar. A small set of \hi{$\data\cardinality$
+used in this work does something similar. A small set of \hi{$\data\cardinality$
 Lagrangian points} approximately $2h$ apart is used to approximate $\X$ and this set of
 points is moved by~\eqref{eq:ib-interp}. In addition, a larger set of
 \hi{$\sample\cardinality$ points} chosen to be approximately $h$ apart is used to spread
@@ -82,7 +82,7 @@ adjoint, leading to concerns about numerical stability. In previous work~%
 \cite{Shankar:2015km}, the authors demonstrated that the RBF-IB method dissipated energy
 in 2D simulations as expected, despite the absence of formal adjointness. In this work,
 we show similar results for an RBC relaxation problem in a full 3D simulation in Section%
-~\ref{sec:energy-est}. The second major concern related to the wide $2h$ spacing of the
+~\ref{sec:energy-est}. The second major concern relates to the wide $2h$ spacing of the
 smaller set of points used to approximate $\X$ and update the structure. If the points
 are spaced too widely apart, it is possible to obtain unphysical behavior, with some
 parts of the structure responding more to the neighboring fluid than others.  However,

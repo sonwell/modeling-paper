@@ -20,16 +20,18 @@ corresponding parametric points. This mapping is given by:
         \sin\varphi
     \end{array}\right],
 \end{equation}
-$(\theta,\,\varphi)\in(-\pi,\,\pi]\times[-\pi/2,\,\pi/2]$.
-Let $\data\sites = \{(\data\theta_i,\,\data\varphi_i)\}$ be a set of $\data\cardinality$
-distinct \emph{data sites}, defined by the Bauer spiral~\cite{Bauer:2000km},
+$(\theta,\,\varphi)\in(-\pi,\,\pi]\times[-\pi/2,\,\pi/2]$. Let
+$\data\sites = \{(\theta_i,\,\varphi_i)\}$ be a set of $\data\cardinality$ distinct
+\emph{data sites}, defined by the Bauer spiral~\cite{Bauer:2000km},
 \begin{equation}\label{eq:bauer-spiral}
     \begin{aligned}
-        &\varphi_j = \sin^{-1}(-1 + (2i - 1) / \data\cardinality), \\ % XXX are we sure we want to write this? Have to explain how it changes for sample sites
+        &\varphi_j = \sin^{-1}(-1 + (2i - 1) / \data\cardinality), \\
         &\theta_j = \modulo\left(\sqrt{\data\cardinality\pi}\varphi_j + \pi,\,2\pi\right) - \pi,
     \end{aligned}
 \end{equation}
-where $\modulo(a,\,b) = a - b\floor{a/b}$ is the modulo function. Let
+where $\modulo(a,\,b) = a - b\floor{a/b}$ is the modulo function. We similarly generate
+a larger set of \emph{sample sites} from which to spread forces by replacing $\data\cardinality$
+with $\sample\cardinality$ in the above equation. Let
 $\data\Xp_i=\Xp(\theta_i,\,\varphi_i)$ for each $(\theta_i,\,\varphi_i)\in\data\sites$.
 In this setting, our goal is to construct a parametric mapping from $\data\sites$ to the
 Cartesian locations of points on cell surfaces. For RBC and platelet parametrizations, we
@@ -37,11 +39,11 @@ identify the point $\X(\theta,\,\varphi,\,t)$ on $\interface$ with the point
 $\Xp(\theta,\,\varphi)$ on $\sphere$. Each component of $\X$ is then a function defined
 on $\sphere$. The problem of surface reconstruction therefore involves approximating each
 of these functions from the $\data\sites$ using an RBF interpolant. For the discussion
-that follows, we use $\psi(\Xp) : \sphere \to \mathbb{R}$ denote a function that we wish
-to approximate.
+that follows, we use $\psi(\Xp):\sphere\to\R$ to denote a function that we wish to
+approximate.
 
-Let $K:\sphere\times\sphere\to\R$ be a \emph{radial kernel} with the property that
-$K(\Xp_i,\,\Xp_j)\equiv\phi(\|\Xp_i-\Xp_j\|)$ for some $\phi$. These kernels are
+Let $\phi:\sphere\times\sphere\to\R$ be a \emph{radial kernel} with the property that
+$\phi(\Xp_i,\,\Xp_j)\equiv\phi(\|\Xp_i-\Xp_j\|)$. These kernels are
 sometimes called \emph{spherical basis functions}. In addition to the radial kernels, let
 $p_k(\Xp)$, $k=1,\,\ldots,\,\poly\cardinality$ denote the first $\poly\cardinality$
 spherical harmonics, which form a natural basis for polynomial approximation on
@@ -74,18 +76,18 @@ exactly~\cite{Fasshauer:2007ui}. We collect~\eqref{eq:interp_constraint} and~%
 where $\arr{c}$ and $\arr{d}$ are the unknown coefficients, $\Phi$ represents the
 evaluations of $\phi$, $P$ represents evaluations of the polynomials $p_k$, the matrix
 block $0$ is the $\poly\cardinality\times\poly\cardinality$ zero matrix, and $\arr{0}$ is
-a vector of $\poly\cardinality$ zeros. Because $\data\sites$ is fixed, we need only
-construct this matrix and compute its factors once even though $\psi(\Xp)$ changes. The
-matrix in~\eqref{eq:rbf-interp-matrix} is invertible for any conditionally positive
-definite kernel $\phi$ of order $m$ as long as the data sites $\data\sites$ are
-unisolvent for the first $\poly\cardinality \ge (m+1)^2$ spherical harmonics,
-\latin{i.e.}, $P$ is of full rank~\cite{Fasshauer:2007ui}. A common heuristic choice to
-ensure this is to set $\data\cardinality = 2 \poly\cardinality$~\cite{SWJCP2018}. 
+a vector of $\poly\cardinality$ zeros. Because $\data\sites$ is fixed, we construct this
+matrix and compute its factors only once even though $\psi(\Xp)$ changes. The matrix in~%
+\eqref{eq:rbf-interp-matrix} is invertible for any conditionally positive definite kernel
+$\phi$ of order $m$ as long as the data sites $\data\sites$ are unisolvent for the first
+$\poly\cardinality \ge (m+1)^2$ spherical harmonics, \latin{i.e.}, $P$ is of full rank~%
+\cite{Fasshauer:2007ui}. A common heuristic choice to ensure this is to set
+$\data\cardinality = 2 \poly\cardinality$~\cite{SWJCP2018}. 
 
 It now remains to discuss the choice of $\phi$. In previous work~\cite{Shankar:2015km},
 we chose $\phi$ to be an infinitely-smooth and positive-definite kernel. While these
 kernels offer spectral convergence rates, they require tuning a so-called shape
-parameter~\cite{Fasshauer:2007ui}. In this work, we instead choose $\phi$ to be a
+parameter~\cite{Fasshauer:2007ui}. In particular, we instead choose $\phi$ to be a
 polyharmonic spline (PHS), which is a conditionally-positive definite kernel with finite
 smoothness. In this work, we set $\phi(r) = r^7$, augmented with fifth-order spherical
 harmonics to represent RBCs, or just the constant spherical harmonic for platelets. As
@@ -167,7 +169,7 @@ with few thread synchronizations.
 We now have a method for computing a suitable set of points and for discretizing $\F$ for
 use in~\eqref{eq:ib-spread}. To compute a force from a force density, we need to
 approximate quadrature weights, or surface patch areas, for each sample site. The
-following section is devoted to computing quadrature weights $\weight[j]$ for each
+following section is devoted to computing a quadrature weight $\weight[j]$ for each
 sample site using RBFs.
 
 % vim: cc=90 tw=89

@@ -1,10 +1,10 @@
 \section{Cell energy models}\label{sec:energy}
 
-In this section, we describe the various forms of energy density used in our simulations
-and give analytic expressions for each. The corresponding force densities are given in~%
-\ref{sec:forces}. We use four kinds of energy densities: (damped) spring energy,
-tensions, dissipative energy, and Canham-Helfrich bending energy. For energy density $W$,
-we define the energy functional
+In this section, we describe the various forms of energy density (energy per area) used
+in our simulations and give analytic expressions for each. The corresponding force
+densities are given in~\ref{sec:forces}. We use four kinds of energy densities: (damped)
+spring energy, tension energy, dissipative energy, and Canham-Helfrich bending energy.
+For energy density $W$, we define the energy functional
 \begin{equation*}
     \energy[\X] = \int_\interface W \d\X.
 \end{equation*}
@@ -23,18 +23,19 @@ the energy density takes the form
 \begin{equation}
     W_\text{spring}(\X,\,\U) = \frac{k}2 (\X - \X')^2 + \frac{\eta}2(\U - \U')^2.
 \end{equation}
-where $\X'$ is the tether location, $\U' = \partial\X'/\partial t$ is the prescribed
-velocity of the tether point, $k$ is the spring constant, and $\eta$ is the damping
-constant. Due to the lack of information about the mechanical properties of endothelial
-cells, we model the endothelium as a rigid, stationary object with
-$k_\text{endo} = 2.5\dynpercm$ and $\eta_\text{endo} = 2.5\times 10^{-7}\dynsecpercm$,
-chosen to be as large as possible for the chosen spatial and temporal step size, and
-$\U' = \vec{0}$. We compare different choices for $\X'$ in Section~\ref{sec:whole-blood}.
+where $\X'=\X(\theta,\,\varphi)$ is the tether location for $\X(\theta,\,\varphi,\,t)$,
+$\U' = \partial\X'/\partial t$ is the prescribed velocity of the tether point, $k$ is the
+spring constant, and $\eta$ is the damping constant. Due to the lack of information about
+the mechanical properties of endothelial cells, we model the endothelium as a rigid,
+stationary object with $\ethm{k} = 2.5\dynpercm$ and
+$\ethm\eta = 2.5\sci{-7}\dynsecpercm$, chosen to be as large as possible for the
+chosen spatial and temporal step size, and $\U' = \vec{0}$. We compare different choices
+for $\X'$ in Section~\ref{sec:whole-blood}.
 
-Next, we consider the tension densities for RBCs and platelets. These penalize stretching
-and areal dilation of the cell membranes. Let $\lambda_1$ and $\lambda_2$ be the
-principal extensions, \latin{i.e.}, the maximal and minimal ratios of stretching relative
-to a reference configuration. We define the invariants $I_1=\lambda_1^2+\lambda_2^2-2$
+Next, we consider the tension energy densities for RBCs and platelets. These penalize
+stretching and areal dilation of the cell membranes. Let $\lambda_1$ and $\lambda_2$ be
+the principal extensions, \latin{i.e.}, the maximal and minimal  ratios of stretching
+relative to a reference configuration. We define the invariants $I_1=\lambda_1^2+\lambda_2^2-2$
 and $I_2 = \lambda_1^2\lambda_2^2-1$, which measure relative changes in length and area,
 respectively, such that $I_1 = I_2 = 0$ correspond to a rigid body motion. We express the
 tension density in terms of these invariants. Skalak's Law was designed specifically for
@@ -43,13 +44,13 @@ RBCs~\cite{Skalak:1973tp}:
     W_\text{Sk}(I_1,\,I_2) = \frac{E}4\left(I_1^2 + 2I_1 - 2I_2\right) + \frac{G}4 I_2^2.
 \end{equation}
 $E$ is the shear modulus, and $G$ is the bulk modulus. The shear and bulk moduli for RBCs
-is estimated to be $E = 6\times 10^{-3}\dynpercm$ and $G = 5\times 10^2 \dynpercm$~%
+are estimated to be $E = 6\sci{-3}\dynpercm$ and $G = 5\sci2\dynpercm$~%
 \cite{Mohandas:1994tg}, but we follow Fai \latin{et al.}~\cite{Fai:2013do} and use
-$\rbc{E} = 2.5\times 10^{-3}\dynpercm$ and $\rbc{G} = 2.5\times 10^{-1}\dynpercm$. We use
-the shape given by Evans \& Fung for the reference RBC with
-radius $R_0 = 3.91\um$~\cite{Evans:1972uf}:
+$\rbc{E} = 2.5\sci{-3}\dynpercm$ and $\rbc{G} = 2.5\sci{-1}\dynpercm$. We use
+the shape given by Evans \& Fung~\cite{Evans:1972uf} for the reference RBC with radius
+$R_0 = 3.91\um$:
 \begin{equation*}
-    \vec{\hat{X}}_\text{RBC}(\theta,\,\varphi) = R_0\left[\begin{array}{c}
+    \rbc{\vec{\hat{X}}}(\theta,\,\varphi) = R_0\left[\begin{array}{c}
             \cos\theta\cos\varphi \\
             \sin\theta\cos\varphi \\
             z(\cos\varphi)\sin\varphi
@@ -60,7 +61,7 @@ purpose-built constitutive law, but are stiffer than RBCs. We use the neo-Hookea
 \begin{equation}\label{eq:neohookean}
     W_\text{nH}(I_1,\,I_2) = \frac{E}2\left(\frac{I_1+2}{\sqrt{I_2+1}}-2\right) + \frac{G}2 \left(\sqrt{I_2+1}-1\right)^2
 \end{equation}
-with $\plt{E} = 1\times 10^{-1}\dynpercm$ and $\plt{G} = 1\dynpercm$, and an ellipsoidal
+with $\plt{E} = 1\sci{-1}\dynpercm$ and $\plt{G} = 1\dynpercm$, and an ellipsoidal
 reference configuration~\cite{Frojmovic:1982wk}
 \begin{equation*}
     \plt{\hat{\vec{X}}}(\theta,\,\varphi) = \left[\begin{array}{c}
@@ -78,13 +79,12 @@ membrane's mean curvature. The Canham-Helfrich bending energy density takes the 
 \end{equation}
 where $\kappa$ is the bending modulus in units of energy, and $H'$ is the spontaneous or
 \emph{preferred} curvature. An RBC generates a relatively weak response to changes in its
-curvature. Its bending modulus is estimated to be in the range $0.3$--%
-$\scinot{4}{-12}\erg$~\cite{Mohandas:1994tg}. We use a bending modulus of
-$\rbc\kappa = \scinot{2}{-12}\erg$ and a preferred curvature $H' = 0$ for RBCs. RBCs,
-therefore, tend to locally flatten their membranes. For platelets, we use a larger
-bending modulus of $\plt\kappa = \scinot{2}{-11}\erg$ and a preference for its reference
-curvature. Together with the neo-Hookean tension above, this maintains a fairly rigid
-platelet.
+curvature. Its bending modulus is estimated to be in the range $0.3$--$4\sci{-12}\erg$~%
+\cite{Mohandas:1994tg}. We use a bending modulus of $\rbc\kappa = 2\sci{-12}\erg$ and a
+preferred curvature $H' = 0$ for RBCs. RBCs, therefore, tend to locally flatten their
+membranes. For platelets, we use a larger bending modulus of $\plt\kappa=2\sci{-11}\erg$
+and a preference for its reference curvature. Together with the neo-Hookean tension
+above, this maintains a fairly rigid platelet.
 
 Finally, we consider dissipative energy, which causes the membrane to exhibit a
 viscoelastic response to strain. It takes the form~\cite{Rangamani:2012hi}
@@ -94,8 +94,8 @@ viscoelastic response to strain. It takes the form~\cite{Rangamani:2012hi}
 where $\nu$ is the membrane viscosity, and $\dot{\lambda}_i$ is the rate of change of
 $\lambda_i$. We imbue only the RBC with viscoelasticity. We find this effective in
 eliminating some numerical instabilities. While Evans and Hochmuth suggest a viscosity of
-approximately $\scinot{1}{-3}\dynsecpercm$~\cite{Evans:1976tx}, we find this to be
+approximately $1\sci{-3}\dynsecpercm$~\cite{Evans:1976tx}, we find this to be
 prohibitively expensive in practice, due to time step restrictions, and instead use
-$\rbc\nu = \scinot{2.5}{-7}\dynsecpercm$.
+$\rbc\nu = 2.5\sci{-7}\dynsecpercm$.
 
 % vim: cc=90 tw=89

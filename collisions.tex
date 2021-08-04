@@ -3,7 +3,7 @@
 With whole blood simulation as the ultimate goal, we must ensure that the method can
 effectively capture cell-cell interactions. The RBF-IB method has been applied to flow
 around multiple platelets in an aggregate, but those cells are kept apart by a network
-of springs~\cite{Shankar:2015km}. To model the interaction between cells, we devise a
+of springs~\cite{Shankar:2015km}. To study the interaction between cells, we devise a
 series of tests in which we force two RBCs to collide. The aim is to verify that the
 cells remain distinct. Using too few data sites could allow the cells to come too close
 to one another. The regularization of $\Dirac_h$ then causes them to be treated as a
@@ -72,7 +72,7 @@ cells wrap around each other, again taking on the bulbous banana shape.
     \label{fig:collisions}
 \end{figure}
 
-We continue to use the same physical domain as the previous two sections, now with
+We continue to use the same physical domain as in the previous two sections, now with
 $h = 0.2\um$, and place two RBCs therein, each with $\data\cardinality=2500$ and
 $\sample\cardinality=10000$. The ratio $\sample\cardinality/\data\cardinality=4$ is
 chosen so that sample sites with spacing $h$ means data sites have spacing $2h$. We
@@ -85,7 +85,7 @@ a gap of $4h = 0.8\um$ between their convex hulls, \latin{i.e.}, ignoring the
 concavities. Inspired by Crowl \& Fogelson~\cite{Erickson:2011cf}, we add the fictitious
 force density
 \begin{equation*}
-    \F_\text{fict} = \pm 0.1\dynpercm\cdot(\e_1+\e_2)/\sqrt{2},
+    \F_\text{fict} = \pm 0.1\dynpercm\cdot(\e_1+\e_3)/\sqrt{2},
 \end{equation*}
 to each cell, where the sign is chosen so the force points into the gap, to draw the
 cells together. Success in these tests implies that this configuration of data and sample
@@ -104,5 +104,5 @@ due to extreme forces triggering the stopping condition~\cite{Agresar:1998wv}
 \begin{equation}
     \timestep > \frac14\sqrt{\frac{h\rho}{\|\f\|_\infty}}.
 \end{equation}
-For the remainder of this chapter, we will only consider this arrangement of data and
+For the remainder of this chapter, we will consider only this arrangement of data and
 sample sites and this grid resolution.
