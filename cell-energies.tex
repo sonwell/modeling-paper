@@ -1,40 +1,42 @@
-\section{Cell energy models}\label{sec:energy}
+\section{Cell energy and power models}\label{sec:energy}
 
-In this section, we describe the various forms of energy density (energy per area) used
-in our simulations and give analytic expressions for each. The corresponding force
-densities are given in~\ref{sec:forces}. We use four kinds of energy densities: (damped)
-spring energy, tension energy, dissipative energy, and Canham-Helfrich bending energy.
-For energy density $W$, we define the energy functional
+In this section, we describe the various forms of energy density (energy per area) and
+power density (power per area) used in our simulations, and give analytic expressions for
+each. The corresponding force densities are given in~\ref{sec:forces}. We use five kinds
+of densities: spring energy, damped spring power, tension energy, dissipative power, and
+Canham-Helfrich bending energy. For constitutive law $W$, we define the functional
 \begin{equation*}
-    \energy[\X] = \int_\interface W \d\X.
+    \energy[\X, \U] = \int_\interface W(\X,\,\U,\,\ldots) \d\X,
 \end{equation*}
+where the ellipsis indicates that $W$ may depend on spatial derivatives of $\X$ or $\U$.
 The force density associated with $W$ is found by computing the first variation of
-$\energy$: 
+$\energy$,
 \begin{equation}
-    \F = -\delta\energy.
+    \F = -\delta\energy,
 \end{equation}
-Because our ultimate goal is a three-dimensional simulation, we limit our descriptions to
-the three-dimensional case. Considerations for the two-dimensional case are treated
+with respect to $\X$ for energy densities and to $\U$ for power densities. Because our
+ultimate goal is a three-dimensional simulation, we limit our descriptions to the
+three-dimensional case. Considerations for the two-dimensional case are treated
 elsewhere~\cite{Peskin:2002go,Erickson:2010uzba}.
 
-We begin with Hookean and damped spring energy density, which is the simplest energy
-density we use. It depends only on surface locations $\X$ and surface velocity $\U$, and
-the energy density takes the form
+We begin with Hookean energy and damped spring power density. These have the simplest
+constitutive laws we use, depend only on surface locations and surface velocities, and
+take the form
 \begin{equation}
-    W_\text{spring}(\X,\,\U) = \frac{k}2 (\X - \X')^2 + \frac{\eta}2(\U - \U')^2.
+        W_\text{Hk}(\X) = \frac{k}2 {\|\X - \X'\|}^2\quad\text{and}\quad
+        W_\text{damped}(\U) = \frac{\eta}2{\|\U - \U'\|}^2,
 \end{equation}
-where $\X'=\X(\theta,\,\varphi)$ is the tether location for $\X(\theta,\,\varphi,\,t)$,
-$\U' = \partial\X'/\partial t$ is the prescribed velocity of the tether point, $k$ is the
-spring constant, and $\eta$ is the damping constant. Due to the lack of information about
-the mechanical properties of endothelial cells, we model the endothelium as a rigid,
-stationary object with $\ethm{k} = 2.5\dynpercm$ and
-$\ethm\eta = 2.5\sci{-7}\dynsecpercm$, chosen to be as large as possible for the
-chosen spatial and temporal step size, and $\U' = \vec{0}$. We compare different choices
-for $\X'$ in Section~\ref{sec:whole-blood}.
+where $\X'=\X'(\theta,\,\varphi)$ is the tether location for $\X(\theta,\,\varphi,\,t)$,
+$\U'$ is the prescribed velocity of the tether point, $k$ is the spring constant, and
+$\eta$ is the damping constant. Due to the lack of information about the mechanical
+properties of endothelial cells, we model the endothelium as a rigid, stationary object
+with $\ethm{k}=2.5\dynpercm$ and $\ethm\eta=2.5\sci{-7}\dynsecpercm$, chosen to be as
+large as possible for the chosen spatial and temporal step size with prescribed velocity
+$\U' = \vec{0}$. We compare different choices for $\X'$ in Section~\ref{sec:whole-blood}.
 
 Next, we consider the tension energy densities for RBCs and platelets. These penalize
 stretching and areal dilation of the cell membranes. Let $\lambda_1$ and $\lambda_2$ be
-the principal extensions, \latin{i.e.}, the maximal and minimal  ratios of stretching
+the principal extensions, \latin{i.e.}, the maximal and minimal ratios of stretching
 relative to a reference configuration. We define the invariants $I_1=\lambda_1^2+\lambda_2^2-2$
 and $I_2 = \lambda_1^2\lambda_2^2-1$, which measure relative changes in length and area,
 respectively, such that $I_1 = I_2 = 0$ correspond to a rigid body motion. We express the
@@ -59,7 +61,7 @@ $R_0 = 3.91\um$:
 where $z(r) = 0.105 + r^2 - 0.56r^4$. Platelets, on the other hand, do not have a
 purpose-built constitutive law, but are stiffer than RBCs. We use the neo-Hookean model
 \begin{equation}\label{eq:neohookean}
-    W_\text{nH}(I_1,\,I_2) = \frac{E}2\left(\frac{I_1+2}{\sqrt{I_2+1}}-2\right) + \frac{G}2 \left(\sqrt{I_2+1}-1\right)^2
+    W_\text{nH}(I_1,\,I_2) = \frac{E}2\left(\frac{I_1+2}{\sqrt{I_2+1}}-2\right) + \frac{G}2 {\left(\sqrt{I_2+1}-1\right)}^2
 \end{equation}
 with $\plt{E} = 1\sci{-1}\dynpercm$ and $\plt{G} = 1\dynpercm$, and an ellipsoidal
 reference configuration~\cite{Frojmovic:1982wk}
@@ -75,7 +77,7 @@ Platelets and RBCs also respond to changes in membrane curvature. Let $H$ be the
 membrane's mean curvature. The Canham-Helfrich bending energy density takes the form~%
 \cite{Canham:1970wx}
 \begin{equation}\label{eq:bending-energy}
-    W_\text{CH}(H) = 2\kappa (H-H')^2,
+    W_\text{CH}(H) = 2\kappa {(H-H')}^2,
 \end{equation}
 where $\kappa$ is the bending modulus in units of energy, and $H'$ is the spontaneous or
 \emph{preferred} curvature. An RBC generates a relatively weak response to changes in its
@@ -86,7 +88,7 @@ membranes. For platelets, we use a larger bending modulus of $\plt\kappa=2\sci{-
 and a preference for its reference curvature. Together with the neo-Hookean tension
 above, this maintains a fairly rigid platelet.
 
-Finally, we consider dissipative energy, which causes the membrane to exhibit a
+Finally, we consider dissipative power, which causes the membrane to exhibit a
 viscoelastic response to strain. It takes the form~\cite{Rangamani:2012hi}
 \begin{equation}\label{eq:dissip-energy}
     W_\text{dissip}(\dot{\lambda}_1,\,\dot{\lambda}_2) = \frac{\nu}{2}\left(\frac{\dot{\lambda}_1^2}{\lambda_1^2} + \frac{\dot{\lambda}_2^2}{\lambda_2^2}\right),

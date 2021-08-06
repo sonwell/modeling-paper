@@ -5,18 +5,17 @@ Lagrangian points for spreading forces and updating immersed structures. We now 
 total energy of the combined fluid-RBC system in the relaxation test just described.
 This energy is given as 
 \begin{align}
-    E = \int_\domain \left[\frac{\density}2\u\cdot\u + \int_\interface \Dirac(\x-\X)W(\X,\,\ldots)\d\X\right] \d\x.
+    E = \int_\domain \left[\frac{\density}2\u\cdot\u + \int_\interface \Dirac(\x-\X)W_\text{Sk}(\X,\,\ldots)\d\X\right] \d\x.
 \label{eq:energy}
 \end{align}
-where $W(\X,\,\ldots)$ is the RBC energy density function. The first term corresponds to
-the energy of the fluid, and the second to the energy of the structure. Since the
-relaxation test involves an initial increase in kinetic energy of the fluid followed by a
-gradual dissipation of the potential energy of the RBC as it relaxes according to the
-Skalak law, we expect the total energy of the system to decrease over time. We plot a
-discretized version of the energy~\eqref{eq:energy} as a function of time in Figure~%
-\ref{fig:energies} for refinement factors $r=5$ and $r=6$. Figure~\ref{fig:energies}
-clearly shows that our method dissipates energy in the manner expected in this problem.
-We also observed that the RBF-IB method was stable for representing RBCs and platelets in
-whole blood simulations.
+The first term corresponds to the energy of the fluid, and the second to the energy of
+the structure. Since the relaxation test involves an initial increase in kinetic energy
+of the fluid followed by a gradual dissipation of the potential energy of the RBC as it
+relaxes according to the Skalak law, we expect the total energy of the system to decrease
+over time. We plot a discretized version of the energy~\eqref{eq:energy} as a function of
+time in Figure~\ref{fig:energies} for refinement factors $r=5$ and $r=6$. Figure~%
+\ref{fig:energies} clearly shows that our method dissipates energy in the manner expected
+in this problem.  We also observed that the RBF-IB method was stable for representing
+RBCs and platelets in whole blood simulations.
 
 \input{energy-fig}

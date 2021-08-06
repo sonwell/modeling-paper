@@ -54,16 +54,23 @@ $\sphere$. Then, the RBF interpolant to $\psi(\Xp)$ takes the form
     + \sum_{k=1}^{\poly\cardinality} d_k p_k(\Xp),
 \end{equation}
 where $c_i$ and $d_k$ are unknown interpolation coefficients. To find $c_i$ and $d_k$, we
-impose two conditions on~\eqref{eq:rbf-interp}:
-\begin{gather}
-    s(\data\Xp_j) = \psi(\data\Xp_j), \qquad j=1,\,\ldots,\,\data\cardinality,~\text{and} \label{eq:interp_constraint} \\
-    \sum_{i=1}^{\data\cardinality} c_i p_k(\data\Xp_i) = 0, \qquad k=1,\,\ldots,\,\poly\cardinality, \label{eq:constraints}
-\end{gather}
-where~\eqref{eq:interp_constraint} enforces that~\eqref{eq:rbf-interp} exactly
-interpolate the function $\psi(\Xp)$, and~\eqref{eq:constraints} enforces that~%
-\eqref{eq:rbf-interp} reproduce the first $\poly\cardinality$ spherical harmonics
-exactly~\cite{Fasshauer:2007ui}. We collect~\eqref{eq:interp_constraint} and~%
-\eqref{eq:constraints} into a dense symmetric block system of the form
+%impose two conditions on~\eqref{eq:rbf-interp}:
+enforce that the interpolant~\eqref{eq:rbf-interp} exactly interpolate the function
+$\psi(\Xp)$ at each $\data\Xp_j$,
+\begin{equation}
+    s(\data\Xp_j) = \psi(\data\Xp_j), \qquad j=1,\,\ldots,\,\data\cardinality,\label{eq:interp_constraint}
+\end{equation}
+and that~\eqref{eq:rbf-interp} exactly reproduce the first $\poly\cardinality$ spherical
+harmonics everywhere on $\sphere$~\cite{Fasshauer:2007ui},
+\begin{equation}
+    \sum_{i=1}^{\data\cardinality} c_i p_k(\data\Xp_i) = 0, \qquad k=1,\,\ldots,\,\poly\cardinality.\label{eq:constraints}
+\end{equation}
+%where~\eqref{eq:interp_constraint} enforces that~\eqref{eq:rbf-interp} exactly
+%interpolate the function $\psi(\Xp)$, and~\eqref{eq:constraints} enforces that~%
+%\eqref{eq:rbf-interp} reproduce the first $\poly\cardinality$ spherical harmonics
+%exactly~\cite{Fasshauer:2007ui}.
+We collect~\eqref{eq:interp_constraint} and~\eqref{eq:constraints} into a dense symmetric
+block system of the form
 \begin{equation}\label{eq:rbf-interp-matrix}
     \left[\begin{array}{cc}
             \Phi & P \\ P^T & 0

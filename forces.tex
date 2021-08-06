@@ -1,25 +1,24 @@
 \section{Force models}\label{sec:forces}
-In this section, we list the force densities associated with each of the energy densities
-given in Section~\ref{sec:energy}. For simplicity, we adopt the Einstein summation
+In this section, we list the force densities associated with each of the constitutive
+laws given in Section~\ref{sec:energy}. For simplicity, we adopt the Einstein summation
 notation. A Greek letter featuring as a subscript and superscript within a term,
 \latin{e.g.}, $a_\alpha b^\alpha$, indicates summation over $\{1,\,2\}$ for that letter.
 We also adopt the comma notation for partial differentiation, where subscripts following
 a comma indicate partial differentiation with respect to the corresponding coordinates,
 \latin{e.g}., $\phi_{,\alpha\beta} = \partial^2\phi/\partial\q[\alpha]\partial\q[\beta]$.
-The surface coordinates $\q[1]$ and $\q[2]$ correspond to $\theta$ and $\phi$ of
+The surface coordinates $\q[1]$ and $\q[2]$ correspond to $\theta$ and $\varphi$ of
 Sections~\ref{sec:energy} and~\ref{sec:rbfs} in either order.
 
-We begin with Hookean and damped spring forces, whose force density takes the form
+We begin with Hookean and damped spring forces, whose linearized force densities together
+take the form
 \begin{equation}
-    \F_\text{spring} = -k (\X - \X') - \eta(\vec{\dot{X}}-\vec{\dot{X}}').
+    \F_\text{spring} = -k (\X - \X') - \eta(\U - \U').
 \end{equation}
-where $\X'$ is the tether location, $\vec{\dot{X}}$ is the surface velocity,
-$\vec{\dot{X}}'$ is the prescribed velocity, $k$ is the spring constant, and $\eta$ is
-the damping constant. It is common practice to treat each spring individually, so that
-the quadrature weight $\weight[j]$ is absorbed into the coefficients: $k$ has units of
-force per length and $\eta$ units of force-time per length. Implementation of these
-forces requires no geometric information outside of positions and velocities. These 
-are only used for the endothelium.
+It is common practice to treat each spring individually, so that the quadrature weight
+$\weight[j]$ is absorbed into the coefficients: $k$ has units of force per length and
+$\eta$ units of force-time per length. Implementation of these forces requires no
+geometric information outside of positions and velocities. These are only used for the
+endothelium.
 
 Next, we consider tension, which generates forces based on stretching or compressing of the elastic surface. This is somewhat more complicated than the Hookean spring case. First, we define the \emph{metric
 tensor}, $\metric_{\alpha\beta} = \X_{,\alpha}\cdot\X_{,\beta}$  (which encodes local
@@ -38,9 +37,9 @@ where $\epsilon_\mu^\mu$ and $\epsilon$ are the trace and determinant, respectiv
 \begin{equation}
 s^{\alpha\beta} = 2\frac{\partial W}{\partial I_1} \hat{g}^{\alpha\beta} + 2I_2\frac{\partial W}{\partial I_2} g^{\alpha\beta},
 \end{equation}
-where $W(I_1,I_2)$ is the tension energy density function (see Section 4). This in turn allows us to define the tension force density~\cite{Maxian:2018ek}
+where $W(I_1,I_2)$ is the tension energy density function (see Section~\ref{sec:energy}). This in turn allows us to define the tension force density~\cite{Maxian:2018ek}
 \begin{equation}\label{eq:tension-force}
-    \F_\text{tension} = \frac{1}{\sqrt{\reference\metric}}\left(\sqrt{\reference\metric}s^{\alpha\beta}\X_{,\beta}\right)_{,\alpha},
+    \F_\text{tension} = \frac{1}{\sqrt{\reference\metric}}{\left(\sqrt{\reference\metric}s^{\alpha\beta}\X_{,\beta}\right)}_{,\alpha},
 \end{equation}
 where $\X_{,\beta}$ refer to the tangent vectors on the surface. Because the tension force density is expressed in relation to the reference
 configuration, the force is computed by multiplying by quadrature weights for the
@@ -66,11 +65,11 @@ changes in time according to
 \end{equation}
 The dissipative force density takes the form~\cite{Rangamani:2012hi}
 \begin{equation}\label{eq:dissip-force}
-    \F_\text{dissip} = \frac{\nu}{\sqrt{\metric}}\left(\sqrt{\metric}\metric^{\alpha\mu}\dot{\metric}_{\mu\lambda}\metric^{\lambda\beta}\X_{,\beta}\right)_{,\alpha},
+    \F_\text{dissip} = \frac{\nu}{\sqrt{\metric}}{\left(\sqrt{\metric}\metric^{\alpha\mu}\dot{\metric}_{\mu\lambda}\metric^{\lambda\beta}\X_{,\beta}\right)}_{,\alpha},
 \end{equation}
 where $\nu$ is the membrane viscosity. 
 
-In general, for all force calculations, it is possible to rewrite ~\eqref{eq:tension-force},~\eqref{eq:dissip-force}, and the Laplace-Beltrami
+In general, for all force calculations, it is possible to rewrite~\eqref{eq:tension-force},~\eqref{eq:dissip-force}, and the Laplace-Beltrami
 operator in~\eqref{eq:bending-force} in terms of first and second derivatives with
 respect to parametric variables, thereby ensuring that we require only discrete first and second derivative operators to compute a wide variety of forces.
 
