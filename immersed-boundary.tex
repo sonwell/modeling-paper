@@ -2,92 +2,118 @@
 
 \subsection{Overview}\label{sec:ib_old}
 
-Consider a rectangular domain, $\domain\subset\R^3$, which contains one or more
-deformable structures and is otherwise filled with an incompressible, Newtonian fluid
-with constant density, $\density$, and viscosity, $\viscosity$. The IB method treats
-these structures as an extension of the fluid. The motion of any particle in $\domain$ is
-therefore governed by the incompressible Navier-Stokes equations,
+Consider a rectangular domain, $\domain\subset\R^3$, which contains one or more deformable structures and is
+otherwise filled with an incompressible, Newtonian fluid with constant density, $\density$, and viscosity,
+$\viscosity$. The IB method treats these structures as an extension of the fluid. The motion of any particle in
+$\domain$ is therefore governed by the incompressible Navier-Stokes equations,
 \begin{gather}
-    \density(\u_t + \div(\u\otimes\u)) = \viscosity\laplacian \u - \grad p + \f, \label{eq:ins-momentum} \\
+    \density\left(\frac{\partial\u}{\partial t} + \div(\u\otimes\u)\right) = \viscosity\laplacian \u - \grad p + \f, \label{eq:ins-momentum} \\
     \div \u = 0, \label{eq:ins-incomp}
 \end{gather}
-where, for $\x = (x,\,y,\,z) \in \domain$, $\u = \u(\x,\,t) = (u, v, w)$ is the fluid
-velocity, $p = p(\x,\,t)$ is the pressure, and $\f = \f(\x,\,t)$ is an external force
-density. Here and throughout this paper, we use bold italic symbols to indicate a vector
-in $\R^3$. Treating the entire domain as a fluid allows us to discretize $\domain$
-independently of the immersed structures with a fixed regular grid of spacing $h$. This
-is the Eulerian grid.
+where, for $\x = (x, y, z) \in \domain$, $\u = \u(\x, t) = (u, v, w)$ is the fluid velocity, $p = p(\x, t)$ is the
+pressure, and $\f = \f(\x, t)$ is an external force density. Here and throughout this paper, we use bold italic
+symbols to indicate a vector in $\R^3$. Treating the entire domain as a fluid allows us to discretize $\domain$
+independently of the immersed structures with a fixed Eulerian grid of spacing $h$. The discretization of~%
+\eqref{eq:ins-momentum} and~\eqref{eq:ins-incomp} is discussed in detail in \cref{sec:ins}.
 
-Let $\X = \X(\theta,\,\varphi,\,t)$, for surface coordinates $(\theta,\,\varphi)$ in
-$\sites\subset\mathbb{R}^2$, be a parametrization for the immersed boundary $\interface$.
-Though the interface changes with time, we suppress the time argument $t$ for brevity. A
-discrete representation of the boundary, consisting of a set of surface points, replaces
-its continuous counterpart.  Surface points are typically chosen to be within
-approximately $h$ of their neighbors.  This is the Lagrangian grid. These boundary points
-move at the local fluid velocity.  Analytically convolving the fluid velocity against the
-Dirac delta function, $\Dirac(\x)$, yields the velocity of a surface point, but
-discretely, Eulerian and Lagrangian grid points are unlikely to coincide. The IB method
-replaces the singular Dirac delta function with a smoothed, $h$-dependent analog,
-$\Dirac_h(\x)$. The Lagrangian point $\X$ evolves according to
+Let $\X = \X(\theta, \varphi, t)$, for surface coordinates $(\theta, \varphi)$ in $\sites\subset\R^2$, be a
+parametrization for the immersed boundary $\interface$. In the IB method, a Lagrangian representation is used to
+track immersed boundaries.  Nevertheless, in continuum form, $\X$ satisfies a no-slip condition and moves with the
+background fluid. The velocity of $\interface$ can therefore be represented as a convolution of the local fluid
+velocity against the Dirac delta function $\Dirac(\x)$, \latin{i.e.},
 \begin{equation}\label{eq:ib-interp}
-    \vec{\dot{X}}
-        = \int\limits_{\domain} \u(\x) \Dirac(\x-\X) \d\x
-        \approx h^3 \sum_{i} \u(\x_i) \Dirac_h(\x_i-\X),
+    \frac{\partial \X}{\partial t} = \U(\X, t) % \U because we need to introduce some nice notation for surface velocity for the energies section
+                                               % If we need to change this, CHANGE THE MACRO.
+        = \int\limits_{\domain} \u(\x, t) \Dirac(\x-\X) \d\x,
 \end{equation}
-where $i$ enumerates the Eulerian grid points, and a superposed dot denotes partial
-differentiation with respect to $t$. As a boundary deforms, it generates a force density
-$\F = \F(\X,\,t)$, which it imparts onto the fluid as $\f$ in~\eqref{eq:ins-momentum}.
-Again, we suppress $t$ when using $\F$. By similar reasoning as for the velocity, $\F$ is
-transferred to the fluid at $\x$ via
+where $\U$ is the restriction of $\u$ to $\interface$.
+The process of transferring the fluid velocity to the immersed structure is termed ``interpolation\qend.'' % or
+%``restriction\qend.''
+As a boundary deforms, it generates a force density $\F = \F(\X, t)$, which it imparts onto
+the fluid as $\f$ in~\eqref{eq:ins-momentum}. Similar to~\eqref{eq:ib-interp}, $\F$ is transferred to the fluid at
+$\x$ via
 \begin{equation}\label{eq:ib-spread}
-        \f(\x)
-        = \int\limits_{\interface} \F(\X)\Dirac(\x-\X) \d\X
-        \approx \sum_{j} \weight[j]\F(\X_j) \Dirac_h(\x-\X_j),
+        \f(\x_i, t)
+        = \int\limits_{\interface} \F(\X, t)\Dirac(\x_i-\X) \d\X.
 \end{equation}
-where $j$ enumerates the Lagrangian grid points, and $\weight[j]$ is the integration
-weight corresponding to Lagrangian grid point $\X_j$. 
+This transfer of forces is called ``spreading\qend.'' Since the structure $\interface$ is typically represented in
+Lagrangian form, \latin{i.e.}, as a discrete set of points,~\eqref{eq:ib-interp} must be discretized to update
+those points based on their velocities. Similarly,~\eqref{eq:ib-spread} must be discretized to both compute
+$\F(\X, t)$ and to approximate the integral of $\F(\X, t)$ over $\interface$. Finally, the Dirac delta
+$\Dirac(\x)$ is typically replaced by a smoothed, compactly-supported, $h$-dependent analog, typically referred to
+as the ``discrete Delta function'' $\Dirac_h(\x)$.
 
-In addition to a velocity vector field,~\eqref{eq:ib-spread} illustrates the need for
-three pieces of information for each immersed structure: the points \hi{$\X_j$ used to
-evaluate forces on the structure}; a force density $\F(\X_j)$ at each of those points;
-and surface integration weights $\weight[j]$ for those points. The structure moves
-according to~\eqref{eq:ib-interp}. The next three sections describe our methods for
-solving~\eqref{eq:ins-momentum}--\eqref{eq:ins-incomp} (Section~\ref{sec:ins}), give
-analytic expressions for the constitutive laws used to derive $\F$ (Section~%
-\ref{sec:energy} and~\ref{sec:forces}), and detail the discretization of the structures
-to obtain \hi{$\X_j$}, $\F(\X_j)$, and $\weight[j]$ (Section~\ref{sec:rbfs}). However,
-before we do so, we discuss the specific variant of the IB method employed herein.
+In the classical version of the IB method~\cite{Peskin:2002go}, velocities are restricted to the same Lagrangian
+points that forces are spread from.  However, there exist several IB methods which instead use different sets of
+points for each operation instead. For instance, Griffith \& Luo~\cite{Griffith:2017id} use a finite element
+representation for the structure, and consequently spread forces from (Lagrangian) quadrature points, interpolate
+velocities to quadrature points, and then project these using the finite element basis to the individual element
+nodes (which are also Lagrangian points). The RBF-IB method~\cite{Shankar:2015km} used in this work does something
+similar. In \cref{sec:rbfib}, we discuss the discretization of~\eqref{eq:ib-interp} and~\eqref{eq:ib-spread} in
+the context of the RBF-IB method.
 
 \subsection{The RBF-IB method}\label{sec:rbfib}
 
-The classical IB method uses the same Lagrangian points in interpolation~%
-\eqref{eq:ib-interp} and spreading~\eqref{eq:ib-spread}. However, there exist several IB
-methods which instead use different sets of points for each operation instead. For
-instance, Griffith and Luo~\cite{Griffith:2017id} use a finite element representation for
-the structure, and consequently spread forces from (Lagrangian) quadrature points,
-interpolate velocities to quadrature points, and then project these using the finite
-element basis to the individual element nodes. The RBF-IB method~\cite{Shankar:2015km}
-used in this work does something similar. A small set of \hi{$\data\cardinality$
-Lagrangian points} approximately $2h$ apart is used to approximate $\X$ and this set of
-points is moved by~\eqref{eq:ib-interp}. In addition, a larger set of
-\hi{$\sample\cardinality$ points} chosen to be approximately $h$ apart is used to spread
-forces using~\eqref{eq:ib-spread}. While the former set is widely spaced, the spacing of
-the latter set of points aligns with traditional IB implementations.
+The RBF-IB method obtains its name from the fact that it uses meshless interpolation with RBFs to parametrize the
+structure $\interface$ as $\X(\theta, \varphi, t)$. However, it also distinguishes itself from the classical IB
+method by using two sets of Lagrangian points to represent the structure. One set of points, which we term
+``movement points'' and label $\data\X_k$, $k=1, \ldots, \data\cardinality$, are used to move the structure in the
+discrete analog to~\eqref{eq:ib-interp}. Thus, the fully discrete version of~\eqref{eq:ib-interp} in the RBF-IB
+method reads
+\begin{equation}\label{eq:ib-interp-disc}
+    \frac{\partial\data\X_k}{\partial t} = \U(\data\X_k, t) \approx h^3 \sum_i \u(\x_i, t) \Dirac_h(\x_i-\data\X_k), \quad k=1, \ldots, \data\cardinality,
+\end{equation}
+where $h$ is the spacing of the background Eulerian grid. %, and the $i$ Eulerian grid points are implicitly chosen
+%by the support of the discrete Delta function $\Dirac_h$ centered at $\data\X_k$.
+In this work, we select the
+movement points to be initially approximately $2h$ apart in $\R^3$ at the start of a simulation. The RBF-IB method
+also uses a second set of points, which we term ``spreading points'' and label $\Xsj$,
+$j=1, \ldots, \sample\cardinality$. These points are used to discretize~\eqref{eq:ib-spread} in order to spread
+forces to the background Eulerian grid. The fully discrete version of~\eqref{eq:ib-spread} in the RBF-IB method
+for an Eulerian grid point $\x$ can therefore be written as
+\begin{align}\label{eq:ib-spread-disc}
+        \f(\x, t) \approx\sum\limits_{j=1}^{\sample\cardinality} \weight[j]\F(\Xsj) \Dirac_h(\x-\Xsj),
+\end{align}
+where $\weight[j]$, $j=1, \ldots, \sample\cardinality$ is a set of quadrature weights for integrating quantities
+at the spreading points $\sample\X$; the spreading points can therefore be thought of as a set of quadrature
+points.% As in~\eqref{eq:ib-interp-disc}, the set of Eulerian points $\x$ affected by a spreading point $\Xsj$ in~%
+%\eqref{eq:ib-spread-disc} is determined by the support of $\Dirac_h$.
 
-This potentially raises certain concerns, which we address here. The first major concern
-relates to the force-spreading and velocity interpolation operations. In traditional IB
-methods, these operators are formally adjoint, leading to conservation of energy/power~%
-\cite{Peskin:2002go}. However, in the RBF-IB method, these operators are no longer
-adjoint, leading to concerns about numerical stability. In previous work~%
-\cite{Shankar:2015km}, the authors demonstrated that the RBF-IB method dissipated energy
-in 2D simulations as expected, despite the absence of formal adjointness. In this work,
-we show similar results for an RBC relaxation problem in a full 3D simulation in Section%
-~\ref{sec:energy-est}. The second major concern relates to the wide $2h$ spacing of the
-smaller set of points used to approximate $\X$ and update the structure. If the points
-are spaced too widely apart, it is possible to obtain unphysical behavior, with some
-parts of the structure responding more to the neighboring fluid than others.  However,
-both in~\cite{Shankar:2015km} and in this work, we observed that starting these points
-with a spacing of $2h$ was sufficient to reproduce standard results for RBC simulations.
-It may be possible to alleviate any spacing issues by periodically rearranging the points
-used to approximate $\X$, but this approach was not necessary in this work, and so we
-leave a full exploration of such Lagrangian rearrangement strategies for future work.
+In general, the spreading points are selected to be approximately $h$ apart in $\R^3$ at the start of a
+simulation; this spacing corresponds to spacing used for the single set of Lagrangian points (IB points) used in
+traditional IB simulations. Thus, in the RBF-IB method, $\sample\cardinality > \data\cardinality$. In this sense,
+the RBF-IB method is a generalization of the standard IB method. The use of movement points and spreading points
+partially decouples the error in representing the structure $\interface$ from the error in integrating forces. The
+spacing of the movement points $\data\X$ is chosen so that the reconstruction of $\interface$ from $\data\X$ and
+the calculation of $\F(\X, t)$ by the RBF geometric model is sufficiently accurate. On the other hand, the spacing
+of the spreading points $\sample\X$ is chosen so that the numerical integration of $\F(\X, t)$ is sufficiently
+accurate. In this work, we identify a set of fixed parametric locations $\data\sites = \{(\theta_k, \varphi_k)\}$,
+$k=1, \ldots, \data\cardinality$ with the movement points $\data\X$, and call them ``data sites\qend.''
+Analogously, we also maintain a set of fixed parametric points $\sample\sites = \{(\theta_j, \varphi_j)\}$,
+$j=1, \ldots, \sample\cardinality$, that we identify with the spreading points $\sample\X$; these points are
+called ``sample sites\qend.'' In general, we need only explicitly track the movement points $\data\X$, reconstruct
+$\interface$ from $\data\X$ and the $\data\sites$ using our RBF geometric model in order to compute $\F(\X, t)$,
+and regenerate the spreading points $\sample\X$ at the end of every step using the $\sample\sites$ and the RBF
+geometric model.
+
+Despite the advantages mentioned above, the choice of two sets of Lagrangian points potentially raises certain
+concerns, which we address here. The first major concern relates to the force-spreading and velocity interpolation
+operations. In traditional IB methods, the corresponding spreading and interpolation operators are formally
+adjoint, leading to conservation of energy/power~\cite{Peskin:2002go}. However, in the RBF-IB method, these
+operators are no longer adjoint, leading to concerns about numerical stability. Nevertheless, in previous
+work~\cite{Shankar:2015km}, the authors demonstrated that the RBF-IB method dissipated energy in 2D simulations as
+expected, despite the absence of formal adjointness. In this work, we show similar results for an RBC relaxation
+problem in a full 3D simulation in \cref{sec:energy-est}. The second major concern relates to the wider $2h$
+spacing of the movement points $\data\X$. If the points are spaced too widely apart, it is possible to obtain
+unphysical behavior, with some parts of the structure responding more to the neighboring fluid than others.
+However, both in~\cite{Shankar:2015km} and in this work, we observed that starting these points with a spacing of
+$2h$ was sufficient to reproduce standard results for RBC simulations. It may be possible to alleviate any spacing
+issues by periodically rearranging the movement points $\data\X$, but this approach was not necessary in this
+work, and so we leave a full exploration of such Lagrangian rearrangement strategies for future work.
+
+On a higher level,~\eqref{eq:ib-spread-disc} illustrates the need for three pieces of information for each
+immersed structure: the points $\Xsj$ used to evaluate forces on the structure; a force density $\F(\Xsj)$ at each
+of those points; and surface integration or quadrature weights $\weight[j]$ for those points. We detail the
+RBF-based meshless geometric model used to obtain $\Xsj$, $\F(\Xsj)$, and $\weight[j]$ in \cref{sec:rbfs}, give
+analytic expressions for energy densities used to derive $\F$ in \cref{sec:energy}, and give analytic expressions
+for the force densities $\F$ in~\ref{sec:forces}.

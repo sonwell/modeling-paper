@@ -1,14 +1,13 @@
-\documentclass[1p,preprint,fleqn,number,sort&compress,times]{elsarticle}
+\documentclass[3p,preprint,fleqn,number,sort&compress,times]{elsarticle}
 
-\usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{amsmath}
 \usepackage{booktabs}
 \usepackage{calc}
 \usepackage{color}
 \usepackage{enumitem}
 \usepackage{esvect}
-\usepackage{fmtcount}
-\usepackage{ifthen}
+\usepackage{icomma}
 \usepackage{pgfplots}
 \usepackage{pifont}
 \usepackage{siunitx}
@@ -20,6 +19,7 @@
 
 \usepackage{accents}
 \usepackage[colorlinks]{hyperref}
+\usepackage[capitalize]{cleveref}
 
 \def\stackalignment{l}
 \usetikzlibrary{arrows.meta}
@@ -47,7 +47,6 @@
 \bibliographystyle{elsarticle-num}
 \biboptions{sort&compress}
 \AtBeginDocument{\hypersetup{
-    colorlinks,
     linkcolor=[RGB]{0,117,162},
     citecolor=[RGB]{0,117,162},
     urlcolor=[RGB]{0,117,162}
@@ -120,11 +119,17 @@
 
 \renewcommand{\u}{\vec{u}}
 \newcommand{\floor}[1]{\left\lfloor{#1}\right\rfloor}
-\newcommand{\U}{\vec{\dot{X}}}
+\newcommand{\U}{\vec{U}}
 \newcommand{\f}{\vec{f}}
 \newcommand{\F}{\vec{F}}
 \newcommand{\e}{\vec{e}}
 \newcommand{\n}{\vec{n}}
+
+% COMMA OR PERIOD AT END OF QUOTE
+\newlength{\qendlen}
+\newcommand{\qend}[1]{\setlength{\qendlen}{\widthof{#1}}#1\kern-1\qendlen}
+% Alternatively, the LaTeX- (??) or British English-friendly way:
+%\renewcommand{\qend}[3]{#2#3#1} % .'' -> ''. or ,'' -> '',
 
 % UNITS
 \newcommand{\vanishingspace}{\relax\ifnum\lastnodetype>0\mskip\thinmuskip\fi}
@@ -151,11 +156,9 @@
 
 
 \newcommand{\shear}{\dot{\gamma}}
-\newcommand{\range}[1]{\ensuremath{\{1,\,2,\,\ldots,\,#1\}}}
 \newcommand{\nth}[2][m]{\ordinalnum{#2}[#1]}
 \renewcommand{\th}{\textsuperscript{th}}
 \newcommand{\term}[1]{\textit{#1}}
-\newcommand{\XXX}[1]{\colorbox{red}{\vphantom{Yy}\textcolor{white}{#1}}}
 \DeclareMathOperator{\tr}{tr}
 
 %%% DECORATIONS
@@ -166,17 +169,17 @@
 \makeatother
 \newcommand{\subscript}[1]{{}_{#1}}
 \newcommand{\superscript}[1]{{}^{#1}}
-\newcommand{\rmsubscript}[1]{\subscript{\mathrm{#1}}}
-\newcommand{\rmsuperscript}[1]{\superscript{\mathrm{#1}}}
+\newcommand{\scsubscript}[1]{\subscript{\textsc{#1}}}
+\newcommand{\scsuperscript}[1]{\superscript{\textsc{#1}}}
 
-\decorate{\sites}{\rmsuperscript}
-\decorate{\Xp}{\rmsuperscript}
-\decorate{\theta}{\rmsuperscript}
-\decorate{\varphi}{\rmsuperscript}
+\decorate{\sites}{\scsuperscript}
+\decorate{\Xp}{\scsuperscript}
+\decorate{\theta}{\scsuperscript}
+\decorate{\varphi}{\scsuperscript}
 \decorate{\cardinality}{\subscript}
-\decorate{\vec{\psi}}{\rmsuperscript}
-\decorate{\vec{\bar{\psi}}}{\rmsuperscript}
-\decorate{\X}{\rmsuperscript}
+\decorate{\vec{\psi}}{\scsuperscript}
+\decorate{\vec{\bar{\psi}}}{\scsuperscript}
+\decorate{\X}{\scsuperscript}
 
 \newcommand{\data}[1]  {\decoration{#1}{d}}
 \newcommand{\sample}[1]{\decoration{#1}{s}}
@@ -186,7 +189,8 @@
 \newcommand{\plt}[1]{{#1}_\text{plt}}
 \newcommand{\ethm}[1]{{#1}_\text{endo}}
 
-\newcommand{\Xpsj}{\sample\Xp_{\!j}}
+\newcommand{\Xpsj}{\sample\Xp_{j}}
+\newcommand{\Xsj}{\sample\X_{j}}
 
 \begin{document}
 
@@ -206,20 +210,17 @@
 
 
 \begin{abstract}
-We present a new method for the geometric reconstruction of elastic surfaces simulated by
-the immersed boundary method with the goal of simulating the motion and interactions of
-cells in whole blood. Our method uses parameter-free radial basis functions for
-high-order meshless parametric reconstruction of point clouds and the elastic force
-computations required by the immersed boundary method. This numerical framework allows us
-to consider the effect of endothelial geometry and red blood cell motion on the motion of
-platelets. We find red blood cells to be crucial for understanding the motion of
-platelets, to the point that the geometry of the vessel wall has a negligible effect in
-the presence of RBCs. We describe certain interactions that force the platelets to remain
-near the endothelium for extended periods, including a novel platelet motion that can be
-seen only in 3-dimensional simulations that we term ``unicycling''. We also observe red
-blood cell-mediated interactions between platelets and the endothelium for which the
-platelet has reduced speed. We suggest that these behaviors serve as mechanisms that
-allow platelets to better maintain vascular integrity.
+We present a new method for the geometric reconstruction of elastic surfaces simulated by the immersed boundary
+method with the goal of simulating the motion and interactions of cells in whole blood. Our method uses
+parameter-free radial basis functions for high-order meshless parametric reconstruction of point clouds and the
+elastic force computations required by the immersed boundary method. This numerical framework allows us to
+consider the effect of endothelial geometry and red blood cell motion on the motion of platelets. We find red
+blood cells to be crucial for understanding the motion of platelets, to the point that the geometry of the vessel
+wall has a negligible effect in the presence of RBCs. We describe certain interactions that force the platelets to
+remain near the endothelium for extended periods, including a novel platelet motion that can be seen only in
+3-dimensional simulations that we term ``unicycling\qend.'' We also observe red blood cell-mediated interactions
+between platelets and the endothelium for which the platelet has reduced speed. We suggest that these behaviors
+serve as mechanisms that allow platelets to better maintain vascular integrity.
 \end{abstract}
 
 \begin{keyword}
@@ -243,13 +244,10 @@ Videos for Figures~\ref{fig:unicycle} and~\ref{fig:rbc-plt-endo-collision} can b
 in the online supplement.
 
 \section*{Acknowledgments}
-The authors thank Dr.\ Robert M.\ Kirby for access to computing resources at SCI
-Institute. A. T. K., A. B., and A. L. F. acknowledge support for this project under NHLBI 
-grant 1U01HL143336 and NSF grants DMS-1716898 and DMS-1521748. V. S. acknowledges support
-for this project under NSF grants CISE CCF 1714844 and DMS-1521748.
+The authors thank Dr.\ Robert M.\ Kirby for access to computing resources at SCI Institute. A.\ T.\ K., A.\ B.,
+and A.\ L.\ F.\ acknowledge support for this project under NHLBI grant 1U01HL143336 and NSF grants DMS-1716898 and
+DMS-1521748. V.\ S.\ acknowledges support for this project under NSF grants CISE CCF 1714844 and DMS-1521748.
 
 \bibliography{modeling-paper}
 \end{document}
 % end of file template.tex
-
-% vim: cc=90 tw=89

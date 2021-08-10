@@ -2,52 +2,45 @@
 
 \subsection{Spatial Discretization}\label{sec:ns_space}
 
-To discretize the Navier-Stokes equations~\eqref{eq:ins-momentum} \&~%
-\eqref{eq:ins-incomp}, we use a marker-and-cell (MAC) grid~\cite{Welch:1965jv}: for grid
-cell center $\x_i$, scalar-valued function $s(\x)$ is discretized at $\x_i$, and
-component $\e_a\cdot\vec{v}$ of vector-valued function $\vec{v}(\x)$ at
-$\x_i-\sfrac12h\e_a$, where $\e_a$ is a canonical basis vector. Define the centered
-difference operator
+To discretize the Navier-Stokes equations~\eqref{eq:ins-momentum} and~\eqref{eq:ins-incomp}, we use a
+marker-and-cell (MAC) grid~\cite{Welch:1965jv}: for grid cell center $\x_i$, scalar-valued function $s(\x)$ is
+discretized at $\x_i$, and component $\e_a\cdot\vec{v}$ of vector-valued function $\vec{v}(\x)$ at
+$\x_i-\sfrac12h\e_a$, where $\e_a$ is a canonical basis vector. Define the centered difference operator
 \begin{equation*}
     D_a\phi(\x) = \frac{\phi(\x+\sfrac12 h\e_a) - \phi(\x-\sfrac12 h\e_a)}{h},
 \end{equation*}
-for which, \latin{e.g.}, $D_1$ approximates differentiation in the $x$ direction. The
-discrete divergence, gradient, and Laplacian operators use centered differences,
-resulting in a 2-point stencil for each discrete first derivative and the standard
-7-point discrete Laplacian. We also define the centered average operator
+for which, \latin{e.g.}, $D_1$ approximates differentiation in the $x$ direction. The discrete divergence,
+gradient, and Laplacian operators use centered differences, resulting in a 2-point stencil for each discrete first
+derivative and the standard 7-point discrete Laplacian. We also define the centered average operator
 \begin{equation*}
     A_a\phi(\x) = \frac{\phi(\x+\sfrac12 h\e_a) + \phi(\x-\sfrac12 h\e_a)}2.
 \end{equation*}
-By averaging $u$ in the $y$ direction and $v$ in the $x$ direction, we obtain collocated
-approximations to $u$ and $v$ at the center of a cell edge. Averaging, e.g., $u$ in the
-$x$ direction yields an approximation to $u$ at the cell center. We can therefore
-discretize the components of the advection term $\div(\u\otimes\u)$ by
+By averaging $u$ in the $y$ direction and $v$ in the $x$ direction, we obtain collocated approximations to $u$ and
+$v$ at the center of a cell edge. Averaging, e.g., $u$ in the $x$ direction yields an approximation to $u$ at the
+cell center. We can therefore discretize the components of the advection term $\div(\u\otimes\u)$ by
 \begin{equation}\label{eq:advection}
-    \div[h](\u\otimes\u) := %D_b[H^{bl}_rH^{am}_s (A_l u^s(\x,\,t)) (A_m u^r(\x,\,t))].
-    \left[\begin{array}{c}
+    \div[h](\u\otimes\u) :=
+    \begin{bmatrix}
         D_1[(A_1 u) (A_1 u)] + D_2[(A_1 v) (A_2 u)] + D_3[(A_1 w) (A_3 u)] \\
         D_1[(A_2 u) (A_1 v)] + D_2[(A_2 v) (A_2 v)] + D_3[(A_2 w) (A_3 v)] \\
         D_1[(A_3 u) (A_1 w)] + D_2[(A_3 v) (A_2 w)] + D_3[(A_3 w) (A_3 w)]
-    \end{array}\right].
+    \end{bmatrix}.
 \end{equation}
-The symbol $\div[h]$ represents the discrete divergence operator. Figure~%
-\ref{fig:discretization} illustrates the steps in computing $D_2[(A_1 v)(A_2 u)]$, which
-appears in the first component in~\eqref{eq:advection}. Morinishi \latin{et al}.\ show
-that this scheme, $Div. - S2$ in their parlance, is conservative under the assumption
-that $\u$ is discretely divergence-free~\cite{Morinishi:1998us}.
+The symbol $\div[h]$ represents the discrete divergence operator.  \Cref{fig:discretization} illustrates the steps
+in computing $D_2[(A_1 v)(A_2 u)]$, which appears in the first component in~\eqref{eq:advection}. Morinishi
+\latin{et al.}~\cite{Morinishi:1998us} show that this scheme, $Div. - S2$ in their parlance, is conservative under
+the assumption that $\u$ is discretely divergence-free.
 
 \input{disc-figure}
 
 \subsection{Temporal Discretization}\label{sec:ns_time}
 
-To advance the solution, we use either the backward-forward Euler-based scheme~%
-\cite{Ascher:1997tm} or the 2-stage scheme described by Peskin~\cite{Peskin:2002go},
-modified to advance structures using the newest velocities. The modification makes these
-schemes formally first-order in time, but allow us to separate the Eulerian update from the
-Lagrangian update by requiring only information at the beginning of the timestep to
-evaluate forces and moving the structure at the end of the timestep. For the
-backward-forward Euler scheme, discretizing~\eqref{eq:ins-momentum} to advance time to
-$t+\timestep$, yields linear solves of Helmholtz type,
+To advance the solution, we use either the backward-forward Euler-based scheme~\cite{Ascher:1997tm} or the 2-stage
+scheme described by Peskin~\cite{Peskin:2002go}, modified to advance structures using the newest velocities. The
+modification makes these schemes formally first-order in time, but allow us to separate the Eulerian update from
+the Lagrangian update by requiring only information at the beginning of the timestep to evaluate forces and moving
+the structure at the end of the timestep. For the backward-forward Euler scheme, discretizing~%
+\eqref{eq:ins-momentum} to advance time to $t+\timestep$, yields linear solves of Helmholtz type,
 \begin{equation}\label{eq:disc-momentum}
     (I - \timestep\rho^{-1}\mu \laplacian_h) \u^\ast = \u^n - \timestep\left[\div[h]\left(\u^n\otimes\u^n\right) + \rho^{-1}\left(\f^{n+1} - \grad[h]p^n\right)\right] \quad\text{in}~\domain, \\
 \end{equation}
@@ -55,12 +48,11 @@ with boundary conditions
 \begin{equation}\label{eq:disc-bdy}
     \u^\ast = \u^{n+1}_b + \timestep \grad[h] q^{n} \quad\text{on}~\partial\domain,
 \end{equation}
-where superscripts denote the time step, $\u_b$ is velocity boundary data, $\laplacian_h$
-and $\grad[h]$ are the discrete Laplacian and gradient, respectively, and $q$ is
-described below. The force density $\f^{n+1}$ is advanced using only data at timestep
-$n$. The intermediate velocity field $\u^\ast$ may not be divergence-free. To obtain a
-velocity field that satisfies~\eqref{eq:ins-incomp}, we use projection method II (PmII)
-of Brown, Cortez, and Minion~\cite{Brown:2001bq}. PmII updates the pressure using
+where superscripts denote the time step, $\u_b$ is velocity boundary data, $\laplacian_h$ and $\grad[h]$ are the
+discrete Laplacian and gradient, respectively, and $q$ is described below. The force density $\f^{n+1}$ is
+advanced using only data at timestep $n$. The intermediate velocity field $\u^\ast$ may not be divergence-free. To
+obtain a velocity field that satisfies~\eqref{eq:ins-incomp}, we use projection method II (PmII) of Brown, Cortez,
+and Minion~\cite{Brown:2001bq}. PmII updates the pressure using
 \begin{equation*}
     p^{n+1} = p^n + (\rho I - \timestep\mu\laplacian_h)q^{n+1},
 \end{equation*}
@@ -75,28 +67,22 @@ using the pseudo-pressure $q^{n+1}$, which satisfies
     &\n\cdot\grad[h] q^{n+1} = 0                    &&\quad \text{on}~\partial\domain.
 \end{alignedat}
 \end{equation}
-The velocity update~\eqref{eq:vel-update} provides the boundary conditions~%
-\eqref{eq:disc-bdy} using a lagged value of the pseudo-pressure. The 2-stage RK method
-consists of a backward-forward Euler step followed by a Crank-Nicolson-midpoint step,
-which involves only minor modifications to~\eqref{eq:disc-momentum}. In total, we perform
-3 Helmholtz solves and 1 Poisson solve per RK stage.
+The velocity update~\eqref{eq:vel-update} provides the boundary conditions~\eqref{eq:disc-bdy} using a lagged
+value of the pseudo-pressure. The 2-stage RK method consists of a backward-forward Euler step followed by a
+Crank-Nicolson-midpoint step, which involves only minor modifications to~\eqref{eq:disc-momentum}. In total, we
+perform 3 Helmholtz solves and 1 Poisson solve per RK stage.
 
-We employ preconditioned conjugate gradients (PCG) to perform the solves. We use
-Chebyshev iteration as a preconditioner for the Helmholtz solves and as an error
-smoothing procedure and direct solver for multigrid (MG) to precondition the Poisson
-solve. Chebyshev iteration is a generalization of weighted Jacobi iteration which
-requires only the ability to perform sparse matrix polynomial-vector multiplication.
-Chebyshev iteration (MG) PCG is therefore parallelized by using a parallel sparse
-matrix-vector multiplication routine with Horner's method to evaluate the polynomials.
+We employ preconditioned conjugate gradients (PCG) to perform the solves. We use Chebyshev iteration as a
+preconditioner for the Helmholtz solves and as an error smoothing procedure and direct solver for multigrid (MG)
+to precondition the Poisson solve. Chebyshev iteration is a generalization of weighted Jacobi iteration which
+requires only the ability to perform sparse matrix polynomial-vector multiplication. Chebyshev iteration (MG) PCG
+is therefore parallelized by using a parallel sparse matrix-vector multiplication routine with Horner's method to
+evaluate the polynomials.
 
-In the case of a triply periodic domain, the linear solves involve
-symmetric matrices. For Dirichlet or Neumann boundaries, we extrapolate using values at
-the neighboring grid points and boundary data to fill ghost points. In these situations,
-the standard discrete second derivative may actually approximate some non-unit multiple
-of its continuous counterpart near the boundary. To account for this while maintaining
-symmetry of the Helmholtz matrices, we scale equations involving near-boundary values. For 
-details, see~\ref{sec:boundary-correction}. The trade-off is
-3 extra diagonal matrix-vector multiplications per RK stage for the ability to use PCG
-for the linear solves. 
-
-% vim: cc=90 tw=89
+In the case of a triply periodic domain, the linear solves involve symmetric matrices. For Dirichlet or Neumann
+boundaries, we extrapolate using values at the neighboring grid points and boundary data to fill ghost points. In
+these situations, the standard discrete second derivative may actually approximate some non-unit multiple of its
+continuous counterpart near the boundary. To account for this while maintaining symmetry of the Helmholtz
+matrices, we scale equations involving near-boundary values. For details, see~\ref{sec:boundary-correction}. The
+trade-off is 3 extra diagonal matrix-vector multiplications per RK stage for the ability to use PCG for the linear
+solves.

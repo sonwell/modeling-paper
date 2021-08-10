@@ -122,7 +122,7 @@
         %\path[stealth-] (duv12.south east) edge[bend left] (uv12.north east);
         %\path[stealth-] (duv22.south east) edge[bend left] (uv22.north east);
         %\path[stealth-] (duv32.south east) edge[bend left] (uv32.north east);
-                                                                           
+
         \path[stealth-] (duv00.north west) edge[bend left] (uv01.south west);
         \path[stealth-] (duv10.north west) edge[bend left] (uv11.south west);
         \path[stealth-] (duv20.north west) edge[bend left] (uv21.south west);
@@ -140,23 +140,18 @@
     \label{fig:adv-y-diff}
     \end{subfigure}%
     \caption{%
-        A cross-section illustrating the steps in computing the $D_2[(A_2 u) (A_1 v)]$
-        term of the first component of the advection. The horizontal and vertical
-        velocity component discretization locations are marked by $u$ and $v$,
-        respectively. Arrows emanate from a point contributing to a stencil and point to
-        the center of the stencil.
-        (a) $A_1$ averages $v$ in the $x$ direction, yielding an approximation $\bar{v}$
-        at grid vertices (in 3D, centers of cell edges for which $x$ and $y$ are
-        constant).
-        (b) $A_2$ averages $u$ in the $y$ direction, yielding an approximation $\bar{u}$
-        at the same points as (a). The quantities $A_1 v$ and $A_2 u$ are collocated and
-        can be directly multiplied to obtain an approximation of $uv$ at locations marked
-        $\bar{u}\bar{v}$.
-        (c) $D_2$ approximately differentiates $uv$ in the $y$ direction, yielding the
-        desired quantity at each point marked $\star$.
-        The approximation of $uv$ is also used to compute $D_1[(A_1 v)(A_2 u)]$ in the
-        second component of the advection, wherein application of $D_1$ instead yields
-        approximations collocated with locations marked $v$ in (a).
+A cross-section illustrating the steps in computing the $D_2[(A_2 u) (A_1 v)]$ term of the first component of the
+advection. The horizontal and vertical velocity component discretization locations are marked by $u$ and $v$,
+respectively. Arrows emanate from a point contributing to a stencil and point to the center of the stencil.
+(a) $A_1$ averages $v$ in the $x$ direction, yielding an approximation $\bar{v}$ at grid vertices (in 3D, centers
+of cell edges for which $x$ and $y$ are constant).
+(b) $A_2$ averages $u$ in the $y$ direction, yielding an approximation $\bar{u}$ at the same points as (a). The
+quantities $A_1 v$ and $A_2 u$ are collocated and can be directly multiplied to obtain an approximation of $uv$ at
+locations marked $\bar{u}\bar{v}$.
+(c) $D_2$ approximately differentiates $uv$ in the $y$ direction, yielding the desired quantity at each point
+marked $\star$.  The approximation of $uv$ is also used to compute $D_1[(A_1 v)(A_2 u)]$ in the second component
+of the advection, wherein application of $D_1$ instead yields approximations collocated with locations marked $v$
+in (a).
     }
     \label{fig:discretization}
 \end{figure}

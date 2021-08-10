@@ -4,54 +4,11 @@
 
 \section{Geometry of reconstructed surfaces}\label{sec:rbfs}
 
-From the previous section, we have analytic expressions for the energy and power
-densities, and consequently the Lagrangian force density, $\F$ (see~\ref{sec:forces}).
-The RBC and platelet force models require first and second derivatives along their
-surfaces.  Additionally, the IB force spreading operation requires quadrature weights for
-the cell surfaces. This section finishes where we left off by discussing the construction
-of the necessary discrete linear operators and quadrature weights $\weight[j]$ through
-the use of RBF-based methods.
+From the previous section, we have analytic expressions for the energy and power densities, and consequently the
+Lagrangian force density, $\F$ (see~\ref{sec:forces}).  The RBC and platelet force models require first and second
+derivatives along their surfaces.  Additionally, the IB force spreading operation requires quadrature weights for
+the cell surfaces. This section finishes where we left off by discussing the construction of the necessary
+discrete linear operators and quadrature weights $\weight[j]$ through the use of RBF-based methods.
 
 \input{rbf-interpolation}
 \input{rbf-quadrature}
-
-%\subsection{A note on the endothelium}
-%While our choice of force density for the endothelium does not require surface
-%reconstruction or quadrature weights, the methods described above are equally applicable.
-%The periodicity of $\domain$ makes the endothelium a topological torus. The 4-dimensional
-%torus, $\mathbb{T}$, with parametrization
-%\begin{equation*}
-%    \Xp(\theta,\,\varphi) = \left[\begin{array}{c}
-%            \cos\theta\\ \sin\theta \\ \cos\varphi \\ \sin\varphi
-%    \end{array}\right],
-%\end{equation*}
-%for $\theta,\,\varphi\in[0,\,2\pi)$, is orientation agnostic and homogeneous. It has
-%surface area $4\pi^2$ and Jacobian $\tilde{J} = 1$. It is, however, trivial to choose a
-%set of points on $\mathbb{T}$ that generate equal quadrature weights without the need to
-%solve a system like~\eqref{eq:rbf-quadrature}. Any regular grid suffices, but we generate
-%a set of $N$ points, whether used for interpolation or not, with the spiral
-%\begin{align*}
-%    \varphi_i &= 2\pi (i-1)/N, \\
-%    \theta_i &= \modulo\left(\left\lceil\!\sqrt{N}\mskip\thinmuskip\right\rceil\varphi_i,\,2\pi\right).
-%\end{align*}
-%Using distances between points
-%on $\mathbb{T}$ to construct RBFs allow for the interpolation of, and quadrature on, any
-%toroidal surface. However, care needs to be taken in applying the constructed discrete
-%operators to a ``flat'' torus, such as the endothelium. If, for example, $L$ is the
-%discrete analog of $\L$ evaluated at sample site $(\sample\theta,\,\sample\varphi)$ and
-%the interpolated function $\psi(\theta,\,\varphi)$ decomposes into
-%\begin{equation*}
-%    \psi(\theta,\,\varphi) = \bar{\psi}(\theta,\,\varphi) + \text{periodic part},
-%\end{equation*}
-%where $\bar{\psi}$ is known, aperiodic, and independent of time, then
-%\begin{equation*}
-%    \L\psi(\sample\theta,\,\sample\varphi)
-%    \approx \L\bar{\psi}(\sample\theta,\,\sample\varphi) + L\left(\data{\vec{\psi}} - \data{\vec{\bar{\psi}}}\right)
-%    := L\data{\vec{\psi}} + \epsilon,
-%\end{equation*}
-%where $\data{\vec{\psi}}$ and $\data{\vec{\bar{\psi}}}$ are vectors formed by evaluating
-%$\psi$ and $\bar{\psi}$, respectively, at each point in $\data\sites$. Computing
-%$\epsilon$ for each sample site can be done simultaneously, resulting in the vector
-%$\vec{\epsilon}$. A correction like $\vec{\epsilon}$ may be needed for each linear
-%operator.
-

@@ -1,4 +1,4 @@
-all: 
+all:
 	latexmk -pdf -shell-escape modeling-paper
 
 clean:

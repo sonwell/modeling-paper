@@ -1,112 +1,87 @@
 \section{Introduction}
 
-Blood is a complex mixture of cellular and fluid-phase components, composed most notably 
-of red blood cells (RBCs) and platelets suspended in plasma. RBCs are primarily the basis
-for transporting oxygen throughout the body. Platelets, meanwhile, play a key role in the
-maintenance of the vasculature. Blood flows under pressure through vessels, which vary in
-diameter between a few centimeters in the aorta to a few microns in the capillaries. A
-single layer of endothelial cells, called the endothelium, lines healthy blood vessels.
-Interactions between platelets and RBCs, and between platelets and the endothelium, are
-important for a platelet's function, but models of these interactions typically treat
-them in isolation.
+Blood is a complex mixture of cellular and fluid-phase components, composed most notably of red blood cells (RBCs)
+and platelets suspended in plasma. RBCs are primarily the basis for transporting oxygen throughout the body.
+Platelets, meanwhile, play a key role in the maintenance of the vasculature. Blood flows under pressure through
+vessels, which vary in diameter between a few centimeters in the aorta to a few microns in the capillaries. A
+single layer of endothelial cells, called the endothelium, lines healthy blood vessels.  Interactions between
+platelets and RBCs, and between platelets and the endothelium, are important for a platelet's function, but models
+of these interactions typically treat them in isolation.
 
-At rest, RBCs are biconcave disk-shaped cells approximately $8\um$ in diameter and
-$2.5\um$ in thickness. The volume fraction occupied by RBCs, or \term{hematocrit}, ranges
-from approximately 36\% to 45\% in healthy humans. In order to deliver oxygen throughout
-the body, RBCs must be extremely flexible, as some vessels are smaller than the cell
-itself. Due to the wide variety of shapes exhibited by RBCs, their mechanical properties
-were studied intensively during the 1970s and 80s. Canham theorized that the biconcave
-disk shape minimizes bending energy~\cite{Canham:1970wx}. Skalak \latin{et al.} devised a
-purpose-built constitutive law to describe the tension of RBC membranes~%
-\cite{Skalak:1973tp}. Under the assumption of a viscoelastic response, Evans \& Hochmuth
-estimated the membrane viscosity~\cite{Evans:1976tx}. Mohandas \& Evans gave estimates of
-the shear, bulk, and bending moduli~\cite{Mohandas:1994tg}, which have guided RBC models
-ever since~\cite{Pozrikidis:2003ft,Fai:2013do}.
+At rest, RBCs are biconcave disk-shaped cells approximately $8\um$ in diameter and $2.5\um$ in thickness. The
+volume fraction occupied by RBCs, or \emph{hematocrit}, ranges from approximately 36\% to 45\% in healthy humans.
+In order to deliver oxygen throughout the body, RBCs must be extremely flexible, as some vessels are smaller than
+the cell itself. Due to the wide variety of shapes exhibited by RBCs, their mechanical properties were studied
+intensively during the 1970s and 80s. Canham~\cite{Canham:1970wx} theorized that the biconcave disk shape
+minimizes bending energy. Skalak \latin{et al.}~\cite{Skalak:1973tp} devised a purpose-built constitutive law to
+describe the tension of RBC membranes. Under the assumption of a viscoelastic response, Evans \& Hochmuth~%
+\cite{Evans:1976tx} estimated the membrane viscosity. Mohandas \& Evans~\cite{Mohandas:1994tg} gave estimates of
+the shear, bulk, and bending moduli, which have guided RBC models ever since~\cite{Pozrikidis:2003ft, Fai:2013do}.
 
-Platelets in their inactive state are ellipsoidal disks, approximately 3--$4\um$ by
-$1\um$ in size. They are much more rigid than RBCs due to their actin and microtubule-%
-based cytoskeletons. Platelets are also much less numerous, with 10--20 RBCs per
-platelet. Less is known about the mechanical properties of platelets. Models range from
-perfectly rigid ellipsoids~\cite{Wang:2013gs} to systems of springs with~%
-\cite{Erickson:2010ep,Skorczewski:2013jn} or without~\cite{Wu:2014gt} a preferred
-curvature. One study estimates the shear modulus and viscosity for platelets~%
-\cite{Haga:1998wa}, but models tend to use a higher shear modulus than estimated and
+Platelets in their inactive state are ellipsoidal disks, approximately 3--$4\um$ by $1\um$ in size. They are much
+more rigid than RBCs due to their actin and microtubule-based cytoskeletons. Platelets are also much less
+numerous, with 10--20 RBCs per platelet. Less is known about the mechanical properties of platelets. Models range
+from perfectly rigid ellipsoids~\cite{Wang:2013gs} to systems of springs with~\cite{Erickson:2010ep,
+Skorczewski:2013jn} or without~\cite{Wu:2014gt} a preferred curvature. One study estimates the shear modulus and
+viscosity for platelets~\cite{Haga:1998wa}, but models tend to use a higher shear modulus than estimated and
 neglect viscous effects altogether.
 
-Because they are deformable, RBCs tend to move towards the center of a blood vessel, and
-in doing so may encounter platelets, but the relative size and deformability of the RBC
-means a platelet is ejected from the RBC's path, ultimately pushing the platelet into an
-RBC-free layer along the vessel wall. This process, called margination, affects platelets
-and leukocytes (white blood cells) alike, and is the focus of many studies~%
-\cite{Freund:2007kx, Erickson:2010ep, Erickson:2011cf, Zhao:2011do, Kumar:2011dd,
-Zhao:2012ggba, Fedosov:2012dy, Kumar:2012ie, Fedosov:2013ul, Muller:2014is,
-Fedosov:2014bs, Vahidkhah:2014hy, Vahidkhah:2015ch, Mehrabadi:2016fn}. From their
-marginated positions, platelets survey the vessel wall for injury. Injury sites expose
-proteins, e.g., collagen and von Willebrand factor (vWF), to which platelets can bind and
-become activated. Platelet contact with the injured wall is the essential first step.
-This, in turn, leads the platelet to bind to the injury site and release its own chemical
-signals to recruit further platelets, which eventually results in the formation of a
-thrombus. All of this occurs in flowing blood, which sweeps these chemical signals
-downstream. While mechanisms for platelet activation have been proposed for low and
-pathologically high shear rates, the case of physiologically high shear rates is
-undecided~\cite{Fogelson:2015fb}.
+Because they are deformable, RBCs tend to move towards the center of a blood vessel, and in doing so may encounter
+platelets, but the relative size and deformability of the RBC means a platelet is ejected from the RBC's path,
+ultimately pushing the platelet into an RBC-free layer along the vessel wall. This process, called margination,
+affects platelets and leukocytes (white blood cells) alike, and is the focus of many studies~\cite{Freund:2007kx,
+Erickson:2010ep, Erickson:2011cf, Zhao:2011do, Kumar:2011dd, Zhao:2012ggba, Fedosov:2012dy, Kumar:2012ie,
+Fedosov:2013ul, Muller:2014is, Fedosov:2014bs, Vahidkhah:2014hy, Vahidkhah:2015ch, Mehrabadi:2016fn}. From their
+marginated positions, platelets survey the vessel wall for injury. Injury sites expose proteins, \latin{e.g.},
+collagen and von Willebrand factor (vWF), to which platelets can bind and become activated. Platelet contact with
+the injured wall is the essential first step.  This, in turn, leads the platelet to bind to the injury site and
+release its own chemical signals to recruit further platelets, which eventually results in the formation of a
+thrombus. All of this occurs in flowing blood, which sweeps these chemical signals downstream. While mechanisms
+for platelet activation have been proposed for low and pathologically high shear rates, the case of
+physiologically high shear rates is undecided~\cite{Fogelson:2015fb}.
 
-Models of platelet motion over a thrombus indicate that there are stagnation zones
-immediately upstream and downstream of the thrombus, where the fluid velocity is very
-slow, even when the thrombus protrudes only a few microns from the vessel wall~%
-\cite{Skorczewski:2013jn,Wang:2013gs}. Platelets that enter these regions may spend an
-extended period of time near the thrombus. The portion of an endothelial cell containing
-its nucleus also protrudes into the vessel approximately $1\um$. Moreover, these
-endothelial bumps are roughly periodic. If the endothelium creates a stagnation zone, the
-trailing zone from one protrusion might lead into the leading zone of the subsequent
-protrusion. This may allow for the sequestration of platelets or chemical signals.
-However, typical models of platelet-wall interaction model the endothelium as a flat
-surface~\cite{Wu:2014gt,Vahidkhah:2015ch}.
+Models of platelet motion over a thrombus indicate that there are stagnation zones immediately upstream and
+downstream of the thrombus, where the fluid velocity is very slow, even when the thrombus protrudes only a few
+microns from the vessel wall~\cite{Skorczewski:2013jn,Wang:2013gs}. Platelets that enter these regions may spend
+an extended period of time near the thrombus. The portion of an endothelial cell containing its nucleus also
+protrudes into the vessel approximately $1\um$. Moreover, these endothelial bumps are roughly periodic. If the
+endothelium creates a stagnation zone, the trailing zone from one protrusion might lead into the leading zone of
+the subsequent protrusion. This may allow for the sequestration of platelets or chemical signals. However, typical
+models of platelet-wall interaction model the endothelium as a flat surface~\cite{Wu:2014gt,Vahidkhah:2015ch}.
 
-The goal of this article is therefore to conduct 3D simulations of whole blood,
-incorporating red blood cell, platelet, and endothelium interactions. Our model treats
-platelets and red blood cells as discrete elastic objects immersed in and interacting
-with blood (which is modeled as an incompressible Newtonian fluid). We use this model to
-compare the flow of whole blood across bumpy and flat walls and characterize the behavior
-and interactions of platelets with the wall and RBCs. To simulate this model, we develop
-a cohesive numerical framework comprising a fluid-structure interaction method, a
-meshless parametric modeling technique for reconstructing cell surfaces from point clouds
-and computing elastic force densities on these surfaces, and a meshless quadrature scheme
-that enables numerical integration of force densities on these surfaces as well.
+The goal of this article is therefore to conduct 3D simulations of whole blood, incorporating red blood cell,
+platelet, and endothelium interactions. Our model treats platelets and red blood cells as discrete elastic objects
+immersed in and interacting with blood (which is modeled as an incompressible Newtonian fluid). We use this model
+to compare the flow of whole blood across bumpy and flat walls and characterize the behavior and interactions of
+platelets with the wall and RBCs. To simulate this model, we develop a cohesive numerical framework comprising a
+fluid-structure interaction method, a meshless parametric modeling technique for reconstructing cell surfaces from
+point clouds and computing elastic force densities on these surfaces, and a meshless quadrature scheme that
+enables numerical integration of force densities on these surfaces as well.
 
-We use the immersed boundary (IB) method for fluid-structure interaction. Originally
-developed by Peskin to study the flow of blood around heart valves~\cite{Peskin:1972wa},
-it has since been used to simulate, among numerous other applications, vibrations in the
-inner ear~\cite{BeyerJr:1990tb}, the opening of a porous parachute~\cite{Kim:2006ku}, and
-sperm motility~\cite{Dillon:2011cu}, and has generated numerous related methods. The IB
-method remains popular for modeling fluid-structure interaction because of its simplicity
-and ease of use, and involves maintaining an Eulerian description of the fluid and a
-purely Lagrangian description of all immersed elastic structures.
+We use the immersed boundary (IB) method for fluid-structure interaction. Originally developed by Peskin to study
+the flow of blood around heart valves~\cite{Peskin:1972wa}, it has since been used to simulate, among numerous
+other applications, vibrations in the inner ear~\cite{BeyerJr:1990tb}, the opening of a porous parachute~%
+\cite{Kim:2006ku}, and sperm motility~\cite{Dillon:2011cu}, and has generated numerous related methods. The IB
+method remains popular for modeling fluid-structure interaction because of its simplicity and ease of use, and
+involves maintaining an Eulerian description of the fluid and a purely Lagrangian description of all immersed
+elastic structures.
 
-For parametric modeling and force density computations on these immersed elastic
-structures, we utilize meshless interpolation based on radial basis functions (RBFs),
-which have been used for generating differentiation matrices for the solution of PDEs~%
-\cite{Fasshauer:2007ui}, surface reconstruction~\cite{Hardy:1971tb,Carr:2001tb,
-Shankar:2013ki, SFKSISC2018}, and in the context of regularized Stokeslets to represent
-interfaces and approximate their geometries~\cite{Olson:2015ja}. More relevantly, RBFs
-have been used in the context of the IB method to reconstruct platelet surfaces from
-point clouds and to compute Lagrangian force densities in 2D simulations~%
-\cite{Shankar:2015km}. However, this RBF-IB method has yet to be applied to surface
-reconstruction and force density calculation in 3D simulations. Further, the 2D version
-of the RBF-IB method presented in~\cite{Shankar:2015km} required tuning in the RBF
-representation to achieve stability. In this work, we present the first extension of the
-RBF-IB method to the simulation of whole blood in 3D geometries. Due to the use of the
-meshless high-order accurate RBF-based representation, we are able to represent the
-constituent cells within whole blood as point clouds with relatively small cardinality.
-Further, we eliminate the aforementioned tuning parameter using a recently-developed
-parameter-free RBF representation~\cite{SFKSISC2018}.
+For parametric modeling and force density computations on these immersed elastic structures, we utilize meshless
+interpolation based on radial basis functions (RBFs), which have been used for generating differentiation matrices
+for the solution of PDEs~\cite{Fasshauer:2007ui}, surface reconstruction~\cite{Hardy:1971tb, Carr:2001tb,
+Shankar:2013ki, SFKSISC2018}, and in the context of regularized Stokeslets to represent interfaces and approximate
+their geometries~\cite{Olson:2015ja}. More relevantly, RBFs have been used in the context of the IB method to
+reconstruct platelet surfaces from point clouds and to compute Lagrangian force densities in 2D simulations~%
+\cite{Shankar:2015km}. However, this RBF-IB method has yet to be applied to surface reconstruction and force
+density calculation in 3D simulations. Further, the 2D version of the RBF-IB method presented in~%
+\cite{Shankar:2015km} required tuning in the RBF representation to achieve stability. In this work, we present the
+first extension of the RBF-IB method to the simulation of whole blood in 3D geometries. Due to the use of the
+meshless high-order accurate RBF-based representation, we are able to represent the constituent cells within whole
+blood as point clouds with relatively small cardinality.  Further, we eliminate the aforementioned tuning
+parameter using a recently-developed parameter-free RBF representation~\cite{SFKSISC2018}.
 
-The remainder of this paper is organized as follows. We begin with an overview of the IB
-method in Section~\ref{sec:ib}. We then describe our method for solving the
-incompressible Navier-Stokes equations in Section~\ref{sec:ins}. We describe the elastic
-models used for each type of cell in Section~\ref{sec:energy} and Section~\ref{sec:rbfs}
-details our methods for discretizing the cells using RBFs. Our results are presented in
-Section~\ref{sec:results}. Finally, we discuss the implications of our findings in
-Section~\ref{sec:conclusion}.
-
-% vim: cc=90 tw=89
+The remainder of this paper is organized as follows. We begin with an overview of the IB method in \cref{sec:ib}.
+We then describe our method for solving the incompressible Navier-Stokes equations in \cref{sec:ins}. We describe
+the elastic models used for each type of cell in \cref{sec:energy} and \cref{sec:rbfs} details our methods for
+discretizing the cells using RBFs. Our results are presented in \cref{sec:results}.  Finally, we discuss the
+implications of our findings in \cref{sec:conclusion}.

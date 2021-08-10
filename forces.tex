@@ -1,65 +1,73 @@
 \section{Force models}\label{sec:forces}
-In this section, we list the force densities associated with each of the constitutive
-laws given in Section~\ref{sec:energy}. For simplicity, we adopt the Einstein summation
-notation. A Greek letter featuring as a subscript and superscript within a term,
-\latin{e.g.}, $a_\alpha b^\alpha$, indicates summation over $\{1,\,2\}$ for that letter.
-We also adopt the comma notation for partial differentiation, where subscripts following
-a comma indicate partial differentiation with respect to the corresponding coordinates,
-\latin{e.g}., $\phi_{,\alpha\beta} = \partial^2\phi/\partial\q[\alpha]\partial\q[\beta]$.
-The surface coordinates $\q[1]$ and $\q[2]$ correspond to $\theta$ and $\varphi$ of
-Sections~\ref{sec:energy} and~\ref{sec:rbfs} in either order.
 
-We begin with Hookean and damped spring forces, whose linearized force densities together
-take the form
+In this section, we list the force densities associated with each of the constitutive laws given in
+\cref{sec:energy}. For simplicity, we adopt the Einstein summation notation. A Greek letter featuring as a
+subscript and superscript within a term, \latin{e.g.}, $a_\alpha b^\alpha$, indicates summation over $\{1, 2\}$
+for that letter. We also adopt the comma notation for partial differentiation, where subscripts following a comma
+indicate partial differentiation with respect to the corresponding coordinates, \latin{e.g.},
+$\phi_{,\alpha\beta} = \partial^2\phi/\partial\q[\alpha]\partial\q[\beta]$. The surface coordinates $\q[1]$ and
+$\q[2]$ correspond to $\theta$ and $\varphi$ of \cref{sec:energy,sec:rbfs} in either order.
+
+We begin with Hookean and damped spring forces, whose linearized force densities together take the form
 \begin{equation}
     \F_\text{spring} = -k (\X - \X') - \eta(\U - \U').
 \end{equation}
-It is common practice to treat each spring individually, so that the quadrature weight
-$\weight[j]$ is absorbed into the coefficients: $k$ has units of force per length and
-$\eta$ units of force-time per length. Implementation of these forces requires no
-geometric information outside of positions and velocities. These are only used for the
+It is common practice to treat each spring individually, so that the quadrature weight $\weight[j]$ is absorbed
+into the coefficients: $k$ has units of force per length and $\eta$ units of force-time per length. Implementation
+of these forces requires no geometric information outside of positions and velocities. These are only used for the
 endothelium.
 
-Next, we consider tension, which generates forces based on stretching or compressing of the elastic surface. This is somewhat more complicated than the Hookean spring case. First, we define the \emph{metric
-tensor}, $\metric_{\alpha\beta} = \X_{,\alpha}\cdot\X_{,\beta}$  (which encodes local
-information about distance and area) and its inverse, $\metric^{\alpha\beta}$ (sometimes called the dual metric). We similarly define the metric tensor for the reference
-configuration, $\reference\metric_{\alpha\beta}$, and its dual. This allows us to write the Green-Lagrange strain tensor as
+Next, we consider tension, which generates forces based on stretching or compressing of the elastic surface. This
+is somewhat more complicated than the Hookean spring case.  First, we define the \emph{metric tensor},
+$\metric_{\alpha\beta} = \X_{,\alpha}\cdot\X_{,\beta}$  (which encodes local information about distance and area)
+and its inverse, $\metric^{\alpha\beta}$ (sometimes called the dual metric). We similarly define the metric tensor
+for the reference configuration, $\reference\metric_{\alpha\beta}$, and its dual. This allows us to write the
+Green-Lagrange strain tensor as
 \begin{equation}
     \epsilon_\alpha^\beta = \frac12\left(\metric_{\alpha\mu}\reference\metric^{\mu\beta}-\Kronecker_\alpha^\beta\right),
 \end{equation}
-The invariants of this tensor encode information about relative changes in lengths and areas, and therefore can be used to write a tension force density. The invariants can be expressed as
+The invariants of this tensor encode information about relative changes in lengths and areas, and therefore can be
+used to write a tension force density. The invariants can be expressed as
 \begin{align}
-I_1 &= 2\epsilon_\mu^\mu, \\ 
-I_2 &= 4\epsilon + I_1,
+    I_1 &= 2\epsilon_\mu^\mu, \\
+    I_2 &= 4\epsilon + I_1,
 \end{align}
-where $\epsilon_\mu^\mu$ and $\epsilon$ are the trace and determinant, respectively, of $\epsilon_\alpha^{\smash\beta}$. For Skalak's Law~%
-\eqref{eq:skalak-law} and neo-Hookean tension~\eqref{eq:neohookean}, we first define the second Piola-Kirchhoff stress tensor using the invariants $I_1$ and $I_2$ as
+where $\epsilon_\mu^\mu$ and $\epsilon$ are the trace and determinant, respectively, of
+$\epsilon_\alpha^{\smash\beta}$. For Skalak's Law~\eqref{eq:skalak-law} and neo-Hookean tension~%
+\eqref{eq:neohookean}, we first define the second Piola-Kirchhoff stress tensor using the invariants $I_1$ and
+$I_2$ as
 \begin{equation}
-s^{\alpha\beta} = 2\frac{\partial W}{\partial I_1} \hat{g}^{\alpha\beta} + 2I_2\frac{\partial W}{\partial I_2} g^{\alpha\beta},
+    s^{\alpha\beta} = 2\frac{\partial W}{\partial I_1} \hat{g}^{\alpha\beta} + 2I_2\frac{\partial W}{\partial I_2} g^{\alpha\beta},
 \end{equation}
-where $W(I_1,I_2)$ is the tension energy density function (see Section~\ref{sec:energy}). This in turn allows us to define the tension force density~\cite{Maxian:2018ek}
+where $W(I_1,I_2)$ is the tension energy density function (see \cref{sec:energy}). This in turn allows us to
+define the tension force density~\cite{Maxian:2018ek}
 \begin{equation}\label{eq:tension-force}
     \F_\text{tension} = \frac{1}{\sqrt{\reference\metric}}{\left(\sqrt{\reference\metric}s^{\alpha\beta}\X_{,\beta}\right)}_{,\alpha},
 \end{equation}
-where $\X_{,\beta}$ refer to the tangent vectors on the surface. Because the tension force density is expressed in relation to the reference
-configuration, the force is computed by multiplying by quadrature weights for the
+where $\X_{,\beta}$ refer to the tangent vectors on the surface. Because the tension force density is expressed in
+relation to the reference configuration, the force is computed by multiplying by quadrature weights for the
 reference configuration, which do not change over the course of a simulation.
 
-Our models also contain terms to penalize bending. First, given tangent vectors $\X_{,1}$ and $\X_{,2}$, the unit normal vector to the surface is given as
+Our models also contain terms to penalize bending. First, given tangent vectors $\X_{,1}$ and $\X_{,2}$, the unit
+normal vector to the surface is given as
 \begin{equation}\label{eq:unit-normal}
 \n = \frac{1}{\sqrt{\metric}} (\X_{,1}\times\X_{,2}).
 \end{equation}
-This in turn allows us to define the symmetric tensor $b_{\alpha\beta} = \n\cdot\X_{,\alpha\beta}$, which contains the coefficients of the second fundamental form, and the \emph{shape tensor} $K_\alpha^\beta = b_{\alpha\mu}\metric^{\mu\beta}$. The principal curvatures are the eigenvalues of the shape tensor. More importantly, the trace of this tensor is twice the mean curvature $2H = K_\mu^\mu$, and its determinant $K$ is the Gaussian curvature. We use $H$ and $K$ within a standard expression for the Canham-Helfrich force density~\cite{Zhongcan:1989ue} to obtain the following bending force density:
+This in turn allows us to define the symmetric tensor $b_{\alpha\beta} = \n\cdot\X_{,\alpha\beta}$, which contains
+the coefficients of the second fundamental form, and the \emph{shape tensor}
+$K_\alpha^\beta = b_{\alpha\mu}\metric^{\mu\beta}$. The principal curvatures are the eigenvalues of the shape
+tensor. More importantly, the trace of this tensor is twice the mean curvature $2H = K_\mu^\mu$, and its
+determinant $K$ is the Gaussian curvature. We use $H$ and $K$ within a standard expression for the Canham-Helfrich
+force density~\cite{Zhongcan:1989ue} to obtain the following bending force density:
 \begin{equation}\label{eq:bending-force}
-\F_\text{CH} = -4\kappa\left(\laplacian(H-H')+2(H-H')(H^2-K+HH')\right)\n,
+    \F_\text{CH} = -4\kappa\left(\laplacian(H-H')+2(H-H')(H^2-K+HH')\right)\n,
 \end{equation}
-where $\laplacian$ is the Laplace-Beltrami operator. We can compute $H$ and $K$ using the
-formulas above, but $\laplacian H$ requires up to fourth derivatives of $\X$. In numerical simulations, we compute $H$ pointwise and apply the discrete
-Laplace-Beltrami operator to obtain this $\laplacian H$.
+where $\laplacian$ is the Laplace-Beltrami operator. We can compute $H$ and $K$ using the formulas above, but
+$\laplacian H$ requires up to fourth derivatives of $\X$. In numerical simulations, we compute $H$ pointwise and
+apply the discrete Laplace-Beltrami operator to obtain this $\laplacian H$.
 
-Finally, we consider dissipative forces, which cause the membrane to exhibit a
-viscoelastic response to strain. With surface velocity $\vec{\dot{X}}$, the metric tensor
-changes in time according to 
+Finally, we consider dissipative forces, which cause the membrane to exhibit a viscoelastic response to strain.
+With surface velocity $\vec{\dot{X}}$, the metric tensor changes in time according to
 \begin{equation}
     \dot{\metric}_{\alpha\beta} = \vec{\dot{X}}_{,\alpha}\cdot\X_{,\beta} + \X_{,\alpha}\cdot\vec{\dot{X}}_{,\beta}.
 \end{equation}
@@ -67,10 +75,9 @@ The dissipative force density takes the form~\cite{Rangamani:2012hi}
 \begin{equation}\label{eq:dissip-force}
     \F_\text{dissip} = \frac{\nu}{\sqrt{\metric}}{\left(\sqrt{\metric}\metric^{\alpha\mu}\dot{\metric}_{\mu\lambda}\metric^{\lambda\beta}\X_{,\beta}\right)}_{,\alpha},
 \end{equation}
-where $\nu$ is the membrane viscosity. 
+where $\nu$ is the membrane viscosity.
 
-In general, for all force calculations, it is possible to rewrite~\eqref{eq:tension-force},~\eqref{eq:dissip-force}, and the Laplace-Beltrami
-operator in~\eqref{eq:bending-force} in terms of first and second derivatives with
-respect to parametric variables, thereby ensuring that we require only discrete first and second derivative operators to compute a wide variety of forces.
-
-% vim: cc=90 tw=89
+In general, for all force calculations, it is possible to rewrite~\eqref{eq:tension-force},~%
+\eqref{eq:dissip-force}, and the Laplace-Beltrami operator in~\eqref{eq:bending-force} in terms of first and
+second derivatives with respect to parametric variables, thereby ensuring that we require only discrete first and
+second derivative operators to compute a wide variety of forces.
