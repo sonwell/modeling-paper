@@ -51,12 +51,9 @@ Then, the RBF interpolant to $\psi(\Xp)$ takes the form
 \end{equation}
 where $c_k$ and $d_i$ are unknown interpolation coefficients, and the metric can be written parametrically as
 \begin{equation} \label{eq:param-metric}
-    \begin{aligned}
     \|\Xp-\data\Xp_k\|
-        &= \|\Xp(\theta, \varphi) - \Xp(\theta_k, \varphi_k)\| \\
-        &= \sqrt{2-2\Xp(\theta, \varphi)\cdot\Xp(\theta_k, \varphi_k)} \\ % We can change the formatting, but we need this for the quadrature section
-        &= \sqrt{2(1 - \cos\varphi\cos\varphi_k\cos(\theta-\theta_k) - \sin\varphi\sin\varphi_k)}.
-    \end{aligned}
+        = \|\Xp(\theta, \varphi) - \Xp(\theta_k, \varphi_k)\|
+        = \sqrt{2(1 - \cos\varphi\cos\varphi_k\cos(\theta-\theta_k) - \sin\varphi\sin\varphi_k)}.
 \end{equation}
 To find $c_k$ and $d_i$, we enforce that the interpolant~\eqref{eq:rbf-interp} exactly interpolate the function
 $\psi(\Xp)$ at each $\data\Xp_k$,
