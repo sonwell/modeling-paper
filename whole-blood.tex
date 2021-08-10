@@ -24,16 +24,18 @@ over $(\theta, \varphi)\in{[0, 2\pi)}^2$ with reference shape
 \end{equation}
 where $y(\theta, \varphi)$ depends on the shape under study. The endothelium is discretized using 16000 points,
 defined by the spiral
-\begin{align*}
+\begin{equation}
+    \begin{aligned}
     \varphi_i &= 2\pi (i-1)/N, \\
     \theta_i &= \modulo\left(\left\lceil\!\sqrt{N}\mskip\thinmuskip\right\rceil\varphi_i, 2\pi\right).
-\end{align*}
+    \end{aligned}
+\end{equation}
 We consider two shapes for the endothelium. The first, $y=1\um$, emulates the flat wall typically used in
 near-wall simulations of RBCs or platelets. The other attempts to recreate the elongated endothelial cell shape
 typical of exposure to high-shear conditions,
-\begin{equation*}
+\begin{equation}
     y(\theta, \varphi) = 0.75\um + 1\um\cdot\cos^2(\theta-\varphi)\sin^2(\varphi/2).
-\end{equation*}
+\end{equation}
 The bumps have a prominence of $1\um$. The endothelial surface is raised by $0.75\um$ to avoid it interacting with
 the domain boundary. The positions of the surface are chosen to maintain a fixed hematocrit of approximately 34\%
 for both endothelial shapes.

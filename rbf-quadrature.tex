@@ -3,7 +3,7 @@
 Our approach to generating quadrature weights $\weight[j]$ for numerical integration on an immersed structure
 $\interface$ (such as RBCs and platelets) at the spreading points $\Xsj$ is to first precompute a fixed set of
 quadrature weights $\omega_j$ on $\sphere$, then map these weights to $\interface$ during each time-step. For the
-following discussion, note that $\weight[j](\theta,\varphi,t)$ is technically a function of time $t$, since
+following discussion, note that $\weight[j](\theta, \varphi, t)$ is technically a function of time $t$, since
 $\interface$ moves in time. However, for brevity, we suppress the arguments for the weights.
 
 First, we discuss how to compute RBF-based meshless quadrature weights on $\sphere$. Given a function
@@ -44,9 +44,9 @@ $\phi(r) = r$, we guarantee a unique solution and obtain weights that we observe
 of the PHS RBF at the potential cost of poorer conditioning and either loss of invertibility or requiring
 knowledge of higher-order moments~\cite{Fuselier:2013coba}.
 
-Once the quadrature weights $\omega_j$, $j=1,\ldots,\sample\cardinality$ are computed, it is straightforward to
-compute the corresponding quadrature weights $\weight[j]$, $j=1,\ldots,\sample\cardinality$ for integration at the
-spreading points $\sample\X \in \interface(t)$. Recall that $\interface$ has parametrization
+Once the quadrature weights $\omega_j$, $j=1, \ldots, \sample\cardinality$ are computed, it is straightforward to
+compute the corresponding quadrature weights $\weight[j]$, $j=1, \ldots, \sample\cardinality$ for integration at
+the spreading points $\sample\X \in \interface(t)$. Recall that $\interface$ has parametrization
 $\X(\theta, \varphi, t)$ and Jacobian $J(\theta, \varphi)$ for a given time t. This implies that the point
 $\X(\theta, \varphi)$ directly corresponds to to $\Xp(\theta, \varphi)$. Using this fact and the fact that the
 determinant of the Jacobian for the spherical coordinate mapping (for radius 1) is $\cos\varphi$, we can use a
@@ -70,5 +70,5 @@ $\weight[j]$ for $\interface$ at the spreading point $\Xsj$ is given by
 \end{equation}
 where $J_j = J(\theta_j, \varphi_j)$. Computing $\weight[j]$ given $\sigma_j$ and $J_j$ amounts to a single
 multiplication, which can be done trivially in parallel. This produces a set of (time-varying) weights
-$\weight[j]$, $j=1,\ldots,\sample\cardinality$ that allows us to integrate functions on $\interface(t)$ when their
-samples are given at $\Xsj$, $j=1,\ldots,\sample\cardinality$, as required by~\eqref{eq:ib-spread-disc}.
+$\weight[j]$, $j=1, \ldots, \sample\cardinality$ that allows us to integrate functions on $\interface(t)$ when
+their samples are given at $\Xsj$, $j=1, \ldots, \sample\cardinality$, as required by~\eqref{eq:ib-spread-disc}.
