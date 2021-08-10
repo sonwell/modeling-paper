@@ -31,10 +31,10 @@ The process of transferring the fluid velocity to the immersed structure is term
 %``restriction\qend.''
 As a boundary deforms, it generates a force density $\F = \F(\X, t)$, which it imparts onto
 the fluid as $\f$ in~\eqref{eq:ins-momentum}. Similar to~\eqref{eq:ib-interp}, $\F$ is transferred to the fluid at
-$\x_i$ via
+$\x$ via
 \begin{equation}\label{eq:ib-spread}
-        \f(\x_i, t)
-        = \int\limits_{\interface} \F(\X, t)\Dirac(\x_i-\X) \d\X.
+        \f(\x, t)
+        = \int\limits_{\interface} \F(\X, t)\Dirac(\x-\X) \d\X.
 \end{equation}
 This transfer of forces is called ``spreading\qend.'' Since the structure $\interface$ is typically represented in
 Lagrangian form, \latin{i.e.}, as a discrete set of points,~\eqref{eq:ib-interp} must be discretized to update
@@ -70,9 +70,9 @@ movement points to be initially approximately $2h$ apart in $\R^3$ at the start 
 also uses a second set of points, which we term ``spreading points'' and label $\Xsj$,
 $j=1, \ldots, \sample\cardinality$. These points are used to discretize~\eqref{eq:ib-spread} in order to spread
 forces to the background Eulerian grid. The fully discrete version of~\eqref{eq:ib-spread} in the RBF-IB method
-for an Eulerian grid point $\x$ can therefore be written as
+for an Eulerian grid point $\x_i$ can therefore be written as
 \begin{align}\label{eq:ib-spread-disc}
-        \f(\x, t) \approx\sum\limits_{j=1}^{\sample\cardinality} \weight[j]\F(\Xsj) \Dirac_h(\x-\Xsj),
+        \f(\x_i, t) \approx\sum\limits_{j=1}^{\sample\cardinality} \weight[j]\F(\Xsj) \Dirac_h(\x_i-\Xsj),
 \end{align}
 where $\weight[j]$, $j=1, \ldots, \sample\cardinality$ is a set of quadrature weights for integrating quantities
 at the spreading points $\sample\X$; the spreading points can therefore be thought of as a set of quadrature
