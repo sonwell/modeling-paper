@@ -170,9 +170,9 @@ that derivative operator.
 It is also straightforward to generate versions of $L$ that produce derivatives at $\data\sites$ simply by
 replacing $\left.\L s\right|_{\sample\sites}$ with $\left.\L s\right|_{\data\sites}$ in the above discussion. With
 these operators in hand, the quantities $I_1$, $I_2$, and $H$ in Section~\ref{sec:energy} are readily discretized,
-as are their corresponding force densities in~\ref{sec:forces}. Application of the dense discrete differential
-operators is performed in parallel with a parallel implementation of \texttt{BLAS}. Lagrangian forces can
-therefore be computed in parallel with few thread synchronizations.
+as are the force densities in~\ref{sec:forces}. Application of the dense discrete differential operators is
+performed in parallel with a parallel implementation of \texttt{BLAS}. Lagrangian forces can therefore be computed
+in parallel with few thread synchronizations.
 
 We now have a method for computing a suitable set of points and for discretizing $\F$ for use in~%
 \eqref{eq:ib-spread}. To compute a force from a force density, we need to compute the set of quadrature weights
