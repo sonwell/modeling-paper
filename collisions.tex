@@ -77,9 +77,9 @@ $\timestep = 50\ns$. To interpolate velocities and spread forces, we use the 4-p
 \cite{Peskin:2002go}. The cells are placed with cell centers on the line $x = z$, $y = 8\um$. They are initially
 separated by a gap of $4h = 0.8\um$ between their convex hulls, \latin{i.e.}, ignoring the concavities. Inspired
 by Crowl \& Fogelson~\cite{Erickson:2011cf}, we add the fictitious force density
-\begin{equation*}
+\begin{equation}
     \F_\text{fict} = \pm 0.1\dynpercm\cdot(\e_1+\e_3)/\sqrt{2},
-\end{equation*}
+\end{equation}
 to each cell, where the sign is chosen so the force points into the gap, to draw the cells together. Success in
 these tests implies that this configuration of data and sample sites, the spatial resolution, and the time step
 are acceptable for whole blood simulations.

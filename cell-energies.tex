@@ -42,13 +42,13 @@ $E$ is the shear modulus, and $G$ is the bulk modulus. The shear and bulk moduli
 $E = 6\sci{-3}\dynpercm$ and $G = 5\sci2\dynpercm$~\cite{Mohandas:1994tg}, but we follow Fai \latin{et al.}~%
 \cite{Fai:2013do} and use $\rbc{E} = 2.5\sci{-3}\dynpercm$ and $\rbc{G} = 2.5\sci{-1}\dynpercm$. We use
 the shape given by Evans \& Fung~\cite{Evans:1972uf} for the reference RBC with radius $R_0 = 3.91\um$,
-\begin{equation*}
+\begin{equation}
     \rbc{\vec{\hat{X}}}(\theta, \varphi) = R_0\begin{bmatrix}
             \cos\theta\cos\varphi \\
             \sin\theta\cos\varphi \\
             z(\cos\varphi)\sin\varphi
     \end{bmatrix},
-\end{equation*}
+\end{equation}
 where $(\theta, \varphi)\in(-\pi, \pi]\times[-\pi/2, \pi/2]$ and $z(r) = 0.105 + r^2 - 0.56r^4$. Platelets, on the
 other hand, do not have a purpose-built constitutive law, but are stiffer than RBCs. We use the neo-Hookean model
 \begin{equation}\label{eq:neohookean}
@@ -56,13 +56,13 @@ other hand, do not have a purpose-built constitutive law, but are stiffer than R
 \end{equation}
 with $\plt{E} = 1\sci{-1}\dynpercm$ and $\plt{G} = 1\dynpercm$, and an ellipsoidal reference configuration~%
 \cite{Frojmovic:1982wk}
-\begin{equation*}
+\begin{equation}
     \plt{\hat{\vec{X}}}(\theta, \varphi) = \begin{bmatrix}
             1.55\um\cos\theta\cos\varphi \\
             1.55\um\sin\theta\cos\varphi \\
             0.5\um\sin\varphi
     \end{bmatrix}.
-\end{equation*}
+\end{equation}
 
 Platelets and RBCs also respond to changes in membrane curvature. Let $H$ be the membrane's mean curvature. The
 Canham-Helfrich bending energy density takes the form~\cite{Canham:1970wx}
