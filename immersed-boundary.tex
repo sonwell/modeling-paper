@@ -63,7 +63,7 @@ method reads
 \begin{equation}\label{eq:ib-interp-disc}
     \frac{\partial\data\X_k}{\partial t} = \U(\data\X_k, t) \approx h^3 \sum_i \u(\x_i, t) \Dirac_h(\x_i-\data\X_k), \quad k=1, \ldots, \data\cardinality,
 \end{equation}
-where $h$ is the spacing of the background Eulerian grid. %, and the $i$ Eulerian grid points are implicitly chosen
+where $h$ is the spacing of the background Eulerian grid and $i$ enumerates Eulerian grid points. %, and the $i$ Eulerian grid points are implicitly chosen
 %by the support of the discrete Delta function $\Dirac_h$ centered at $\data\X_k$.
 In this work, we select the
 movement points to be initially approximately $2h$ apart in $\R^3$ at the start of a simulation. The RBF-IB method
