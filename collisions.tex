@@ -1,12 +1,11 @@
 \subsection{Collision tests}
 
 With whole blood simulation as the ultimate goal, we must ensure that the method can effectively capture cell-cell
-interactions. The RBF-IB method has been applied to flow around multiple platelets in an aggregate, but those
-cells are kept apart by a network of springs~\cite{Shankar:2015km}. To study the interaction between cells, we
+interactions. The RBF-IB method has been applied to flow around multiple platelets in an aggregate in 2D simulations, but those
+cells were kept apart by a network of springs~\cite{Shankar:2015km}. To study the interaction between cells, we
 devise a series of tests in which we force two RBCs to collide. The aim is to verify that the cells remain
-distinct. Using too few data sites could allow the cells to come too close to one another. The regularization of
-$\Dirac_h$ then causes them to be treated as a single unit. Cells that ``fuse'' in this manner are problematic,
-generally causing the simulation to end when the cells attempt to separate.
+distinct. Using too few data sites could allow the cells to come too close to one another or even to interpenetrate, as the regularized delta function $\Dirac_h$ then causes them to be treated as a single unit. Cells that ``fuse'' in this manner are problematic,
+generally causing the simulation to end (due to stability-related time-step restrictions) when the cells attempt to separate.
 
 \begin{figure}[tb]
     \centering
@@ -68,7 +67,7 @@ bulbous banana shape.
     \label{fig:collisions}
 \end{figure}
 
-We continue to use the same physical domain as in the previous two sections, now with $h = 0.2\um$, and place two
+We use the same physical domain as in the previous two sections, now with $h = 0.2\um$, and place two
 RBCs therein, each with $\data\cardinality=2500$ and $\sample\cardinality=10000$. The ratio
 $\sample\cardinality/\data\cardinality=4$ is chosen so that sample sites with spacing $h$ means data sites have
 spacing $2h$. We believe this to suffice in preventing cells from intersecting, but this is not guaranteed if the
@@ -94,5 +93,5 @@ simulations end due to extreme forces triggering the stopping condition~\cite{Ag
 \begin{equation}
     \timestep > \frac14\sqrt{\frac{h\rho}{\|\f\|_\infty}}.
 \end{equation}
-For the remainder of this chapter, we will consider only this arrangement of data and sample sites and this grid
+For the remainder of this section, we consider only this arrangement of data and sample sites and this grid
 resolution.

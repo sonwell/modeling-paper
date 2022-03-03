@@ -8,7 +8,7 @@ vessel.
 
 For whole blood simulations, we return to the 4-point B-spline, $B_3$, as the IB kernel.  Because some RBC
 configurations generate large forces, the stopping condition of the previous section limits us to small timesteps.
-In the interest of reducing simulation time, we therefore use backward-forward Euler with $\timestep=50\ns$. In
+In the interest of reducing simulation time, we use the backward-forward Euler scheme with $\timestep=50\ns$. In
 tests, we observe qualitative agreement between this scheme and the two-stage RK scheme. We have already settled
 on an RBC discretization in the previous section. We use the same spiral method to discretize the platelet, but
 with 900 data and sample sites. Using the same number of sample sites and data sites aligns more closely with
@@ -42,7 +42,7 @@ for both endothelial shapes.
 
 As a preliminary validation of the platelet model and to establish baseline platelet motion, we consider two
 platelets along a flat wall. They are placed parallel to the wall at distances of $0.3\um$ and $0.5\um$. The
-domain does not contain any RBCs. At a distance of $0.3\um$, the platelet is expected to ``wobble\qend,'' in which
+domain does not contain any RBCs. At a distance of $0.3\um$, the platelet is expected to ``wobble\qend,'' a motion in which
 the platelet tilts slightly upward and downward, periodically~\cite{King:2005fv}. On the other hand, the platelet
 initially $0.5\um$ from the wall should tumble end-over-end. We observe wobbling at a frequency of approximately
 $10\persec$ and tumbling with a frequency of approximately $30\persec$. These figures are in reasonable agreement
@@ -129,7 +129,7 @@ $\shear=1000\persec$ is the smoother transition at the wall due to the bumps. Th
 feature between the profiles corresponding to bumpy and flat walls in the presence of RBCs. The smooth transition
 from the bumps results in marginally slower flow speeds throughout the domain, compared to the flat wall. The
 inclusion of RBCs causes the bends in the red and blue curves around $y = 3\um$ and $y = 9\um$. Platelets located
-between $y=1\um$ and $y=3\um$ experience higher shear rates than in simulations featuring RBCs than in those
+between $y=1\um$ and $y=3\um$ experience higher shear rates in simulations featuring RBCs than in those
 without RBCs. The region near the upper boundary also experiences an increased shear rate. In pressure-driven flow
 through a tube, we expect parabolic flow. The bend near $y = 9\um$ is therefore nonphysical and arises from
 satisfying boundary conditions at the top boundary. However, the increased shear rate in the region between $y =
@@ -300,6 +300,6 @@ unicycling to occur.
 Because the platelet comes into contact with the endothelium, or nearly does so, the platelet slows along the area
 of contact. \cref{fig:rbc-plt-endo-collision}(e) shows the correlation between the relative change in aspect ratio
 and the reduction in minimum platelet surface velocity. Though the aspect ratio of the platelet changes somewhat
-while normally tumbling, changes of this magnitude seem to always correspond to interactions with the endothelium.
+while normally tumbling, changes of 5\% or greater seem to always correspond to interactions with the endothelium.
 Collisions with the RBC, for example, result primarily in deformation of the RBC and deflection of the platelet,
 which is otherwise relatively unperturbed.

@@ -4,7 +4,7 @@ We now describe our RBF method for reconstructing cell surfaces. RBF interpolati
 scattered data interpolation where structural information is encoded purely as point-wise distances. This
 contrasts with, \latin{e.g.}, polynomials, where points must be chosen at grid vertices, or spherical harmonics,
 for which special node sets are typically used. RBFs have been shown to be a viable approach for representing
-cells on a par with Fourier methods~\cite{Shankar:2013ki}. They are therefore appealing for representing blood
+cells on a par with Fourier methods~\cite{Shankar:2013ki}. They are therefore appealing for representing red blood
 cells and platelets.
 
 Our goal is to produce a parametric reconstruction of cells. We choose to parametrize both red blood cells and
@@ -28,14 +28,14 @@ Bauer spiral~\cite{Bauer:2000km},
         &\theta_k = \modulo\left(\sqrt{\data\cardinality\pi}\varphi_k + \pi, 2\pi\right) - \pi,
     \end{aligned}
 \end{equation}
-where $\modulo(a, b) = a - b\floor{a/b}$ is the modulo function. We similarly generate a larger set of
+where $\modulo(a, b) = a - b\floor{a/b}$ is the modulo function. These data sites correspond to the movement points $\data\X$ to which the fluid grid velocity is interpolated. We similarly generate a larger set of
 \emph{sample sites} from which to spread forces by replacing $\data\cardinality$ with $\sample\cardinality$ in the
 above equation. Let $\data\Xp_i=\Xp(\theta_i, \varphi_i)$ for each $(\theta_i, \varphi_i)\in\data\sites$. In this
 setting, our goal is to construct a parametric mapping from $\data\sites$ to the Cartesian locations of points on
 cell surfaces. For RBC and platelet parametrizations, we identify the point $\X(\theta, \varphi, t)$ on
 $\interface$ with the point $\Xp(\theta, \varphi)$ on $\sphere$. Each component of $\X$ and consequently each
 component of a movement point $\data\X_k$ is then a function defined on $\sphere$. The problem of surface
-reconstruction therefore involves approximating each of these functions from the $\data\sites$ using an RBF
+reconstruction therefore involves approximating each of these functions from their values at $\data\sites$ using an RBF
 interpolant. For the discussion that follows, we use $\psi(\Xp):\sphere\to\R$ to denote a function that we wish to
 approximate.
 
@@ -75,10 +75,10 @@ We collect~\eqref{eq:interp_constraint} and~\eqref{eq:constraints} into a dense 
             \arr{\psi} \\ \arr{0}
     \end{bmatrix},
 \end{equation}
-where $\arr{c}$ and $\arr{d}$ are the unknown coefficients, $\Phi$ represents the evaluations of $\phi$, $P$
+where $\arr{c}$ and $\arr{d}$ are the unknown coefficients, $\arr{\psi}$ is the vector of evaluations of $\psi(\data\Xp)$, $\Phi$ represents the evaluations of $\phi$, $P$
 represents evaluations of the polynomials $p_k$, the matrix block $0$ is the
 $\poly\cardinality\times\poly\cardinality$ zero matrix, and $\arr{0}$ is a vector of $\poly\cardinality$ zeros.
-Because $\data\sites$ is fixed, we construct this matrix and compute its factors only once even though $\psi(\Xp)$
+Because $\data\sites$ is fixed, we construct this matrix and compute its factors only once even though $\psi(\data\Xp)$
 changes. The matrix in~\eqref{eq:rbf-interp-matrix} is invertible for any conditionally positive definite kernel
 $\phi$ of order $m$ as long as the data sites $\data\sites$ are unisolvent for the first
 $\poly\cardinality \ge (m+1)^2$ spherical harmonics, \latin{i.e.}, $P$ is of full rank~ \cite{Fasshauer:2007ui}. A
@@ -87,13 +87,13 @@ common heuristic choice to ensure this is to set $\data\cardinality = 2 \poly\ca
 It now remains to discuss the choice of $\phi$. In previous work~\cite{Shankar:2015km}, we chose $\phi$ to be an
 infinitely-smooth and positive-definite kernel. While these kernels offer spectral convergence rates, they require
 tuning a so-called shape parameter~\cite{Fasshauer:2007ui}. In particular, we instead choose $\phi$ to be a
-polyharmonic spline (PHS), which is a conditionally-positive definite kernel with finite smoothness. In this work,
+polyharmonic spline, which is a conditionally-positive definite kernel with finite smoothness. In this work,
 we set $\phi(r) = r^7$, augmented with fifth-order spherical harmonics to represent RBCs, or just the constant
 spherical harmonic for platelets. As mentioned previously, we identify the point $\X(\theta, \varphi, t)$ on
 $\interface$ with the point $\Xp(\theta, \varphi)$ on $\sphere$.  To reconstruct the surface $\X$ from the
 movement points $\data\X$, we simply use the fact that each component of a particular movement point $\data\X_k$
 is one of $\data\cardinality$ samples of a function of the form $\psi(\Xp)$. For instance, to reconstruct the
-first component of $\X$, we may formally replace $\arr{\psi}$ with the vector of $x$-coordinates of the movement
+first component of $\X$, we set $\arr{\psi}$ to be the vector of $x$-coordinates of the movement
 points $\data\X$, and find a set of coefficients corresponding to the $x$-component of $\X$.  This process is
 repeated component-wise for the movement points, and is essentially a component-wise interpolation of the movement
 points~\cite{Shankar:2015km}.
@@ -115,7 +115,7 @@ differential operator (or a differentiation matrix). We discuss this in the next
 Let $\L$ be a linear operator. In particular, we are interested in the first- and second-order partial
 differential operators, $\partial/\partial\theta$, $\partial^2/\partial\theta\partial\varphi$, \latin{etc}. First,
 note that since $s(\Xp) \approx \psi(\Xp)$, it is also true that $\L s(\Xp) \approx \L \psi(\Xp)$. Thus, in the
-RBF-IB method, it is of interest to be able to efficient apply $\L$ to $s(\Xp)$ and evaluate the resulting
+RBF-IB method, it is of interest to be able to apply $\L$ to $s(\Xp)$ and evaluate the resulting
 function efficiently. To do so, we formulate all applications and evaluations of $\L s$ in terms of a
 matrix-vector multiplication with the quantity $\arr{\psi}$. To see how this is done, first note that if we wish
 to approximate samples of $\L s$ at a given set of sample sites $\sample\sites$, we can write

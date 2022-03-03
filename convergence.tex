@@ -12,11 +12,11 @@ We use the 3-point kernel $\hat{\Dirac}_1$ derived by Roma \latin{et al.}~\cite{
 interpolation and the 2-stage RK method described in \cref{sec:ib} to advance the fluid velocity. Fluid grids are
 chosen to have $20r$ grid points per $16\um$ in each direction for $r$ from 1 to 6. On successive grids, we
 compare the fluid velocity at cell centers in a regular grid of $20^3$ cells and surface positions at 1000 surface
-points. For convergence of order $p$, we expect the ratio of successive errors to satisfy
+points. For convergence of order $p$, we expect the ratio of successive differences to satisfy
 \begin{equation}
     \frac{\epsilon_r}{\epsilon_{r+1}} = \left|\frac{{((r+1)/r)}^p-1}{{((r+2)/(r+1))}^{-p}-1}\right|,
 \end{equation}
-which we solve numerically to determine $p$. We compute the errors in $\X$ using discrete versions of the $L^2$
+which we solve numerically to determine $p$. We compute the differences in $\X$ using discrete versions of the $L^2$
 and $L^\infty$ norms,
 \begin{gather}
     \|\X(\theta, \varphi)\|_2^2 =
@@ -24,11 +24,9 @@ and $L^\infty$ norms,
     \|\X(\theta, \varphi)\|_\infty^2 =
     \max_{(\theta, \varphi)} \X(\theta, \varphi)\cdot\X(\theta, \varphi),
 \end{gather}
-respectively.
+respectively. In all cases, we label these differences as ``errors'', though this is not strictly true.
 
-\Cref{tab:u-rbc-conv,tab:x-rbc-conv} show $L^2$ and $L^\infty$ errors in $\u$ and $\X$ between successive grids.
-We observe first-order convergence, as expected. Satisfied with the convergence of our implementation, we
-henceforth continue using the Bauer spiral to discretize RBCs.
+\Cref{tab:u-rbc-conv,tab:x-rbc-conv} show $L^2$ and $L^\infty$ errors in $\u$ and $\X$ between successive grids. We observe first-order convergence, as expected. 
 %We continue in the next section by verifying that the
 %RBF-IB method dissipates energy.
 
@@ -36,7 +34,7 @@ henceforth continue using the Bauer spiral to discretize RBCs.
     \centering
     \caption[Convergence of fluid velocities for relaxing RBC test]{%
 Convergence of $\u$ for a sequence of grids. The refinement ratio $r$, defined as the refinement in $h$ relative
-to the coarsest grid, determines the simulation parameters: $rh = 0.8\um$ and $r\timestep = 180\ns$. Errors are
+to the coarsest grid, determines the simulation parameters: $rh = 0.8\um$ and $r\timestep = 180\ns$. Differences are
 computed between grids of refinement factor $r$ and $r+1$. Values of $\u$ are sampled at $t = 180\us$ at cell
 centers on the coarsest grid.
     }\label{tab:u-rbc-conv}
@@ -60,7 +58,7 @@ centers on the coarsest grid.
     \caption[Convergence of surface positions for relaxing RBC test]{%
 Convergence of $\X$ for a sequence of grids. The refinement ratio $r$, defined as the refinement in $h$ relative
 to the coarsest grid, determines the simulation parameters: $r\timestep = 180\ns$, $n_d = 125r^2$, and
-$n_s = 500r^2$. Errors are computed between grids of refinement factor $r$ and $r+1$. Values of $\X$ are sampled
+$n_s = 500r^2$. Differences (errors) are computed between grids of refinement factor $r$ and $r+1$. Values of $\X$ are sampled
 at $t = 180\us$ at $1000$ Bauer spiral points.
     }\label{tab:x-rbc-conv}
     \begingroup

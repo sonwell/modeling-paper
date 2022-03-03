@@ -38,9 +38,7 @@ terms of these invariants. Skalak's Law was designed specifically for RBCs~\cite
 \begin{equation}\label{eq:skalak-law}
     W_\text{Sk}(I_1, I_2) = \frac{E}4\left(I_1^2 + 2I_1 - 2I_2\right) + \frac{G}4 I_2^2.
 \end{equation}
-$E$ is the shear modulus, and $G$ is the bulk modulus. The shear and bulk moduli for RBCs are estimated to be
-$E = 6\sci{-3}\dynpercm$ and $G = 5\sci2\dynpercm$~\cite{Mohandas:1994tg}, but we follow Fai \latin{et al.}~%
-\cite{Fai:2013do} and use $\rbc{E} = 2.5\sci{-3}\dynpercm$ and $\rbc{G} = 2.5\sci{-1}\dynpercm$. We use
+$E$ is the shear modulus, and $G$ is the bulk modulus. For RBCs, we follow Fai \latin {et al.}~\cite{Fai:2013do} and set $\rbc{E} = 2.5\sci{-3}\dynpercm$ and $\rbc{G} = 2.5\sci{-1}\dynpercm$. We use
 the shape given by Evans \& Fung~\cite{Evans:1972uf} for the reference RBC with radius $R_0 = 3.91\um$,
 \begin{equation}
     \rbc{\vec{\hat{X}}}(\theta, \varphi) = R_0\begin{bmatrix}
@@ -50,7 +48,7 @@ the shape given by Evans \& Fung~\cite{Evans:1972uf} for the reference RBC with 
     \end{bmatrix},
 \end{equation}
 where $(\theta, \varphi)\in(-\pi, \pi]\times[-\pi/2, \pi/2]$ and $z(r) = 0.105 + r^2 - 0.56r^4$. Platelets, on the
-other hand, do not have a purpose-built constitutive law, but are stiffer than RBCs. We use the neo-Hookean model
+other hand, do not have a purpose-built constitutive law, but are known to be stiffer than RBCs. We use the neo-Hookean model
 \begin{equation}\label{eq:neohookean}
     W_\text{nH}(I_1, I_2) = \frac{E}2\left(\frac{I_1+2}{\sqrt{I_2+1}}-2\right) + \frac{G}2 {\left(\sqrt{I_2+1}-1\right)}^2
 \end{equation}

@@ -25,8 +25,7 @@ However, because
         = (\Xp-\sample\Xp_i)\cdot(\Xp-\sample\Xp_i)
         = 2 - 2\Xp\cdot\sample\Xp_i
 \end{equation}
-depends only on the angle between the two points, $\L\phi$ is constant over the sphere. We therefore expect the
-right-hand side to be a constant, which we denote $-I_\phi$. We require further that the $\omega_j$ sum to the
+depends only on the angle between the two points, $\L\phi$ is constant over the sphere, and we denote this constant $-I_\phi$. We require further that the $\omega_j$ sum to the
 surface area of $\sphere$, \latin{i.e.},
 \begin{equation}\label{eq:weight-sum}
     \sum_{j=1}^{\sample\cardinality} \omega_j  = 4\pi.
@@ -45,9 +44,8 @@ the symmetric block linear system
 where $\arr{\omega}$ are the unknown weights, $\Phi$ represents the evaluations of $\phi$, and $\arr{0}$ and
 $\arr{1}$ are vectors of $\sample\cardinality$ zeros and ones, respectively. $I_{\phi}$ serves as a Lagrange
 multiplier that enforces~\eqref{eq:weight-sum}, and $-I_\phi$ is a good approximation to $\L\phi$. By choosing
-$\phi(r) = r$, we guarantee a unique solution and obtain weights that we observe to converge at
-3\textsuperscript{rd} order. It is possible to improve the order of the quadrature weights by increasing the order
-of the PHS RBF at the potential cost of poorer conditioning and either loss of invertibility or requiring
+$\phi(r) = r$, we guarantee a unique solution and obtain weights that when used in a quadrature rule, converge at 3\textsuperscript{rd} order in the sample site spacing. It is possible to improve the order of the quadrature weights by increasing the order
+of the polyharmonic spline RBF at the potential cost of poorer conditioning and either loss of invertibility or requiring
 knowledge of higher-order moments~\cite{Fuselier:2013coba}.
 
 Once the quadrature weights $\omega_j$, $j=1, \ldots, \sample\cardinality$ are computed, it is straightforward to

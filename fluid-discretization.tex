@@ -36,7 +36,7 @@ the assumption that $\u$ is discretely divergence-free.
 \subsection{Temporal Discretization}\label{sec:ns_time}
 
 To advance the solution, we use either the backward-forward Euler-based scheme~\cite{Ascher:1997tm} or the 2-stage
-scheme described by Peskin~\cite{Peskin:2002go}, modified to advance structures using the newest velocities. The
+scheme described by Peskin~\cite{Peskin:2002go}, modified to advance structures using the newest velocities. Both schemes utilize a pressure projection (or fractional step) method. The
 modification makes these schemes formally first-order in time, but allow us to separate the Eulerian update from
 the Lagrangian update by requiring only information at the beginning of the timestep to evaluate forces and moving
 the structure at the end of the timestep. For the backward-forward Euler scheme, discretizing~%

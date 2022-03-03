@@ -12,7 +12,7 @@ $\domain$ is therefore governed by the incompressible Navier-Stokes equations,
 \end{gather}
 where, for $\x = (x, y, z) \in \domain$, $\u = \u(\x, t) = (u, v, w)$ is the fluid velocity, $p = p(\x, t)$ is the
 pressure, and $\f = \f(\x, t)$ is an external force density. Here and throughout this paper, we use bold italic
-symbols to indicate a vector in $\R^3$. Treating the entire domain as a fluid allows us to discretize $\domain$
+symbols to indicate vectors in $\R^3$. Treating the entire domain as a fluid allows us to discretize $\domain$
 independently of the immersed structures with a fixed Eulerian grid of spacing $h$. The discretization of~%
 \eqref{eq:ins-momentum} and~\eqref{eq:ins-incomp} is discussed in detail in \cref{sec:ins}.
 
@@ -36,14 +36,14 @@ $\x$ via
         \f(\x, t)
         = \int\limits_{\interface} \F(\X, t)\Dirac(\x-\X) \d\X.
 \end{equation}
-This transfer of forces is called ``spreading\qend.'' Since the structure $\interface$ is typically represented in
-Lagrangian form, \latin{i.e.}, as a discrete set of points,~\eqref{eq:ib-interp} must be discretized to update
-those points based on their velocities. Similarly,~\eqref{eq:ib-spread} must be discretized to both compute
+This transfer of forces is called ``spreading\qend.'' The structure $\interface$ is typically represented in
+Lagrangian form, usually as a discrete set of points. Consequently,~\eqref{eq:ib-interp} must be discretized to
+update those points based on their velocities. Similarly,~\eqref{eq:ib-spread} must be discretized to both compute
 $\F(\X, t)$ and to approximate the integral of $\F(\X, t)$ over $\interface$. Finally, the Dirac delta
 $\Dirac(\x)$ is typically replaced by a smoothed, compactly-supported, $h$-dependent analog, typically referred to
 as the ``discrete Delta function'' $\Dirac_h(\x)$.
 
-In the classical version of the IB method~\cite{Peskin:2002go}, velocities are restricted to the same Lagrangian
+In the classical version of the IB method~\cite{Peskin:2002go}, velocities are interpolated to the same Lagrangian
 points that forces are spread from.  However, there exist several IB methods which instead use different sets of
 points for each operation instead. For instance, Griffith \& Luo~\cite{Griffith:2017id} use a finite element
 representation for the structure, and consequently spread forces from (Lagrangian) quadrature points, interpolate
@@ -87,8 +87,9 @@ partially decouples the error in representing the structure $\interface$ from th
 spacing of the movement points $\data\X$ is chosen so that the reconstruction of $\interface$ from $\data\X$ and
 the calculation of $\F(\X, t)$ by the RBF geometric model is sufficiently accurate. On the other hand, the spacing
 of the spreading points $\sample\X$ is chosen so that the numerical integration of $\F(\X, t)$ is sufficiently
-accurate. In this work, we identify a set of fixed parametric locations $\data\sites = \{(\theta_k, \varphi_k)\}$,
-$k=1, \ldots, \data\cardinality$ with the movement points $\data\X$, and call them ``data sites\qend.''
+accurate, to prevent leaks, and to ensure that spread forces overlap sufficiently on the Eulerian grid. In this
+work, we identify a set of fixed parametric locations $\data\sites = \{(\theta_k, \varphi_k)\}$,
+$k=1, \ldots, \data\cardinality$ with the movement points $\data\X = \X(\data\sites, t)$, and call them ``data sites\qend.''
 Analogously, we also maintain a set of fixed parametric points $\sample\sites = \{(\theta_j, \varphi_j)\}$,
 $j=1, \ldots, \sample\cardinality$, that we identify with the spreading points $\sample\X$; these points are
 called ``sample sites\qend.'' In general, we need only explicitly track the movement points $\data\X$, reconstruct
